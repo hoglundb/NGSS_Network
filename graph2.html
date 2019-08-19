@@ -10,11 +10,8 @@
         <script  src="myScripts2.js"></script>
 
          <script type="text/javascript" src="MapLib/vis.min.js"></script>
-          <script type="text/javascript" src="Dist/progress.js"></script>
         <link rel="stylesheet" href="MapLib/vis.min.css" />
         <link rel="stylesheet" href="styles.css">
-        <script type="text/javascript" src="LoadingBar/loading-bar.js"></script>
-        <link rel="stylesheet" href="LoadingBar/loading-bar.css" />
         <style>
 
         .table-hover tbody tr:hover td {
@@ -99,16 +96,18 @@
               <input class="form-control" id = "sCode" type="text" style="min-width:100px;max-width: 110px;margin-right:5px; margin-top:3px; height:35px" aria-label="Search" >
               <input type="button" id="submitButton" name="submitButton" class="btn btn-info" value="Generate" style="line-height:2px; margin-top:0.31%; margin-right:20px; height:35px; display:inline-flex; align-items:center" onclick = "submitBtn(); return false;"/>
                   <div id = "start" style="margin-left:230px; position:fixed; z-index:10000; margin-top: 2px">
-                    <div id = "dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:140px; border-width:1px">
+                    <div id = "dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:150px; border-width:1px">
                       <div id = "alignments" class="customDropdown" style="font-size:10.5pt ; height: 18.4px; margin-left:5px">  --Resource type--  <span id="dropdownSymbol" class="customDropdown" style="float:right; margin-top:3px; margin-right:5px; font-size:6pt">&#9660</span></div>
-                      <div id = "item1" class="customDropdown" style="display:none"><input id="item1Box" type="checkbox" class="customDropdown" name = "activies" value = "1" style='margin-left:3px'> activies </div>
-                      <div id = "item2" class="customDropdown" style="display:none"><input id="item2Box" type="checkbox" class="customDropdown" name = "lessons" value = "2" style='margin-left:3px'> lessons</div>
-                      <div id = "item3" class="customDropdown" style="display:none"><input id="item3Box" type="checkbox" class="customDropdown" name = "curricular units" value = "3" style='margin-left:3px'> curricular units</div>
-                      <div id = "item4" class="customDropdown" style="display:none; position:relative"><input id="item4Box" type="checkbox" class="customDropdown" name = "showAll" value = "5" style='margin-left:3px'> all </div>
+                      <div id = "TE" class="customDropdown" style="display:none; font-size:10.5pt"><input id="TECheckBox" type="checkbox" class="customDropdown" name ="TE" style="margin-left:3px;font-size:1pt">TE  <span id="dropdownSymbolForTEDocs" class="customDropdown" style=" margin-top:3px; margin-right:5px; font-size:9pt">&#9660</span></div>
+                      <div id = "item1" class="customDropdown" style="display:none; font-size:10pt"><input id="item1Box" type="checkbox" class="customDropdown" name = "activies" value = "1" style='margin-left:10px'> activies </div>
+                      <div id = "item2" class="customDropdown" style="display:none; font-size:10pt"><input id="item2Box" type="checkbox" class="customDropdown" name = "lessons" value = "2" style='margin-left:10px'> lessons</div>
+                      <div id = "item3" class="customDropdown" style="display:none; font-size:11pt"><input id="item3Box" type="checkbox" class="customDropdown" name = "curricular units" value = "3" style='margin-left:10px'> curricular units</div>
+                    <!--  <div id = "item4" class="customDropdown" style="display:none; position:relative;  font-size:11pt"><input id="item4Box" type="checkbox" class="customDropdown" name = "showAll" value = "5" style='margin-left:10px'> all </div>-->
+                      <div id = "SB" class="customDropdown" style="display:none; font-size:10.5pt"><input id="SBCheckBox" type="checkbox" class="customDropdown" name ="SB" style="margin-left:3px">Sciencebuddies</div>
               </div>
                 </div>
                 <label style="" for "networkDepth">
-              <select id = "networkDepth" style ='width:80px; border-radius:4px; margin-left:152px; font-size:10pt'>
+              <select id = "networkDepth" style ='width:80px; border-radius:4px; margin-left:170px; font-size:10pt'>
                 <option value = "0">--Depth--</option>
                 <option value = "1">1</option>
                 <option value = "2">2</option>
@@ -138,7 +137,7 @@
                  <div id= "theLegend" style="top:75vh; position:absolute; margin-left:3.2%">
                     <div id="label1" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:0px; position:absolute;; float:left;border-radius:3px ; padding-left:4px">Topics</div>
                     <div id="label2" style = "font-size: 9pt;  margin-left:2%; width:190px; margin-top:20px; position:absolute; float:left;border-radius:3px; padding-left:4px">Performance Expectations</div>
-                    <div id="label3" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:40px; position:absolute; float:left;border-radius:3px; padding-left:4px">Science and Engineering Practices</div>
+                    <div id="label3" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:40px; position:absolute; float:left;border-radius:3px; padding-left:4px">Science and Engr Practices</div>
                     <div id="label4" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:60px; position:absolute; float:left;border-radius:3px; padding-left:4px">Disiplinary Core Ideas</div>
                     <div id="label5" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts</div>
                     <div id = "alignedDocsLabel" style = "display:none; font-size: 9pt; background: #DFD4C8; margin-left:2%; width:190px; margin-top:100px; position:absolute; float:left;border-radius:3px; padding-left:4px">Aligned TE Documents</div>

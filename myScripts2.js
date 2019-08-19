@@ -17,23 +17,26 @@ const GREY_COLOR = ['#D4D4D4',"#808080", "#EFEFEF"];
 const BLUE_COLOR =   ["#9FBDE4", "#2B7BE4", "#C2DAF9", "#C2D0E4"];
 const ORANGE_COLOR = ["#FBC08C","#F67401","#FFE4CB", "#FBCFAB"];
 const GREEN_COLOR =  ["#CDE49F", "#85C702","#E8F3D6", "#D8E4C2"];
-const DOCS_COLOR = ["#DFD4C8", "#F2E4D3" ];
+const TE_DOCS_COLOR = ["#DFD4C8", "#F2E4D3" ];  //regualr and highlight color for teach engr nodes
+const SB_DOCS_COLOR = ["#BDA6F5", "#D3C5F6"]; //regualr and highlight color for science buddies nodes
 const COLOR_INDEX = 2;
 
 //Data structure to track the alignments dropdown list items and their node id's
-const DOC_TYPES = ["activity", "lesson", "curricularUnit", "all"]
+const DOC_TYPES = ["activity", "lesson", "curricularUnit"] //, "all"]
 
 //global variables for the network
 var docTypesForDropDown = getDropDownTypesArray();
 var NGSSGraph = null;
-var Alignments = null;
+var TEAlignments = null;
+var SBAlignments = null;
 var standardsCount = 0;
 var ADD_DOCS = true;
 var graph = null;
 var currentTableRow = "";
 var currentSelectedNode = null;
 var currentDocsTableRow = null;
-var selectedDocNodeId = null;
+var currentDocsTableRowType = null;  //tracks the type of document selected in the alignments table
+var selectedDocNode = null;
 var edgesToPrint = null;
 
 
@@ -57,7 +60,7 @@ var NodeDisplayType;
 
 //Initization function
 window.onload = function onLoad(){
-  ShowLoadingScreen();
+   ShowLoadingScreen();
   //Load the nw data via a post request to getNetworkDataAPI.php
    GetNetworkDataAJAX();
 
@@ -120,6 +123,43 @@ window.onload = function onLoad(){
     }
  });
 
+ document.getElementById("TE").addEventListener("click", (e) =>{
+   if(e.target.checked == undefined) return;  //return if not clicking right on check box
+
+   var checked = false;
+   if(e.target.checked){ //if check box was checked
+      checked = true;
+   }
+
+   //set sub checkboxes bases on the computed display type
+   document.getElementById("item1Box").checked = checked;
+   document.getElementById("item2Box").checked = checked;
+   document.getElementById("item3Box").checked = checked;
+
+ });
+
+ document.getElementById("dropdownSymbolForTEDocs").addEventListener("click", (e) =>{
+   var displayType = "none"
+   if(document.getElementById("item1").style.display == "none"){
+     //document.getElementById("dropdownSymbolForTEDocs").innerHTML = "&#9650";
+     displayType = "block";
+   }
+   else{
+    //  document.getElementById("dropdownSymbolForTEDocs").innerHTML = "&#9660";
+   }
+   for(var i = 1; i < 4; i++){
+     var id = "item" + i.toString();
+     document.getElementById(id).style.display = displayType;
+   }
+ });
+
+ document.getElementById("dropdownSymbolForTEDocs").addEventListener("mouseover", (e) => {
+      document.getElementById(e.target.id).style.cursor = "pointer";
+ });
+
+ document.getElementById("SB").addEventListener("click", (e) => {
+   submitBtn();
+ });
 }
 
 
@@ -252,7 +292,7 @@ function submitBtn(){
    if(inputType == "DCI"){
      var dciList = GetDCIList(input);
       if(dciList.length == 0){
-       alert("Could not find DCI")
+       alert("Could not find DCI");
      }
      else{
        ClearTable(document.getElementById('dciTable'));
@@ -292,7 +332,7 @@ function DisplayDCIModal(dciList, input){
         var sCode = classNameClicked.slice(4, classNameClicked.length)
         submit(sCode);
         $('#myModal').modal('hide');
-        console.log(sCode)
+
       });
     }
 }
@@ -420,7 +460,8 @@ function submit(code){
   var showActivies = document.getElementById("item1Box").checked;
   var showLessons = document.getElementById("item2Box").checked;
   var showCurricularUnits = document.getElementById("item3Box").checked;
-  var showAll = document.getElementById("item4Box").checked;
+/*  var showAll = document.getElementById("item4Box").checked;*/
+  var showAllTEDocs = document.getElementById("TECheckBox").checked;
 
   //Set the dropdowns to display their defaults
   var nodeLabel = document.getElementById("displayType");
@@ -436,8 +477,10 @@ function submit(code){
     ShowLoadingScreen();
   }
 
+  var showScienceBuddies = document.getElementById("SBCheckBox").checked;
+
   //Entry point for building the network and the alignments and standards tables.
- BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAll);
+ BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
 
 }
 
@@ -456,7 +499,7 @@ Parameters:
   7) showCurricularUnits: a boolean that determines if units will be displayed.
   8) showAll: a boolean that overrides the previous 3 that determines if all alignment types will be displayed.
 ****************************************************************************************/
-function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAll){
+function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies){
 
   //If user has selected a gradeband, we search by that gradeBand and iterate up to a depth of 50 to display the entire gradeband.
   if(gradeBand != 0){
@@ -466,12 +509,12 @@ function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLe
     else if(gradeBand == 4) sCode = "S2467907"; //9-12 gradeband
     currentSelectedNode = sCode;
     document.getElementById("sCode").value = sCode
-    BuildNetworkNSteps(sCode, 50, displayType, showActivies, showLessons, showCurricularUnits, showAll);
+    BuildNetworkNSteps(sCode, 50, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
   }
 
   //if user has not selected a gradeband, we build the network up to the specified depth.
   else{
-    BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll);
+    BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
   }
     var test = document.getElementById("myItem1")
 
@@ -587,7 +630,7 @@ Parameters:
   6) showCurricularUnits: True if curricularunits will be displayed in the graph
   7) showAll: True if all document types will be displayed in the graph
 *************************************************************************************************/
-function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll){
+function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll, showScienceBuddies){
   graph = new GraphObject(); //Allocate a new Graph object to store the current graph
   if(depth){
       AddStandarsNodes(depth, sCode);  //add all the standards to the graph up to the specified depth
@@ -597,11 +640,17 @@ function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons
   AddStandardsEdges();  //add vertex connections to the graph for the standards
   //Add the alignemnts only if selected from the check box
   if(ResourceTypes.activities || ResourceTypes.lessons || ResourceTypes.curricularunits){
-       AddAlignmentsNodes(); //Add all alignments to the graph
-       AddAlignmentEdges();  //Add edges to each alignment
+       AddTEAlignmentsNodes(); //Add all alignments to the graph
+       AddTEAlignmentEdges();  //Add edges to each alignment
   }
+
+ if(showScienceBuddies == true){
+   AddSBAlignmentsNodes();
+   AddSBAlignmentEdges();
+ }
+
   var edgesRFormat = GetEdgesInRFormat(); //Format edge list as zero indexed so R can compute KK on it
-  //GetGMLData(); //used to print nw data to the console in .gml format.
+
   GetKamadaKawaiCoords(edgesRFormat); //gets the kk layout via an AJAX post. Begins the chain of events for drawing the netork
 }
 
@@ -627,13 +676,19 @@ function GetGMLData(){
      gmlString += nodeString;
   }
 
- for(var i = 0; i < graph.numAlignments; i++){
+ for(var i = 0; i < graph.numAlignmentsTE; i++){
    var nodeString = "\tnode[\n";
-    nodeString += padding + "id " +  (graph.alignments[i].id + 1).toString()  + "\n";
+    nodeString += padding + "id " +  (graph.alignmentsTE[i].id + 1).toString()  + "\n";
     nodeString += "\t]\n"
     gmlString += nodeString
  }
 
+ for(var i = 0; i < graph.numAlignmentsSB; i++){
+   var nodeString = "\tnode[\n";
+    nodeString += padding + "id " +  (graph.alignmentsSB[i].id + 1).toString()  + "\n";
+    nodeString += "\t]\n"
+    gmlString += nodeString
+ }
 
    for(var i = 0; i < edgesToPrint.length; i++){
      var edgeString = "\tedge[\n";
@@ -669,34 +724,66 @@ function _GetGMLDataType(nodeType){
 }
 
 
+function AddSBAlignmentsNodes(){
+  //for each standards in the current NGSS graph
+  for(var i = 0; i < graph.numVertices; i++){
+
+    //Get the standard's adj list of alignments
+    var alignmentIds = graph.vertices[i].scienceBuddiesNeighbors;
+    if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
+    //for every alignment to the current standard
+    for(var j = 0; j < alignmentIds.length; j++ ){
+      var curAlignmentId = alignmentIds[j];
+      var curAlignment = SBAlignments[curAlignmentId];
+      if(!graph.hasSBAlignment(curAlignment)){
+        graph.addSBAlignment(curAlignment);
+      }
+    }
+  }
+}
+
+
 /****************************************************************************************************
 For every standard in the globa graph object, this function adds any alignments to it.
 ****************************************************************************************************/
-function AddAlignmentsNodes(){
+function AddTEAlignmentsNodes(){
   for(var i = 0; i < graph.numVertices; i++){  //for each standard
-       var alignmentIds = graph.vertices[i].docNeighbors;  //get list of documnets aligned to that standard
+       var alignmentIds = graph.vertices[i].teachEngrNeighbors;  //get list of documnets aligned to that standard
        if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
        for(var j = 0; j < alignmentIds.length; j++){
             var curAlignmentId = alignmentIds[j];
-            var curAlignment = Alignments[curAlignmentId];
-            if(!graph.hasAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
-              graph.addAlignment(curAlignment);
+            var curAlignment = TEAlignments[curAlignmentId];
+            if(!graph.hasTEAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
+              graph.addTEAlignment(curAlignment);
             }
        }
   }
 }
 
 
+function AddSBAlignmentEdges(){
+  for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
+        var alignmentIds = graph.vertices[i].scienceBuddiesNeighbors;  //get all alignments for that standard
+          if(alignmentIds.length == 0) continue;  //skip if no documents to add
+          for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in graph
+           var curAlignmentId = alignmentIds[j];
+           var curAlignment = SBAlignments[curAlignmentId]
+           if(curAlignment == undefined) continue;
+           graph.addEdge(graph.vertices[i].id, curAlignment.id);
+        }
+  }
+}
+
 /****************************************************************************************************
      This function addes edges between all standards and their alignments in the global graph object.
 ****************************************************************************************************/
-function AddAlignmentEdges(){
+function AddTEAlignmentEdges(){
   for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
-    var alignmentIds = graph.vertices[i].docNeighbors;  //get all alignments for that standard
+    var alignmentIds = graph.vertices[i].teachEngrNeighbors;  //get all alignments for that standard
     if(alignmentIds.length == 0) continue;  //skip if no documents to add
     for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in graph
          var curAlignmentId = alignmentIds[j];
-         var curAlignment = Alignments[curAlignmentId].id;
+         var curAlignment = TEAlignments[curAlignmentId].id;
          graph.addEdge(graph.vertices[i].id, curAlignment);
      }
   }
@@ -787,24 +874,51 @@ function BuildNetworkStandards(kkCoords){
 }
 
 
-function BuildNetworkAlignments(kkCoords){
+function BuildNetworkAlignmentsTE(kkCoords){
   //Build a vertex for every document in the graph object
-  for(var j = 0; j < graph.numAlignments; j++){
+  for(var j = 0; j < graph.numAlignmentsTE; j++){
     nodes.add({
-      id:graph.alignments[j].id,
-      title:graph.alignments[j].title,
-      color: graph.alignments[j].color,
+      id:graph.alignmentsTE[j].id,
+      title:graph.alignmentsTE[j].title,
+      color: graph.alignmentsTE[j].color,
+      regularColor:TE_DOCS_COLOR[0],
+      highlightColor:TE_DOCS_COLOR[1],
       shape:'circle',
       width:.1,
       font:{size:DOC_NODE_SIZE},
       labal:" ",
-      nodeType:graph.alignments[j].nodeType,
-      doc:graph.alignments[j].document,
+      nodeType:graph.alignmentsTE[j].nodeType,
+      doc:graph.alignmentsTE[j].document,
       x:kkCoords[graph.numVertices + j].x,
       y:-kkCoords[graph.numVertices + j].y,
       hidden:true
     });
   }
+
+  return graph.numVertices + j;
+}
+
+
+function BuildNetworkAlignmentsSB(kkCoords, startIndex){
+
+  for(var i = 0; i < graph.numAlignmentsSB; i++){
+    nodes.add({
+      id:graph.alignmentsSB[i].id,
+      color:graph.alignmentsSB[i].color,
+      shape:'circle',
+      width:.1,
+      regularColor:SB_DOCS_COLOR[0],
+      highlightColor:SB_DOCS_COLOR[1],
+      font:{size:DOC_NODE_SIZE},
+      labal: " ",
+      showing:true,
+      nodeType:graph.alignmentsSB[i].nodeType,
+      doc:graph.alignmentsSB[i].document,
+      x:kkCoords[startIndex + i].x,
+      y:-kkCoords[startIndex + i].y
+    });
+  }
+  return startIndex + i;
 }
 
 
@@ -825,12 +939,12 @@ Parameters:
                indices represent the x-coords and the odd indices represent the y-coords
 *******************************************************************************************/
  function BuildNGSSNetwork(kkCoords){
-
      var options = GetNetworkOptions();
      nodes = new vis.DataSet(options);
      edges = new vis.DataSet({});
      BuildNetworkStandards(kkCoords)
-     BuildNetworkAlignments(kkCoords)
+     var index = BuildNetworkAlignmentsTE(kkCoords);
+     BuildNetworkAlignmentsSB(kkCoords, index);
      BuildNetworkEdges()
 
 
@@ -888,24 +1002,29 @@ function ImproveNetworkLayout(nw){
    //document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].Index);
 
     //Create the tables for Alignments and Standards. Also get the root node since it gets mixed up during sorting
-    var tmp = CreateStandardsTable(REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10)
-    BuildAlignedDocumentsTable(tmp.sCode)
+    var root = CreateStandardsTable(REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10)
+    BuildAlignedDocumentsTable(root.sCode)
 
     //Highlight the starting node that was returned from CreateStandardsTable().
-    HighlightNode(tmp.id, tmp.color, REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10);
+    HighlightNode(root.id, root.color, REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10);
 
     //callback for clicking action on a node
     nw.on("click", function(properties){
         if(properties.nodes.length > 0){
           var ids = properties.nodes;
           var clickedNodes = nodes.get(ids);
-          if(clickedNodes[0].nodeType != "Document"){
+
+          //Handle onclick event for standards
+          if(clickedNodes[0].nodeType == "Standard"){
             if(clickedNodes[0].sCode != currentTableRow) { //only perform action if not already selected
               var id = clickedNodes[0].id;
               var nodesList = nodes.get(nodes._data);
               var sCode = clickedNodes[0].sCode;
               UnhighlightPreviousNode();
-              UnHighlightDocumentNode(selectedDocNodeId);
+
+              //unhighlight current selected doc if exists
+              if(selectedDocNode != null)
+              UnHighlightDocumentNode(selectedDocNode);
               HighlightNode(id, clickedNodes[0].color, 8, 18);
                  document.getElementById(sCode).style.border = "4px solid" +  _GetMatchingBorderColor(clickedNodes[0].color, 0);
                  if(document.getElementById(currentTableRow)){
@@ -920,17 +1039,44 @@ function ImproveNetworkLayout(nw){
                   currentSelectedNode = sCode;
             }
           }
-          else{  //node clicked on was a document
+
+          /*//handle onclick event for sciencebuddies nodess
+          else if(clickedNodes[0].nodeType == "DocumentSB"){
+              if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
+                 HighlightDocumentNode(clickedNodes[0])
+              }
+          }*/
+
+          else if(clickedNodes[0].nodeType == "DocumentTE" || clickedNodes[0].nodeType == "DocumentSB"){  //node clicked on was a document
               //only clicking on an Alignment connected with the currently selected standard does anything
-              if(IsAlignedToStandard(clickedNodes[0].id)){
-                HighlightDocumentNode(clickedNodes[0].id);
-                HighlightDocsTableCell(clickedNodes[0].doc) //handle docs table highlighting
+             if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
+                HighlightDocumentNode(clickedNodes[0]);
+
+
+
+                var newType = null;
+                var newColor = null;
+                if(clickedNodes[0].nodeType == "DocumentTE") {
+                  newType = "TE";
+                  newColor = TE_DOCS_COLOR[1];
+                }
+                else if(clickedNodes[0].nodeType == "DocumentSB"){
+                   newType = "SB";
+                   newColor = SB_DOCS_COLOR[1];
+                }
+
+
+                HighlightDocsTableCell(clickedNodes[0].doc, newColor);  //highlight documents table cell when clicked
+                document.getElementById(clickedNodes[0].doc).scrollIntoView(); //scroll to the highlighted part of the alignments table
+                currentDocsTableRowType = newType;
+                selectedDocNode = clickedNodes[0];
+              /*  HighlightDocsTableCell(clickedNodes[0].doc) //handle docs table highlighting
                 if(document.getElementById(clickedNodes[0].doc) && IsShowingDocs()){
                     document.getElementById(clickedNodes[0].doc).scrollIntoView();  //Scroll to the document in the documents table
-                }
+                }*/
               }
               //Clicking on a random node will unighlight the current standard.
-              else UnHighlightDocumentNode(selectedDocNodeId)
+            //  else UnHighlightDocumentNode(selectedDocNodeId)
           }
         }
     });
@@ -970,10 +1116,10 @@ function ImproveNetworkLayout(nw){
 }
 
 function SetZoom(nwSize){
-  var total = nwSize + graph.numAlignments
+  var total = nwSize + graph.numAlignmentsTE
   var res = -.224 * Math.log(total) + 1.6379;
-  if(graph.numAlignments > 100 && nwSize > 50) res = 1.6* res
-  if(graph.numAlignments > 500 && nwSize > 50){
+  if(graph.numAlignmentsTE > 100 && nwSize > 50) res = 1.6* res
+  if(graph.numAlignmentsTE > 500 && nwSize > 50){
     res = 1.5*res
   }
 
@@ -1060,28 +1206,29 @@ function ShowHideAlignmentsBasedOnDropdown(){
    var showActivies = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
    var showLessons = document.getElementById(docTypesForDropDown[1].checkBoxId).checked;
    var showCurricularUnits = document.getElementById(docTypesForDropDown[2].checkBoxId).checked;
-   var showAll =  document.getElementById(docTypesForDropDown[3].checkBoxId).checked;
+  /* var showAll =  document.getElementById(docTypesForDropDown[3].checkBoxId).checked;*/
+    var showAll = document.getElementById("TECheckBox").checked;
 
    //Build a json string in vis.js format based on the options above
    var count = 0;
    var hidden = "true"
    var dataString = "[";
-   for(var i = 0; i < graph.numAlignments; i++){
-     var curAlignment = graph.alignments[i];
-     if(graph.alignments[i].docType == "activity" && showActivies) hidden = "false";
-     else if(graph.alignments[i].docType == "lesson" && showLessons) hidden = "false";
-     else if(graph.alignments[i].docType == "curricularUnit" && showCurricularUnits) hidden = "false";
+   for(var i = 0; i < graph.numAlignmentsTE; i++){
+     var curAlignment = graph.alignmentsTE[i];
+     if(graph.alignmentsTE[i].docType == "activity" && showActivies) hidden = "false";
+     else if(graph.alignmentsTE[i].docType == "lesson" && showLessons) hidden = "false";
+     else if(graph.alignmentsTE[i].docType == "curricularUnit" && showCurricularUnits) hidden = "false";
      dataString =  dataString + "{";
-     dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignments[i].id.toString()  + ",";
+     dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignmentsTE[i].id.toString()  + ",";
      dataString =  dataString +'"'+ "hidden" + '"' + ":" + hidden;
      dataString =  dataString + "}"
      dataString = dataString + ","
 
      if(hidden == "false"){
-       graph.alignments[i].showing = true;
+       graph.alignmentsTE[i].showing = true;
      }
      else{
-       graph.alignments[i].showing = false;
+       graph.alignmentsTE[i].showing = false;
      }
 
      count++;
@@ -1100,16 +1247,16 @@ function ShowHideAlignmentsBasedOnDropdown(){
 
 
 /********************************************************************************************
-Takes a node id of a vis.js node and unhighlights it.
+Takes a node id of a document and returs it to its regular color
 
 Paremeters:
- 1) id: the id of the vis.js node.
+ 1) node: the vis.js node object to update
 ********************************************************************************************/
-function UnHighlightDocumentNode(id){
-  if(id != null){
+function UnHighlightDocumentNode(node){
+  if(node != null){
     nodes.update([{
-      id:id,
-      color:DOCS_COLOR[0],
+      id:node.id,
+      color:node.regularColor,
       font:{size:DOC_NODE_SIZE},
       label:"       "
     }])
@@ -1124,16 +1271,23 @@ Otherwise, returns false.
 prameters:
  1) docId: the id of the alignments. Also the id of the coorisponding table row.
 *******************************************************************************************/
-function IsAlignedToStandard(docId){
+function IsAlignedToStandard(docId, docType){
   var ids = [];
   for(var i = 0; i < graph.numVertices; i++){
     if(graph.vertices[i].sCode == currentSelectedNode){
-      ids = graph.vertices[i].docNeighbors;
+      if(docType == "DocumentTE"){
+          ids = graph.vertices[i].teachEngrNeighbors;
+      }
+      else if(docType == "DocumentSB"){
+        ids = graph.vertices[i].scienceBuddiesNeighbors;
+      }
+
       break;
     }
   }
   for(var i = 0; i < ids.length; i++){
-    if(docId == Alignments[ids[i]].id) return true;
+    if(docType == "DocumentTE" && docId == TEAlignments[ids[i]].id) return true;
+    if(docType == "DocumentSB" && docId == SBAlignments[ids[i]].id) return true;
   }
   return false;
 }
@@ -1144,18 +1298,34 @@ returns true if current selected standard is aligned with the given node documen
 
 Parameters:
  1) sCode: the ASN identifier of the standard.
+ 2) dataSet: itentifies the type of documents we are using)
 ***************************************************************************************/
-function GetAlignmentsForStandard(sCode){
-  var curStandard = null;
+function GetAlignmentsForStandard(sCode, type){
+
+    var dataSet = null;
+    var alignments = null
+    var curStandard = null;
+
   for(var i = 0; i < graph.numVertices; i++){
     if(graph.vertices[i].sCode == sCode){
       curStandard = graph.vertices[i]
     }
   }
-  var alignments = curStandard.docNeighbors;
+
+  if(type == "TE"){
+    dataSet = TEAlignments;
+    alignments = curStandard.teachEngrNeighbors;
+  }
+  else if(type == "SB"){
+     dataSet = SBAlignments;
+     alignments = curStandard.scienceBuddiesNeighbors;
+  }
+  else{
+    throw new Error("Cannot get alignments for this standard type " + type);
+  }
   var als = [];
   for(var i = 0; i < alignments.length; i++){
-     als[i] = Alignments[alignments[i]].id
+     als[i] = dataSet[alignments[i]].id
   }
   return als;
 }
@@ -1177,6 +1347,58 @@ function ArrayContains(arr, value){
 }
 
 
+function _BuildAlignedDocumentsForCollection(nodeSet, sCode, type){
+console.log(nodeSet)
+  var count = 0;
+  //get a reference to the table in the DOM and clear the previously build table if any.
+  var tableRef = document.getElementById('t2');
+
+  //Get a list of resources aligned to the standard with the given sCode.
+  myList = GetAlignmentsForStandard(sCode, type);
+
+  //For every resource aligned to sCode, add a row to the table with its metadata and onclick event handler
+  for(var i = 0; i <nodeSet.length; i++){
+    var curNode = nodeSet[i];
+    if(!ArrayContains(myList, nodeSet[i].id)) continue;
+
+    if(!nodeSet[i].showing) continue;
+
+    count++;
+    var curDocId = nodeSet[i].document;
+    var newRow = tableRef.insertRow(tableRef.rows.length);
+    newRow.id = curDocId;
+    newRow.style.background = nodeSet[i].color;
+
+    var curColor = nodeSet[i].color;
+    var curHighlightColor = nodeSet[i].highlightColor;
+    //add closure to on click callback for row click action
+    newRow.onclick = (function(){
+      var currentDoc = curDocId;
+      var currentId = nodeSet.id;
+      var c = curNode
+      return function(){
+        HighlightDocsTableCell(currentDoc, curHighlightColor);  //highlight documents table cell when clicked
+        HighlightDocumentNode(c)
+        currentDocsTableRowType = type;
+      }
+    })();
+
+    //build the inner html for the new table row.
+    var docType = "";
+   if(nodeSet[i].docType){
+     docType = nodeSet[i].docType;
+     if(docType == "curricularUnit") docType = "curricular unit";
+     docType  = " (" + docType + ")";
+   }
+
+    newRow.innerHTML =
+    '<span style ="color:blue; cursor: pointer; letterSpacing:20px" onclick = GoToTEPage(\'' + nodeSet[i].url + '\')>' + nodeSet[i].title + '</span>' + '<span>' + docType + '</span>'  + '<br>'
+    + '<span>' + _TruncateDocDescription(nodeSet[i].summary, nodeSet[i].document) + '</span>'
+    +'<hr style= margin:3px>'
+  }
+  return count;
+}
+
 /*********************************************************************************************
 This function is responsible for building the alignments table on the fly. Takes an standard and
 gets all documents aligned with that standard. It then builds the table in the DOM
@@ -1186,43 +1408,16 @@ Parameters:
 ********************************************************************************************/
 function BuildAlignedDocumentsTable(sCode){
     var alignmentsCount = 0;
+    ClearTable(document.getElementById('t2'));
+   //Build document table for TE documents
+   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsTE, sCode, "TE");
 
-    //get a reference to the table in the DOM and clear the previously build table if any.
-    var tableRef = document.getElementById('t2');
-    ClearTable(tableRef);
+   //Build document table for Sciencebuddies documents
+   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsSB,sCode, "SB");
 
-    //Get a list of resources aligned to the standard with the given sCode.
-    myList = GetAlignmentsForStandard(sCode);
 
-    //For every resource aligned to sCode, add a row to the table with its metadata and onclick event handler
-    for(var i = 0; i < graph.numAlignments; i++){
-      if(!ArrayContains(myList, graph.alignments[i].id)) continue;
-      if(!graph.alignments[i].showing) continue;
-      alignmentsCount++;
-      var curDocId = graph.alignments[i].document;
-      var newRow = tableRef.insertRow(tableRef.rows.length);
-      newRow.id = curDocId;
-      newRow.style.background = DOCS_COLOR[0];
 
-      //add closure to on click callback for row click action
-      newRow.onclick = (function(){
-        var currentDoc = curDocId;
-        var currentId = graph.alignments[i].id;
-        return function(){
-          HighlightDocsTableCell(currentDoc);  //highlight documents table cell when clicked
-          HighlightDocumentNode(currentId);
-        }
-      })();
-
-      //build the inner html for the new table row.
-      var docType = graph.alignments[i].docType;
-      if(docType == "curricularUnit") docType = "curricular unit";
-      newRow.innerHTML =
-      '<span style ="color:blue; cursor: pointer; letterSpacing:20px" onclick = GoToTEPage(\'' + graph.alignments[i].TEURI + '\')>' + graph.alignments[i].title + '</span>' + '<span>' + ' (' + docType + ') ' + '</span>'  + '<br>'
-      + '<span>' + _TruncateDocDescription(graph.alignments[i].summary, graph.alignments[i].document) + '</span>'
-      +'<hr style= margin:3px>'
-    }
-      document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
+  document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
 }
 
 
@@ -1233,15 +1428,17 @@ Takes the id of a vis.js alignment node and highlights it in the graph by making
 Parameters:
  1) id: id of the alignment node in the vis.js network.
 ********************************************************************************************/
-function HighlightDocumentNode(id){
+function HighlightDocumentNode(node){
+
+  //get list of edges and nodes in the vis.js network
   var nodesList = nodes.get(nodes._data);
   var edgeData = edges.get(edges._data);
 
-  //If no node yet selected, just return to normal size
-  if(selectedDocNodeId != null){
+  //If no node yet selected, just return to normal size and color
+  if(selectedDocNode != null){
     nodes.update([{
-      id:selectedDocNodeId,
-      color:DOCS_COLOR[0],
+      id:selectedDocNode.id,
+      color:selectedDocNode.regularColor,
       font:{size:DOC_NODE_SIZE},
       label:"       "
     }]);
@@ -1249,12 +1446,12 @@ function HighlightDocumentNode(id){
 
   //Update the node to be bigger so it appears highlighted.
   nodes.update([{
-    id:id,
-    color: DOCS_COLOR[1],
+    id:node.id,
+    color:node.highlightColor,
     font:{size:SELECTED_DOC_NODE_SIZE},
     label:"    "
   }]);
-  selectedDocNodeId = id; //update the global var that holds the currently selected doc node id
+  selectedDocNode = node; //update the global var that holds the currently selected doc node id
 }
 
 
@@ -1265,17 +1462,26 @@ and putting a border around it.
 Parameters:
  1) docId: the id of the table row in the DOM that will get highlighed.
 ************************************************************************************************/
-function HighlightDocsTableCell(docId){
+function HighlightDocsTableCell(docId, highlightColor){
    //unighlight table row if set
    if(document.getElementById(currentDocsTableRow)){
-     document.getElementById(currentDocsTableRow).style.border = "none"
-     document.getElementById(currentDocsTableRow).style.background = DOCS_COLOR[0]
+
+     //set the color to unhighlight table cell based on the type of the previous selected document in the table
+     var color = null;
+     if(currentDocsTableRowType == "TE"){ //unhighlight to TE color
+       color = "#DFD4C8";
+     }
+     else if(currentDocsTableRowType == "SB"){ //unhighlight to SB color
+       color = "#BDA6F5";
+     }
+     document.getElementById(currentDocsTableRow).style.border = "none";
+     document.getElementById(currentDocsTableRow).style.background = color;
    }
 
    //highlight the table row and add border
    if(document.getElementById(docId)){
       document.getElementById(docId).style.border = "4px solid grey";
-      document.getElementById(docId).style.background = DOCS_COLOR[1];
+      document.getElementById(docId).style.background = highlightColor;
    }
 
    //update the global that tracks the currently selected table row.
@@ -1291,6 +1497,7 @@ Parameters:
  1) url: the destination url we are navigating to
 ***********************************************************************************/
 function GoToTEPage(url){
+  console.log(url)
   var win = window.open(url, '_blank');
   win.focus();
 }
@@ -1501,6 +1708,7 @@ function getNodeUnighlightColor(color){
   if(color == BLUE_COLOR[2]) return BLUE_COLOR[0];
   if(color == GREEN_COLOR[2]) return GREEN_COLOR[0];
   if(color == ORANGE_COLOR[2]) return ORANGE_COLOR[0];
+  console.log("color error!!!")
   return 'red';
 }
 
@@ -1530,7 +1738,7 @@ Parameters:
  2) largeNodeSize: the size of a selected node in the vis.js network display
 *********************************************************************************************/
 function CreateStandardsTable(regularNodeSize, largeNodeSize){
-  var tmp = graph.vertices[0];
+  var root = graph.vertices[0];
   graph.sortStandards();
   document.getElementById("standardsTableHeader").innerText = "Standards (" + graph.numVertices.toString() + ")"
   var setBorder = false;
@@ -1554,7 +1762,7 @@ function CreateStandardsTable(regularNodeSize, largeNodeSize){
     setBorder = false;
   }
 
-  return tmp;
+  return root;
 }
 
 
@@ -1646,10 +1854,10 @@ takes the current selected alignment (id any) and updates the vis.js network to 
 to its regular size, thus unhighlighting it.
 **********************************************************************************************************/
 function unHighlightCurrentSelectedDocument(){
-  if(selectedDocNodeId){
+  if(selectedDocNode){
     nodes.update([{
-    id:selectedDocNodeId,
-    color:DOCS_COLOR[0],
+    id:selectedDocNode.id,
+    color:TE_DOCS_COLOR[0],
     font:{size:DOC_NODE_SIZE},
     label:"    "
     }]);
@@ -1782,11 +1990,11 @@ function GetNetworkDataAJAX(){
    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
    req.onload = function(){
            if(req.status == 200){
-
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
-               Alignments = result[1];
-              setTimeout(function(){
+               TEAlignments = result[1];
+               SBAlignments = result[2];
+               setTimeout(function(){
                HideLoadingScreen();
                submit("S2467886")
              }, 200);
@@ -1840,9 +2048,11 @@ function initDropdown(){
       }
 
       //show or hide the items in the dropdown based on the previously set dropdown options.
-      for(var i = 0; i < docTypesForDropDown.length; i++){
+    /*  for(var i = 0; i < docTypesForDropDown.length; i++){
         document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
-      }
+      }*/
+      document.getElementById("TE").style.display = displayType;
+      document.getElementById("SB").style.display = displayType;
     });
 
     //Onclick handler for when user clicks anywhere on the page outside of the dropdown.
@@ -1855,12 +2065,15 @@ function initDropdown(){
           for(var i = 0; i < docTypesForDropDown.length; i++){
             document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
           }
+          document.getElementById("TE").style.display = displayType;
+          document.getElementById("SB").style.display = displayType;
         }
       }
     });
 
     //event listener for the show all option in the alignments dropdown
-    var showAllChecked = document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId);
+    //var showAllChecked = document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId);
+    var showAllChecked = document.getElementById("TECheckBox");
     showAllChecked.addEventListener("click", function(){
       var isChecked = showAllChecked.checked;
       var showAll = false;
@@ -1872,8 +2085,26 @@ function initDropdown(){
       }
     });
 
+   for(var i = 0; i < docTypesForDropDown.length; i++){
+     (function(i){
+         document.getElementById(docTypesForDropDown[i].checkBoxId).addEventListener("click", (e)=>{
+              if(e.target.checked == undefined) return;
+
+              if(e.target.checked == true){
+                document.getElementById("TECheckBox").checked = true;
+              }
+              else{
+                if(HasTEDocSelected() == false){
+                  document.getElementById("TECheckBox").checked = false;
+                }
+              }
+         });
+     })(i)
+   }
+
+
   //onclick event for each item. If all is selected, all boxes are checked. If all is deselected, all boxes are also deselected.
-  for(var i = 0; i < docTypesForDropDown.length; i++){
+/*  for(var i = 0; i < docTypesForDropDown.length; i++){
     //Add closure to this loop.
     (function(i){
         document.getElementById(docTypesForDropDown[i].checkBoxId).addEventListener("click", function(){
@@ -1884,16 +2115,29 @@ function initDropdown(){
             if(areAllSelected()){
 
                 document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId).checked = true
-
+                document.getElementById("TECheckBox").checked = true;
             }
             else if(areAllNotSelected()){
-                document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId).checked = false
+                document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId).checked = false;
+                document.getElementById("TECheckBox").checked = false;
             }
 
           }
        },true)
     })(i);
-  }
+  }*/
+}
+
+
+function HasTEDocSelected(){
+  var hasSelected = false;
+     for(var i = 0; i < docTypesForDropDown.length; i++){
+       var curId = docTypesForDropDown[i].checkBoxId;
+       if(document.getElementById(curId).checked == true){
+         return true;
+       }
+     }
+     return false;
 }
 
 
@@ -2071,10 +2315,19 @@ class GraphObject{
     this.edgesHashMap = {}; //hash map of edges to track if an edge is currently in the graph.
     this.numEdges = 0;      //the total number of edges in the graph
     this.kamadaKawaiCoords = [];  //array of x-y kk coord for each vertex in the graph.
-    this.alignments = [];         //array of alignment vertices
-    this.numAlignments = 0;       //total number of alignments in the graph
-    this.alignmentsHash = {};    //Hash map of the alignmenst in the graph so we can quickly check if an alignment is in the graph.
+
+    //TE alignments data
+    this.alignmentsTE = [];         //array of alignment vertices
+    this.numAlignmentsTE = 0;       //total number of alignments in the graph
+    this.alignmentsHashTE = {};    //Hash map of the alignmenst in the graph so we can quickly check if an alignment is in the graph.
+
     this.numNodes = 0;          //Total node count = numStandards + numAlignments
+
+    //SB alignments data
+    this.alignmentsSB = [];
+    this.numAlignmentsSB = 0;
+    this.alignmentsHashSB = {};
+
   }
 
   //Prints the verices in the graph to the console.
@@ -2101,22 +2354,44 @@ class GraphObject{
     }
   }
 
-  //Adds an alignment vertex to the graph.
-  addAlignment(a){
-    if(this.alignmentsHash[a.id]){
+  //Adds a TE alignment vertex to the graph.
+  addTEAlignment(a){
+    if(this.alignmentsHashTE[a.id]){
       throw new Error("An alignment with this id already exists");
     }
-     this.alignments[this.numAlignments] = a;
-     this.alignments[this.numAlignments].showing =  false;
-     this.numAlignments++;
-     this.alignmentsHash[a.id] = a.id;
+     this.alignmentsTE[this.numAlignmentsTE] = a;
+     this.alignmentsTE[this.numAlignmentsTE].showing =  false;
+     this.numAlignmentsTE++;
+     this.alignmentsHashTE[a.id] = a.id;
      a.rId = this.numNodes;
      this.numNodes++;
   }
 
+  //adds a SB alignment to the graph
+  addSBAlignment(a){
+     if(this.alignmentsHashSB[a.id]){
+         throw new Error("An alignment with this id already exists");
+     }
+
+     this.alignmentsSB[this.numAlignmentsSB] = a;
+     this.alignmentsSB[this.numAlignmentsSB].showing = true;
+     this.numAlignmentsSB++;
+     this.alignmentsHashSB[a.id] = a.id;
+     a.rId = this.numNodes;
+     this.numNodes++;
+
+  }
+
   //Takes a vertex object and returns true if alignment is in the graph already. Returns false otherwise
-  hasAlignment(a){
-    if(this.alignmentsHash[a.id]){
+  hasTEAlignment(a){
+    if(this.alignmentsHashTE[a.id]){
+      return true;
+    }
+    return false;
+  }
+
+  hasSBAlignment(a){
+    if(this.alignmentsHashSB[a.id]){
       return true;
     }
     return false;

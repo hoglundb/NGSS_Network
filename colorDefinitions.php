@@ -6,6 +6,8 @@ define("TE_DOC_COLOR","#DFD4C8");
 define("TE_DOC_HIGHLIGHT_COLOR", "#F2E4D3");
 define("SB_DOC_COLOR","#BDA6F5");
 define("SB_DOC_HIGHLIGHT_COLOR", "#D3C5F6");
+define("OS_DOC_COLOR", "#A6D7CD");
+define("OS_DOC_HIGHLIGHT_COLOR", "#C2EEE6");
 define("TOPIC_COLOR", "#EFB2F2");
 define("GREY_COLOR", "#D4D4D4");
 define("GREEN_HIGHLIGHT_COLOR", '#E8F3D6');

@@ -19,7 +19,10 @@ const ORANGE_COLOR = ["#FBC08C","#F67401","#FFE4CB", "#FBCFAB"];
 const GREEN_COLOR =  ["#CDE49F", "#85C702","#E8F3D6", "#D8E4C2"];
 const TE_DOCS_COLOR = ["#DFD4C8", "#F2E4D3" ];  //regualr and highlight color for teach engr nodes
 const SB_DOCS_COLOR = ["#BDA6F5", "#D3C5F6"]; //regualr and highlight color for science buddies nodes
+const OS_DOCS_COLOR = ["#A6D7CD", "#C2EEE6"];
 const COLOR_INDEX = 2;
+
+const DEFAULT_STANDARD = "S2467886";
 
 //Data structure to track the alignments dropdown list items and their node id's
 const DOC_TYPES = ["activity", "lesson", "curricularUnit"] //, "all"]
@@ -57,7 +60,6 @@ var ResourceTypes = {
 var NodeDisplayType;
 
 
-
 //Initization function
 window.onload = function onLoad(){
    ShowLoadingScreen();
@@ -76,7 +78,7 @@ window.onload = function onLoad(){
   document.getElementById("label5").style.background = GREEN_COLOR[0];
 
    //set the default sCode in the search bar
-  document.getElementById("sCode").value = "S2467886";
+  document.getElementById("sCode").value = DEFAULT_STANDARD;
 
   //Bind the "resouce type" dropdown to its action functions
   initDropdown();
@@ -119,7 +121,7 @@ window.onload = function onLoad(){
 //User can search by Enter key
  window.addEventListener("keyup", function(e){
     if(event.key == "Enter"){
-      submitBtn();
+      submitBtn(true);
     }
  });
 
@@ -158,7 +160,11 @@ window.onload = function onLoad(){
  });
 
  document.getElementById("SB").addEventListener("click", (e) => {
+   console.log("foo")
    submitBtn();
+ });
+ document.getElementById("OS").addEventListener("click", (e) => {
+    submitBtn();
  });
 }
 
@@ -284,10 +290,16 @@ function RemoveNetwork(domRef){
 Sets the gradeband to its default and calls submit to build the network based on the value in the
 submit textbox. This function is called as an onclick event when the submit button is clicked.
 ****************************************************************************************************/
-function submitBtn(){
-
+function submitBtn(resetDropdown){
+ console.log("submit button")
+   //reset dropdown to default if resetDropdown is true
+   if(resetDropdown != undefined && resetDropdown != null && resetDropdown == true)
    document.getElementById("gradeBand").value = 0;
+
+   //Get the value from the search textbox
    var input = document.getElementById("sCode").value;
+
+   //Determine if input is an ASN code or a NGSS code or a DCI
    var inputType = GetInputType(input);
    if(inputType == "DCI"){
      var dciList = GetDCIList(input);
@@ -300,7 +312,11 @@ function submitBtn(){
        DisplayDCIModal(dciList, input);
      }
    }
-   else submit(input)
+
+   else {
+
+     submit(input)
+   }
 }
 
 /*
@@ -456,6 +472,7 @@ function submit(code){
   var gradeBand = document.getElementById("gradeBand").value;
 
 
+
   //Get the checkbox values that determine what type of alignments will be displayed.
   var showActivies = document.getElementById("item1Box").checked;
   var showLessons = document.getElementById("item2Box").checked;
@@ -479,8 +496,17 @@ function submit(code){
 
   var showScienceBuddies = document.getElementById("SBCheckBox").checked;
 
+  var showOutdoorschool = document.getElementById("OSCheckBox").checked;
+
+  //if grade band is set, we will automatically iterate up to the max depth to get every standard in that grade band
+  console.log(document.getElementById("gradeBand").value)
+  if(document.getElementById("gradeBand").value > 0){
+    document.getElementById("networkDepth").value = 0;
+    depth = 50;
+  }
+
   //Entry point for building the network and the alignments and standards tables.
- BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
+ BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool);
 
 }
 
@@ -499,25 +525,23 @@ Parameters:
   7) showCurricularUnits: a boolean that determines if units will be displayed.
   8) showAll: a boolean that overrides the previous 3 that determines if all alignment types will be displayed.
 ****************************************************************************************/
-function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies){
+function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool){
 
   //If user has selected a gradeband, we search by that gradeBand and iterate up to a depth of 50 to display the entire gradeband.
   if(gradeBand != 0){
     if(gradeBand == 1) sCode = "S2454361";
     else if(gradeBand == 2) sCode = "S2454378"; //3-5 gradeband
-    else if(gradeBand == 3) sCode = "S2467886"; //6-8 gradeband
+    else if(gradeBand == 3) sCode = DEFAULT_STANDARD; //6-8 gradeband
     else if(gradeBand == 4) sCode = "S2467907"; //9-12 gradeband
     currentSelectedNode = sCode;
     document.getElementById("sCode").value = sCode
-    BuildNetworkNSteps(sCode, 50, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
+    BuildNetworkNSteps(sCode, 50, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool );
   }
 
   //if user has not selected a gradeband, we build the network up to the specified depth.
   else{
-    BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies);
+    BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool);
   }
-    var test = document.getElementById("myItem1")
-
 }
 
 
@@ -630,7 +654,7 @@ Parameters:
   6) showCurricularUnits: True if curricularunits will be displayed in the graph
   7) showAll: True if all document types will be displayed in the graph
 *************************************************************************************************/
-function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll, showScienceBuddies){
+function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll, showScienceBuddies, showOutdoorschool){
   graph = new GraphObject(); //Allocate a new Graph object to store the current graph
   if(depth){
       AddStandarsNodes(depth, sCode);  //add all the standards to the graph up to the specified depth
@@ -648,6 +672,14 @@ function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons
    AddSBAlignmentsNodes();
    AddSBAlignmentEdges();
  }
+
+//S2454525
+ if(showOutdoorschool == true){
+   AddOSAlignmentsNodes();
+   AddOSAlignmentEdges();
+ }
+
+
 
   var edgesRFormat = GetEdgesInRFormat(); //Format edge list as zero indexed so R can compute KK on it
 
@@ -676,6 +708,7 @@ function GetGMLData(){
      gmlString += nodeString;
   }
 
+ //build the node gml data for TE docs
  for(var i = 0; i < graph.numAlignmentsTE; i++){
    var nodeString = "\tnode[\n";
     nodeString += padding + "id " +  (graph.alignmentsTE[i].id + 1).toString()  + "\n";
@@ -683,9 +716,18 @@ function GetGMLData(){
     gmlString += nodeString
  }
 
+ //build the node gml data for science buddies docs
  for(var i = 0; i < graph.numAlignmentsSB; i++){
    var nodeString = "\tnode[\n";
     nodeString += padding + "id " +  (graph.alignmentsSB[i].id + 1).toString()  + "\n";
+    nodeString += "\t]\n"
+    gmlString += nodeString
+ }
+
+ //build the node gml data for outdoor school docs
+ for(var i = 0; i < graph.numAlignmentsOS; i++){
+   var nodeString = "\tnode[\n";
+    nodeString += padding + "id " +  (graph.alignmentsOS[i].id + 1).toString()  + "\n";
     nodeString += "\t]\n"
     gmlString += nodeString
  }
@@ -721,6 +763,27 @@ function _GetGMLDataType(nodeType){
   if(nodeType == "Crosscutting Concepts") return "CC";
   if(nodeType == "Science and Engineering Practices") return "SEP";
   return "error retrieving node type \n" + nodeType;
+}
+
+
+function AddOSAlignmentsNodes(){
+
+  //for each standards in the current NGSS graph
+  for(var i = 0; i < graph.numVertices; i++){
+    //Get the standard's adj list of alignments
+    var alignmentIds = graph.vertices[i].outdoorschoolNeighbors;
+    if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
+    //for every alignment to the current standard
+    for(var j = 0; j < alignmentIds.length; j++ ){
+      var curAlignmentId = alignmentIds[j];
+
+      var curAlignment = OSAlignments[curAlignmentId];
+      if(!graph.hasOSAlignment(curAlignment)){
+
+        graph.addOSAlignment(curAlignment);
+      }
+    }
+  }
 }
 
 
@@ -761,6 +824,20 @@ function AddTEAlignmentsNodes(){
 }
 
 
+function AddOSAlignmentEdges(){
+  for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
+        var alignmentIds = graph.vertices[i].outdoorschoolNeighbors;  //get all alignments for that standard
+          if(alignmentIds.length == 0) continue;  //skip if no documents to add
+          for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in graph
+           var curAlignmentId = alignmentIds[j];
+           var curAlignment = OSAlignments[curAlignmentId]
+           if(curAlignment == undefined) continue;
+           graph.addEdge(graph.vertices[i].id, curAlignment.id);
+        }
+  }
+}
+
+
 function AddSBAlignmentEdges(){
   for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
         var alignmentIds = graph.vertices[i].scienceBuddiesNeighbors;  //get all alignments for that standard
@@ -773,6 +850,21 @@ function AddSBAlignmentEdges(){
         }
   }
 }
+
+
+function AddOSAlignmentEdges(){
+  for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
+        var alignmentIds = graph.vertices[i].outdoorschoolNeighbors;  //get all alignments for that standard
+          if(alignmentIds.length == 0) continue;  //skip if no documents to add
+          for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in graph
+           var curAlignmentId = alignmentIds[j];
+           var curAlignment = OSAlignments[curAlignmentId]
+           if(curAlignment == undefined) continue;
+           graph.addEdge(graph.vertices[i].id, curAlignment.id);
+        }
+  }
+}
+
 
 /****************************************************************************************************
      This function addes edges between all standards and their alignments in the global graph object.
@@ -899,6 +991,27 @@ function BuildNetworkAlignmentsTE(kkCoords){
 }
 
 
+function BuildNetworkAlignmentsOS(kkCoords, startIndex){
+  for(var i = 0; i < graph.numAlignmentsOS; i++){
+    nodes.add({
+      id:graph.alignmentsOS[i].id,
+      color:graph.alignmentsOS[i].color,
+      shape:'circle',
+      width:.1,
+      regularColor:OS_DOCS_COLOR[0],
+      highlightColor:OS_DOCS_COLOR[1],
+      font:{size:DOC_NODE_SIZE},
+      labal: " ",
+      showing:true,
+      nodeType:graph.alignmentsOS[i].nodeType,
+      doc:graph.alignmentsOS[i].document,
+      x:kkCoords[startIndex + i].x,
+      y:-kkCoords[startIndex + i].y
+    });
+  }
+  return startIndex + i;
+}
+
 function BuildNetworkAlignmentsSB(kkCoords, startIndex){
 
   for(var i = 0; i < graph.numAlignmentsSB; i++){
@@ -939,47 +1052,192 @@ Parameters:
                indices represent the x-coords and the odd indices represent the y-coords
 *******************************************************************************************/
  function BuildNGSSNetwork(kkCoords){
+     //The vis.js data structure
      var options = GetNetworkOptions();
      nodes = new vis.DataSet(options);
      edges = new vis.DataSet({});
+
+     //Build vis.js nodes for each standard in the graph
      BuildNetworkStandards(kkCoords)
-     var index = BuildNetworkAlignmentsTE(kkCoords);
-     BuildNetworkAlignmentsSB(kkCoords, index);
+
+     //Build vis.js nodes for each alignment according to the collection
+     var index = 0;
+     index = BuildNetworkAlignmentsTE(kkCoords);
+     index = BuildNetworkAlignmentsSB(kkCoords, index);
+     index = BuildNetworkAlignmentsOS(kkCoords, index);
+
+     //Build edges between all connected nodes (standards and resources)
      BuildNetworkEdges()
 
+   //Build an edge for edge edge in the graph's edge list.
+
+   //The graph data for vis.js
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+
+    //The options for vis.js
+    var options = {
+         physics:false //don't want the graph to behave like jello
+    };
+
+    //Show the document nodes filtered by the resouce type dropdown list that the user selected. Default is none.
+    ShowHideAlignmentsBasedOnDropdown();
+
+    //draw the vis.js network graph
+    var container = document.getElementById("mynetwork");
+    var nw = new vis.Network(container, data, options)
+
+     //Adjust positions of the standards to give the nw a curved look.
+     ImproveNetworkLayout(nw);
 
 
- //Build an edge for edge edge in the graph's edge list.
+    //Create the tables for Alignments and Standards. Also get the root node since it gets mixed up during sorting
+     var root = CreateStandardsTable(REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10)
+     BuildAlignedDocumentsTable(root.sCode)
+
+     //Highlight the starting node that was returned from CreateStandardsTable().
+     HighlightNode(root.id, root.color, REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10);
+
+     //Handle single click actions for the network
+     NWClickActionResult(nw);
+
+     //Handle double click actions for the network
+     NWDoubleClickActionResult(nw);
+
+     //Set default zoom
+     curScale = SetZoom(graph.numVertices);
+     nw.moveTo({scale: curScale})
+
+     //Handle mouse scroll zoom action for the network
+     NWZoomActionResult(nw);
+
+     HideLoadingScreen();
+
+}
 
 
+function NWClickActionResult(nw){
+  //callback for clicking action on a node
+  nw.on("click", function(properties){
+      if(properties.nodes.length > 0){
+        var ids = properties.nodes;
+        var clickedNodes = nodes.get(ids);
 
-  //The graph data for vis.js
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
+        //Handle onclick event for standards
+        if(clickedNodes[0].nodeType == "Standard"){
+          if(clickedNodes[0].sCode != currentTableRow) { //only perform action if not already selected
+            var id = clickedNodes[0].id;
+            var nodesList = nodes.get(nodes._data);
+            var sCode = clickedNodes[0].sCode;
+            UnhighlightPreviousNode();
 
-  //The options for vis.js
-  var options = {
-        physics:false //don't want the graph to behave like jello
-  };
+            //unhighlight current selected doc if exists
+            if(selectedDocNode != null)
+            UnHighlightDocumentNode(selectedDocNode);
+            HighlightNode(id, clickedNodes[0].color, 8, 18);
+               document.getElementById(sCode).style.border = "4px solid" +  _GetMatchingBorderColor(clickedNodes[0].color, 0);
+               if(document.getElementById(currentTableRow)){
+                 document.getElementById(currentTableRow).style.border = "none";
+               }
+                currentTableRow = sCode;
+                SetTableRowColor(document.getElementById('t1'), sCode, clickedNodes[0].color);
+                _unighlightStandardsTable();
+                _highlightStandardsTableRow(clickedNodes[0].color, sCode);
+                 document.getElementById(sCode).scrollIntoView();
+                BuildAlignedDocumentsTable(sCode);
+                currentSelectedNode = sCode;
+          }
+        }
 
-  //Show the document nodes filtered by the resouce type dropdown list that the user selected. Default is none.
-  ShowHideAlignmentsBasedOnDropdown();
-  //draw the vis.js network graph
-  var container = document.getElementById("mynetwork");
-  var nw = new vis.Network(container, data, options)
+        /*//handle onclick event for sciencebuddies nodess
+        else if(clickedNodes[0].nodeType == "DocumentSB"){
+            if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
+               HighlightDocumentNode(clickedNodes[0])
+            }
+        }*/
 
-   ImproveNetworkLayout(nw)
-   HideLoadingScreen();
+        else if(clickedNodes[0].nodeType == "DocumentTE" || clickedNodes[0].nodeType == "DocumentSB" || clickedNodes[0].nodeType == "DocumentOS"){  //node clicked on was a document
+            //only clicking on an Alignment connected with the currently selected standard does anything
+           if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
 
+              //highlight the node that was just clicked on
+              HighlightDocumentNode(clickedNodes[0]);
+
+              //set the highlight color of the clicked document node
+              var newType = null;
+              var newColor = null;
+              if(clickedNodes[0].nodeType == "DocumentTE") {
+                newType = "TE";
+                newColor = TE_DOCS_COLOR[1];
+              }
+              else if(clickedNodes[0].nodeType == "DocumentSB"){
+                 newType = "SB";
+                 newColor = SB_DOCS_COLOR[1];
+              }
+              else if(clickedNodes[0].nodeType == "DocumentOS"){
+                newType = "OS";
+                newColor = OS_DOCS_COLOR[1];
+              }
+
+
+              HighlightDocsTableCell(clickedNodes[0].doc, newColor);  //highlight documents table cell when clicked
+              document.getElementById(clickedNodes[0].doc).scrollIntoView(); //scroll to the highlighted part of the alignments table
+              currentDocsTableRowType = newType;
+              selectedDocNode = clickedNodes[0];
+            /*  HighlightDocsTableCell(clickedNodes[0].doc) //handle docs table highlighting
+              if(document.getElementById(clickedNodes[0].doc) && IsShowingDocs()){
+                  document.getElementById(clickedNodes[0].doc).scrollIntoView();  //Scroll to the document in the documents table
+              }*/
+            }
+            //Clicking on a random node will unighlight the current standard.
+          //  else UnHighlightDocumentNode(selectedDocNodeId)
+        }
+      }
+  });
+}
+
+
+function NWDoubleClickActionResult(nw){
+  //Callback for doubleClick action on a node. Note: sometimes doesn't work properly. vis.js bug?
+  nw.on("doubleClick", function(properties){
+    if(properties.nodes.length > 0){
+      var ids = properties.nodes;
+      var clickedNodes = nodes.get(ids);
+      sCode = clickedNodes[0].sCode;
+      if(!sCode) return;
+      if(document.getElementById("gradeBand").value != 0){
+        document.getElementById("gradeBand").value =0;
+      }
+      submit(sCode);
+    }
+  });
+}
+
+
+function NWZoomActionResult(nw){
+  nw.on("zoom", function(e){
+    var minScale = .5;
+    var maxScale = 5;
+        if(e.direction == "-"){
+          curScale -= .05
+        }
+        else{
+          curScale += .05
+        }
+        var newScale =  curScale
+        nw.moveTo({scale:newScale})
+        e.scale = newScale
+        scaleNw(e);
+  });
 }
 
 
 function ImproveNetworkLayout(nw){
   //Pull all PEs towards the center to give the graph a nice curved shape
-/*  var moveX = 35;
-  var moveY = 35;
+  var moveX = 20;
+  var moveY = 20;
   var resultArr = [];
   var count = 0;
   for(var i = 0; i< graph.numVertices; i++){
@@ -997,123 +1255,11 @@ function ImproveNetworkLayout(nw){
     }
 
   }
-  nodes.update(resultArr)*/
+  nodes.update(resultArr)
 
    //document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].Index);
-
-    //Create the tables for Alignments and Standards. Also get the root node since it gets mixed up during sorting
-    var root = CreateStandardsTable(REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10)
-    BuildAlignedDocumentsTable(root.sCode)
-
-    //Highlight the starting node that was returned from CreateStandardsTable().
-    HighlightNode(root.id, root.color, REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10);
-
-    //callback for clicking action on a node
-    nw.on("click", function(properties){
-        if(properties.nodes.length > 0){
-          var ids = properties.nodes;
-          var clickedNodes = nodes.get(ids);
-
-          //Handle onclick event for standards
-          if(clickedNodes[0].nodeType == "Standard"){
-            if(clickedNodes[0].sCode != currentTableRow) { //only perform action if not already selected
-              var id = clickedNodes[0].id;
-              var nodesList = nodes.get(nodes._data);
-              var sCode = clickedNodes[0].sCode;
-              UnhighlightPreviousNode();
-
-              //unhighlight current selected doc if exists
-              if(selectedDocNode != null)
-              UnHighlightDocumentNode(selectedDocNode);
-              HighlightNode(id, clickedNodes[0].color, 8, 18);
-                 document.getElementById(sCode).style.border = "4px solid" +  _GetMatchingBorderColor(clickedNodes[0].color, 0);
-                 if(document.getElementById(currentTableRow)){
-                   document.getElementById(currentTableRow).style.border = "none";
-                 }
-                  currentTableRow = sCode;
-                  SetTableRowColor(document.getElementById('t1'), sCode, clickedNodes[0].color);
-                  _unighlightStandardsTable();
-                  _highlightStandardsTableRow(clickedNodes[0].color, sCode);
-                   document.getElementById(sCode).scrollIntoView();
-                  BuildAlignedDocumentsTable(sCode);
-                  currentSelectedNode = sCode;
-            }
-          }
-
-          /*//handle onclick event for sciencebuddies nodess
-          else if(clickedNodes[0].nodeType == "DocumentSB"){
-              if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
-                 HighlightDocumentNode(clickedNodes[0])
-              }
-          }*/
-
-          else if(clickedNodes[0].nodeType == "DocumentTE" || clickedNodes[0].nodeType == "DocumentSB"){  //node clicked on was a document
-              //only clicking on an Alignment connected with the currently selected standard does anything
-             if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
-                HighlightDocumentNode(clickedNodes[0]);
-
-
-
-                var newType = null;
-                var newColor = null;
-                if(clickedNodes[0].nodeType == "DocumentTE") {
-                  newType = "TE";
-                  newColor = TE_DOCS_COLOR[1];
-                }
-                else if(clickedNodes[0].nodeType == "DocumentSB"){
-                   newType = "SB";
-                   newColor = SB_DOCS_COLOR[1];
-                }
-
-
-                HighlightDocsTableCell(clickedNodes[0].doc, newColor);  //highlight documents table cell when clicked
-                document.getElementById(clickedNodes[0].doc).scrollIntoView(); //scroll to the highlighted part of the alignments table
-                currentDocsTableRowType = newType;
-                selectedDocNode = clickedNodes[0];
-              /*  HighlightDocsTableCell(clickedNodes[0].doc) //handle docs table highlighting
-                if(document.getElementById(clickedNodes[0].doc) && IsShowingDocs()){
-                    document.getElementById(clickedNodes[0].doc).scrollIntoView();  //Scroll to the document in the documents table
-                }*/
-              }
-              //Clicking on a random node will unighlight the current standard.
-            //  else UnHighlightDocumentNode(selectedDocNodeId)
-          }
-        }
-    });
-
-    //Callback for doubleClick action on a node. Note: sometimes doesn't work properly. vis.js bug?
-    nw.on("doubleClick", function(properties){
-      if(properties.nodes.length > 0){
-        var ids = properties.nodes;
-        var clickedNodes = nodes.get(ids);
-        sCode = clickedNodes[0].sCode;
-        if(!sCode) return;
-        if(document.getElementById("gradeBand").value != 0){
-          document.getElementById("gradeBand").value =0;
-        }
-        submit(sCode);
-      }
-    });
-
-    curScale = SetZoom(graph.numVertices);
-
-    nw.moveTo({scale: curScale})
-    nw.on("zoom", function(e){
-      var minScale = .5;
-      var maxScale = 5;
-          if(e.direction == "-"){
-            curScale -= .05
-          }
-          else{
-            curScale += .05
-          }
-          var newScale =  curScale
-          nw.moveTo({scale:newScale})
-          e.scale = newScale
-          scaleNw(e);
-    });
-
 }
+
 
 function SetZoom(nwSize){
   var total = nwSize + graph.numAlignmentsTE
@@ -1122,10 +1268,9 @@ function SetZoom(nwSize){
   if(graph.numAlignmentsTE > 500 && nwSize > 50){
     res = 1.5*res
   }
-
-
   return res
 }
+
 
 function GetSizeIncrement(){
   return .4
@@ -1272,6 +1417,7 @@ prameters:
  1) docId: the id of the alignments. Also the id of the coorisponding table row.
 *******************************************************************************************/
 function IsAlignedToStandard(docId, docType){
+  console.log(docType)
   var ids = [];
   for(var i = 0; i < graph.numVertices; i++){
     if(graph.vertices[i].sCode == currentSelectedNode){
@@ -1281,13 +1427,17 @@ function IsAlignedToStandard(docId, docType){
       else if(docType == "DocumentSB"){
         ids = graph.vertices[i].scienceBuddiesNeighbors;
       }
-
+      else if(docType == "DocumentOS"){
+        ids = graph.vertices[i].outdoorschoolNeighbors;
+      }
       break;
     }
   }
+
   for(var i = 0; i < ids.length; i++){
     if(docType == "DocumentTE" && docId == TEAlignments[ids[i]].id) return true;
     if(docType == "DocumentSB" && docId == SBAlignments[ids[i]].id) return true;
+    if(docType == "DocumentOS" && docId == OSAlignments[ids[i]].id) return true;
   }
   return false;
 }
@@ -1320,6 +1470,10 @@ function GetAlignmentsForStandard(sCode, type){
      dataSet = SBAlignments;
      alignments = curStandard.scienceBuddiesNeighbors;
   }
+  else if(type == "OS"){
+    dataSet = OSAlignments;
+    alignments = curStandard.outdoorschoolNeighbors;
+  }
   else{
     throw new Error("Cannot get alignments for this standard type " + type);
   }
@@ -1348,7 +1502,7 @@ function ArrayContains(arr, value){
 
 
 function _BuildAlignedDocumentsForCollection(nodeSet, sCode, type){
-console.log(nodeSet)
+
   var count = 0;
   //get a reference to the table in the DOM and clear the previously build table if any.
   var tableRef = document.getElementById('t2');
@@ -1377,6 +1531,7 @@ console.log(nodeSet)
       var currentId = nodeSet.id;
       var c = curNode
       return function(){
+        unHighlightCurrentSelectedDocument();
         HighlightDocsTableCell(currentDoc, curHighlightColor);  //highlight documents table cell when clicked
         HighlightDocumentNode(c)
         currentDocsTableRowType = type;
@@ -1407,17 +1562,23 @@ Parameters:
  1) sCode: the ASN identifier of the stadard for which we are will build the table.
 ********************************************************************************************/
 function BuildAlignedDocumentsTable(sCode){
+
     var alignmentsCount = 0;
+
+    //Remove prevous stuff from the alignments table
     ClearTable(document.getElementById('t2'));
+
    //Build document table for TE documents
    alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsTE, sCode, "TE");
 
    //Build document table for Sciencebuddies documents
    alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsSB,sCode, "SB");
 
+   //Build documents table for Outdoorschool collection
+   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsOS, sCode, "OS");
 
-
-  document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
+   //Set the table row count in the table header
+   document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
 }
 
 
@@ -1469,10 +1630,13 @@ function HighlightDocsTableCell(docId, highlightColor){
      //set the color to unhighlight table cell based on the type of the previous selected document in the table
      var color = null;
      if(currentDocsTableRowType == "TE"){ //unhighlight to TE color
-       color = "#DFD4C8";
+       color = TE_DOCS_COLOR[0];
      }
      else if(currentDocsTableRowType == "SB"){ //unhighlight to SB color
-       color = "#BDA6F5";
+       color = SB_DOCS_COLOR[0];
+     }
+     else if(currentDocsTableRowType == "OS"){
+       color = OS_DOCS_COLOR[0];
      }
      document.getElementById(currentDocsTableRow).style.border = "none";
      document.getElementById(currentDocsTableRow).style.background = color;
@@ -1497,7 +1661,7 @@ Parameters:
  1) url: the destination url we are navigating to
 ***********************************************************************************/
 function GoToTEPage(url){
-  console.log(url)
+
   var win = window.open(url, '_blank');
   win.focus();
 }
@@ -1857,7 +2021,7 @@ function unHighlightCurrentSelectedDocument(){
   if(selectedDocNode){
     nodes.update([{
     id:selectedDocNode.id,
-    color:TE_DOCS_COLOR[0],
+    color:selectedDocNode.color,
     font:{size:DOC_NODE_SIZE},
     label:"    "
     }]);
@@ -1904,6 +2068,7 @@ Parameters:
 *********************************************************************************************/
 function GetKamadaKawaiCoords(edgesRFormat){
   var params = "edgeList=" + edgesRFormat;
+
   var uri = "getKKCoordsAPI.php";
   var req = new XMLHttpRequest();
   var kkCoords2D = null;
@@ -1915,9 +2080,10 @@ function GetKamadaKawaiCoords(edgesRFormat){
        var kkCoords = JSON.parse(req.responseText);
 
         kkCoords2D = FormatKamadaKawaiCoords(kkCoords);
-       BuildNGSSNetwork(kkCoords2D);  //Build the vis.js nw using the graph object and the kk coords.
+        BuildNGSSNetwork(kkCoords2D);  //Build the vis.js nw using the graph object and the kk coords.
      }
      else{
+       console.log(req.status)
        console.log("Failure Getting KK coordinates");
      }
   }
@@ -1994,9 +2160,10 @@ function GetNetworkDataAJAX(){
                NGSSGraph = result[0];
                TEAlignments = result[1];
                SBAlignments = result[2];
+               OSAlignments = result[3];
                setTimeout(function(){
                HideLoadingScreen();
-               submit("S2467886")
+               submit(DEFAULT_STANDARD);
              }, 200);
 
            }
@@ -2053,6 +2220,7 @@ function initDropdown(){
       }*/
       document.getElementById("TE").style.display = displayType;
       document.getElementById("SB").style.display = displayType;
+      document.getElementById("OS").style.display = displayType;
     });
 
     //Onclick handler for when user clicks anywhere on the page outside of the dropdown.
@@ -2067,6 +2235,7 @@ function initDropdown(){
           }
           document.getElementById("TE").style.display = displayType;
           document.getElementById("SB").style.display = displayType;
+          document.getElementById("OS").style.display = displayType;
         }
       }
     });
@@ -2328,6 +2497,11 @@ class GraphObject{
     this.numAlignmentsSB = 0;
     this.alignmentsHashSB = {};
 
+    //Outdoor school alignments data
+    this.alignmentsOS = [];
+    this.numAlignmentsOS = 0;
+    this.alignmentsHashOS = {};
+
   }
 
   //Prints the verices in the graph to the console.
@@ -2382,6 +2556,21 @@ class GraphObject{
 
   }
 
+  //adds a SB alignment to the graph
+  addOSAlignment(a){
+     if(this.alignmentsHashOS[a.id]){
+         throw new Error("An alignment with this id already exists");
+     }
+
+     this.alignmentsOS[this.numAlignmentsOS] = a;
+     this.alignmentsOS[this.numAlignmentsOS].showing = true;
+     this.numAlignmentsOS++;
+     this.alignmentsHashOS[a.id] = a.id;
+     a.rId = this.numNodes;
+     this.numNodes++;
+
+  }
+
   //Takes a vertex object and returns true if alignment is in the graph already. Returns false otherwise
   hasTEAlignment(a){
     if(this.alignmentsHashTE[a.id]){
@@ -2396,6 +2585,14 @@ class GraphObject{
     }
     return false;
   }
+
+  hasOSAlignment(a){
+    if(this.alignmentsHashOS[a.id]){
+      return true;
+    }
+    return false;
+  }
+
 
   //Takes a vertex id or a vertex object. Returns true if vertex is in the graph.
   hasVertex(v){

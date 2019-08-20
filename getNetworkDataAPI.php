@@ -51,7 +51,9 @@ function GetNetworkData(){
    $tEAlignments = GetTEAlignments($standardsList, $standardsHashMap, $dbConnection);
 
    //get array of science buddies documents
-   $sBAlignments = GetSBAlignments(count($standardsList) + count($tEAlignments), $standardsHashMap, $dbConnection);
+   $sBAlignments = GetSBAlignments(10000, $standardsHashMap, $dbConnection);
+
+   $oSAlignments = GetOSAlignments(20000 , $standardsHashMap, $dbConnection);
 
    //For each standard,add its neighboring standards to the adjacency list.
    AddNeighborStandardsToAdjList($standardsList, $dbConnection);
@@ -62,11 +64,44 @@ function GetNetworkData(){
    //For each standard, add its neighboring Science buddies alignments to the adjacency list
    AddSBAlignmentsToAdjList($standardsList, $sBAlignments, $dbConnection);
 
+   //For each standard, add its neighboring outdoor school alignments to the adjacency list
+   AddOSAlignmentsToAdjList($standardsList, $oSAlignments, $dbConnection);
+
    //build a 2d array out of standardsList[] and alignments[]
    $results = array();
-   array_push($results, $standardsList, $tEAlignments, $sBAlignments);
+   array_push($results, $standardsList, $tEAlignments, $sBAlignments, $oSAlignments);
 
    return json_encode($results);
+}
+
+
+
+function AddOSAlignmentsToAdjList(& $standardsList, $alignmentsList, $dbConnection){
+  //Create a hash map on the alignments so we can do a fast lookup
+   $alignmentsHashMap = array();
+   for($i = 0 ; $i < count($alignmentsList); $i++){
+     $cur = strval($alignmentsList[$i]->document) ;
+     $alignmentsHashMap[$cur] = $i;
+   }
+
+    $alignmentMappings = getAlignmentMappings($dbConnection, "OS");
+
+    //for each standard
+    for($i = 0; $i < count($standardsList); $i++){
+      $ids = array();
+      //get the aligned documents to that standard
+      if(array_key_exists(strval($standardsList[$i]->MySqlId), $alignmentMappings)){
+
+
+        $alignmentsForStandard = $alignmentMappings[$standardsList[$i]->MySqlId];
+        for($j = 0; $j < count($alignmentsForStandard); $j++){
+          $id = $alignmentsHashMap[$alignmentsForStandard[$j]];
+
+          array_push($ids, $id);
+        }
+       $standardsList[$i]->outdoorschoolNeighbors = $ids;
+      }
+    }
 }
 
 
@@ -253,6 +288,10 @@ function getAlignmentMappings($dbConnection, $collection){
     $alignmentsTable = "sciencebuddies_alignments";
     $collectionTable = "sciencebuddies_collection";
   }
+  else if($collection == "OS"){
+    $alignmentsTable = "outdoorschool_alignments";
+    $collectionTable = "outdoorschool_collection";
+  }
 
   //query to return list doc ids and aligned standards
   $MySqlQuery = "SELECT p.id, p.doc_id FROM(
@@ -341,6 +380,36 @@ function GetASNStandards($dbConnection){
 
     //return the list of Standard objects
     return $standards;
+}
+
+
+function GetOSAlignments($nodeCount, & $standardsHashMap, $dbConnection){
+   $alignments = array();
+   $MySqlQuery = "SELECT a.doc_id, n.id FROM outdoorschool_alignments a
+                  INNER JOIN ngss_network_nodes n ON n.sCode = a.sCode
+                  ORDER BY a.doc_id";
+   if($res = mysqli_query($dbConnection, $MySqlQuery)){
+        //for every alignment, create an Alignment object
+        $curRow = "";
+        $MySqlId = 30001;
+        $curId = $nodeCount;
+        while($row = $res->fetch_assoc()){
+               if($row['doc_id'] != $curRow){  //once we reach the next document in the ordered list
+                     $curRow = $row['doc_id'];
+                     $alignment = new OSAlignment();
+                     $alignment->id = $curId;
+                     $alignment->color = OS_DOC_COLOR;
+                     $alignment->highlightColor = OS_DOC_HIGHLIGHT_COLOR;
+                     $alignment->MySqlId = $MySqlId;
+                     $standardsHashMap[$row['doc_id']] = $curId;
+                     GetOSAlignmentMetadata($alignment, $dbConnection, $curRow);
+                     array_push($alignments, $alignment);
+                     $curId++;
+                     $MySqlId++;
+                 }
+          }
+    }
+   return $alignments;
 }
 
 
@@ -452,6 +521,20 @@ function GetStandardsEdges($dbConnection){
 function GetTEAlignmentMetadata(& $alignment, $dbConnection, $doc){
   $alignment->summary = "bla bla";
   $query  = "SELECT doc_id, summary, title, doc_type FROM teach_engr_collection WHERE doc_id  = '".$doc."';";
+   if($res = mysqli_query($dbConnection, $query)){
+        if($row = $res->fetch_assoc()){
+          $alignment->summary = iconv("UTF-8", "UTF-8//IGNORE", $row['summary']);
+          $alignment->title =  iconv("UTF-8", "UTF-8//IGNORE", $row['title']);
+          $alignment->docType = $row["doc_type"];
+          $alignment->document = $doc;
+          $alignment->url = _GetTEUrl($alignment->docType, $doc);
+        }
+    }
+}
+
+
+function GetOSAlignmentMetadata(& $alignment, $dbConnection, $doc){
+   $query = "SELECT doc_id, url, summary, title  FROM outdoorschool_collection WHERE doc_id  = '".$doc."';";
    if($res = mysqli_query($dbConnection, $query)){
         if($row = $res->fetch_assoc()){
           $alignment->summary = iconv("UTF-8", "UTF-8//IGNORE", $row['summary']);
@@ -702,6 +785,7 @@ class Standard{
     public $neighbors = array(); //An adjacency list of neighboring standards.
     public $teachEngrNeighbors = array(); //An adjacency list of alignments to TE resources
     public $scienceBuddiesNeighbors = array(); //An adj list of alignments to Science buddies resources.
+    public $outdoorschoolNeighbors = array();
     public $rId = 0;  //The id that will eventually be set, zero indexed, so the data can be passed to r
     public $uri = null; //the URI to the NGSS web page
 
@@ -724,6 +808,20 @@ class SBAlignment{
   public $nodeType = "DocumentSB";
   public $SBURI;
   public $color;
+  public $highlightColor;
+}
+
+
+class OSAlignment{
+  public $id;
+  public $MySqlId;
+  public $title;
+  public $summary;
+  public $document;
+  public $rId;
+  public $nodeType = "DocumentOS";
+  public $color;
+  public $url;
   public $highlightColor;
 }
 

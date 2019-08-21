@@ -48,7 +48,7 @@ var ModeEnum = {
   NGSS: 1,
   ASN:2
 };
-
+var hashChange = false;
 //The options for the types of alignments
 var ResourceTypes = {
     activities:false,
@@ -59,10 +59,101 @@ var ResourceTypes = {
 //Traks the display type as defined in ModeEnum{}
 var NodeDisplayType;
 
+function SubmitFromHash(){
+
+  //Clear the dom for the standards table and the alignments table and the network
+    ClearTable(document.getElementById('t1'));
+  ClearTable(document.getElementById('t2'));
+  RemoveNetwork("mynetwork");
+
+  var hashStr = location.hash;
+  params = _ParseHash(hashStr);
+/*  console.log(params)*/
+
+ var showAllTEDocs = false;
+  if(params["showTE"]["showActivies"] && params["showTE"]["showLessons"] && params["showTE"]["showCurricularUnits"])
+  showAllTEDocs = true;
+  console.log(params["showScienceBuddies"]);
+  BuildNetwork(params["sCode"], params["networkDepth"], params["displayType"], params["gradeBand"],
+               params["showTE"]["showActivies"],  params["showTE"]["showLessons"],
+               params["showTE"]["showCurricularUnits"], showAllTEDocs,
+               params["showScienceBuddies"], params["showOutdoorschool"]);
+}
+
+function _ParseHash(hashStr){
+  var i = 1;
+  var sCodeLen = 8;
+  var sCode = "";
+  for(i; i <= sCodeLen; i++){
+     sCode += hashStr[i];
+  }
+
+  var gradeBand = "none";
+  var showOutdoorschool = "none";
+  var showScienceBuddies = "none";
+  var displayType = "none";
+  var networkDepth = "none";
+  var showTE = {};
+  for(var i = 0; i < hashStr.toString().length; i++){
+    if(hashStr[i] == "g"){
+      gradeBand = hashStr[i + 1].toString();
+    }
+    else if(hashStr[i] == "l"){
+      displayType = hashStr[i + 1].toString();
+    }
+    else if(hashStr[i] == "d"){
+      networkDepth = hashStr[i + 1].toString();
+    }
+
+    //any boolian 1 and 0s get set to true or false for consistancy
+    else if(hashStr[i] == "o" && hashStr[i + 1] == "s"){
+      showOutdoorschool = hashStr[i + 2].toString();
+      showOutdoorschool = (showOutdoorschool == 0) ? false : true;
+    }
+    else if(hashStr[i] == "s" && hashStr[i + 1] == "b"){
+      showScienceBuddies = hashStr[i + 2].toString();
+      showScienceBuddies = (showScienceBuddies == 0) ? false : true;
+    }
+    else if(hashStr[i] == "t" && hashStr[i + 1] == "e"){
+      showTE["showActivies"] = (hashStr[i + 2] == 0) ? false : true;
+      showTE["showLessons"] = (hashStr[i + 3] == 0) ? false : true;
+      showTE["showCurricularUnits"] = (hashStr[i + 4] == 0) ? false : true;
+    }
+  }
+
+  // 1 and 0 to true and false respectivly
+
+
+  var resultArr = {};
+  resultArr["sCode"] = sCode;
+  resultArr["gradeBand"] = gradeBand;
+  resultArr["displayType"] = displayType;
+  resultArr["networkDepth"] = networkDepth;
+  resultArr["showOutdoorschool"] = showOutdoorschool;
+  resultArr["showScienceBuddies"] = showScienceBuddies;
+  resultArr["showTE"] = showTE;
+
+   return resultArr;
+  /*console.log(gradeBand)*/
+}
+
+
+window.onhashchange = function(){
+
+  if(hashChange == true){
+      console.log("calling SubmitFromHash()")
+      SubmitFromHash();
+
+  }
+  hashChange = true;
+
+}
 
 //Initization function
 window.onload = function onLoad(){
+
    ShowLoadingScreen();
+   window.location.href = window.location.href + "#10"
   //Load the nw data via a post request to getNetworkDataAPI.php
    GetNetworkDataAJAX();
 
@@ -86,7 +177,7 @@ window.onload = function onLoad(){
   //event listender for the type of resources dropdown.
   document.getElementById("dropdownToggle").addEventListener("click", function(){
         if(graph == null){
-          SetResourceTypesFromDropdown()
+          SetResourceTypesFromDropdown();
           return;
         }
         HandleResouceTypeDropdown();
@@ -103,19 +194,22 @@ window.onload = function onLoad(){
       DisplayType = ModeEnum.NGSS
     }
      ToggleNetworkLables();
+
+     hashChange = false;
+     location.hash = SetHashFromPageState();
   });
 
   //event listener for the network depth dropdown
   document.getElementById("networkDepth").addEventListener("change", function(){
     if(graph != null && currentSelectedNode != null){
       document.getElementById("gradeBand").value = 0;
-      submit(currentSelectedNode);
+      submit(currentSelectedNode, true);
     }
   });
 
   //event listener for the gradeband dropdown
   document.getElementById("gradeBand").addEventListener("change",  function(){
-     submit(null);
+     submit(null, true);
   });
 
 //User can search by Enter key
@@ -138,6 +232,9 @@ window.onload = function onLoad(){
    document.getElementById("item2Box").checked = checked;
    document.getElementById("item3Box").checked = checked;
 
+   hashChange = false;
+   location.hash = SetHashFromPageState();
+
  });
 
  document.getElementById("dropdownSymbolForTEDocs").addEventListener("click", (e) =>{
@@ -159,11 +256,28 @@ window.onload = function onLoad(){
       document.getElementById(e.target.id).style.cursor = "pointer";
  });
 
+ document.getElementById("item1Box").addEventListener("click", (e) => {
+     hashChange = false;
+     location.hash = SetHashFromPageState();
+ });
+document.getElementById("item2Box").addEventListener("click", (e) => {
+  hashChange = false;
+  location.hash = SetHashFromPageState();
+});
+document.getElementById("item3Box").addEventListener("click", (e) => {
+    hashChange = false;
+    location.hash = SetHashFromPageState();
+ });
+
  document.getElementById("SB").addEventListener("click", (e) => {
-   console.log("foo")
+
+  // SetHashFromPageState();
    submitBtn();
  });
  document.getElementById("OS").addEventListener("click", (e) => {
+
+
+  //  SetHashFromPageState();
     submitBtn();
  });
 }
@@ -247,6 +361,8 @@ function SetResourceTypesFromDropdown(){
 Function handles the logic of the resource type dropdown. Calls helper functions accordingly
 *******************************************************************************************************/
 function HandleResouceTypeDropdown(){
+
+
     //show or hide documents label in the graph legend
     showHideDocsLabel();
 
@@ -259,11 +375,12 @@ function HandleResouceTypeDropdown(){
 
     //if we went from no item to on item or from all items to not all items, redraw the graph
     if(showingDocsCur != showingDocsPrev){
-      submit(currentSelectedNode);
+      submit(currentSelectedNode, false);
     }
     //Just show/hide alignment nodes as required and rebuild the alignments table to reflect which alignments are showing.
     else{
-      ShowHideAlignmentsBasedOnDropdown();
+      ShowHideAlignmentsBasedOnDropdown(false);
+
       if(IsShowingDocs()){
               BuildAlignedDocumentsTable(currentSelectedNode);
       }
@@ -291,7 +408,7 @@ Sets the gradeband to its default and calls submit to build the network based on
 submit textbox. This function is called as an onclick event when the submit button is clicked.
 ****************************************************************************************************/
 function submitBtn(resetDropdown){
- console.log("submit button")
+
    //reset dropdown to default if resetDropdown is true
    if(resetDropdown != undefined && resetDropdown != null && resetDropdown == true)
    document.getElementById("gradeBand").value = 0;
@@ -315,7 +432,7 @@ function submitBtn(resetDropdown){
 
    else {
 
-     submit(input)
+     submit(input, true)
    }
 }
 
@@ -346,7 +463,7 @@ function DisplayDCIModal(dciList, input){
       newRow.addEventListener("click", function(e){
         var classNameClicked = e.target.className;
         var sCode = classNameClicked.slice(4, classNameClicked.length)
-        submit(sCode);
+        submit(sCode, true);
         $('#myModal').modal('hide');
 
       });
@@ -354,7 +471,7 @@ function DisplayDCIModal(dciList, input){
 }
 
 function foo(){
-  console.log("foo called")
+
 }
 
 function GetDCIList(dciCategory){
@@ -399,7 +516,7 @@ function SubmitTableClick(sCode){
   if(document.getElementById("gradeBand").value != 0){
     document.getElementById("gradeBand").value =0;
   }
-  submit(sCode);
+  submit(sCode, true);
 
 }
 
@@ -421,6 +538,62 @@ function GetSCodeFromPCode(pCode){
 }
 
 
+function SetHashFromPageState(){
+
+   var hash = "";
+
+   //set the scode for the hash parameter
+   var nodeHash = null;
+   if(currentSelectedNode) nodeHash = currentSelectedNode;
+   else nodeHash = DEFAULT_STANDARD;
+   hash += nodeHash.toString() + ";";
+
+   //set the values for the ResourceType dropdown in the hash parameter
+   var gb = document.getElementById("gradeBand").value;
+   hash += "g" + gb + ";";
+
+   var dispType = document.getElementById("displayType").value;
+   hash += "l" + dispType + ";";
+
+   var nwDepth = document.getElementById("networkDepth").value;
+   hash += "d" + nwDepth + ";"
+
+
+   var os = document.getElementById("OSCheckBox").checked;
+   if(os) os = 1;
+   else os = 0;
+   hash += "os" + os.toString() + ";"
+
+   var sb = document.getElementById("SBCheckBox").checked;
+   if(sb) sb = 1;
+   else sb = 0;
+   hash += "sb" + sb.toString() + ";"
+
+   var teActivities = document.getElementById("item1Box").checked;
+   var teLessons = document.getElementById("item2Box").checked;
+   var teCU = document.getElementById("item3Box").checked;
+
+   if(teActivities) teActivities = 1;
+   else teActivities = 0;
+
+   if(teLessons) teLessons = 1;
+   else teLessons = 0;
+
+   if(teCU) teCU = 1;
+   else teCU = 0;
+
+   hash += "te" + teActivities.toString() + teLessons.toString() + teCU.toString()
+
+   //set the value for the network depth in the hash parameter
+
+   //set the value for the display type in the hash parameter
+
+   //set the grade band for the hash parameter
+
+   return hash;
+
+}
+
 
 /*************************************************************************************
   This function will get the imput values from the form elements and than call BuildNetwork()
@@ -429,7 +602,7 @@ function GetSCodeFromPCode(pCode){
   Parameters:
     1) sCode: The sCode of the root node from which we build the graph.
 **************************************************************************************/
-function submit(code){
+function submit(code, updateHash){
 
   curNodeSize = 18
   var sCode = null;
@@ -454,6 +627,15 @@ function submit(code){
 
   //Update the global that holds the current sCode to be the sCode just submitted
   currentSelectedNode = sCode;
+
+  //Set the hash to remember the page state and make sure it doesn't trigger hash change submit action.
+  if(updateHash == true){
+    hashChange = false;
+    console.log("setting hash 1")
+    location.hash = "#" + SetHashFromPageState();
+
+  //
+  }
   document.getElementById("sCode").value = code
 
   //Clear the dom for the standards table and the alignments table and the network
@@ -499,7 +681,6 @@ function submit(code){
   var showOutdoorschool = document.getElementById("OSCheckBox").checked;
 
   //if grade band is set, we will automatically iterate up to the max depth to get every standard in that grade band
-  console.log(document.getElementById("gradeBand").value)
   if(document.getElementById("gradeBand").value > 0){
     document.getElementById("networkDepth").value = 0;
     depth = 50;
@@ -1083,7 +1264,7 @@ Parameters:
     };
 
     //Show the document nodes filtered by the resouce type dropdown list that the user selected. Default is none.
-    ShowHideAlignmentsBasedOnDropdown();
+    ShowHideAlignmentsBasedOnDropdown(false);
 
     //draw the vis.js network graph
     var container = document.getElementById("mynetwork");
@@ -1210,7 +1391,7 @@ function NWDoubleClickActionResult(nw){
       if(document.getElementById("gradeBand").value != 0){
         document.getElementById("gradeBand").value =0;
       }
-      submit(sCode);
+      submit(sCode, true);
     }
   });
 }
@@ -1342,7 +1523,7 @@ function alignLegend(){
 Functions handles the display of alignments in the nw based on items selected from the dropwown.
 A json string is build and then passed to vis.js to update the nw to show/hide alignments.
 ******************************************************************************************/
-function ShowHideAlignmentsBasedOnDropdown(){
+function ShowHideAlignmentsBasedOnDropdown(changeHash){
 
    //don't to anything if the graph has not been drawn yet
    if(graph == null) return;
@@ -1360,9 +1541,15 @@ function ShowHideAlignmentsBasedOnDropdown(){
    var dataString = "[";
    for(var i = 0; i < graph.numAlignmentsTE; i++){
      var curAlignment = graph.alignmentsTE[i];
-     if(graph.alignmentsTE[i].docType == "activity" && showActivies) hidden = "false";
-     else if(graph.alignmentsTE[i].docType == "lesson" && showLessons) hidden = "false";
-     else if(graph.alignmentsTE[i].docType == "curricularUnit" && showCurricularUnits) hidden = "false";
+     if(graph.alignmentsTE[i].docType == "activity" && showActivies) {
+       hidden = "false";
+     }
+     else if(graph.alignmentsTE[i].docType == "lesson" && showLessons) {
+       hidden = "false"
+     }
+     else if(graph.alignmentsTE[i].docType == "curricularUnit" && showCurricularUnits){
+        hidden = "false";
+      }
      dataString =  dataString + "{";
      dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignmentsTE[i].id.toString()  + ",";
      dataString =  dataString +'"'+ "hidden" + '"' + ":" + hidden;
@@ -1388,6 +1575,13 @@ function ShowHideAlignmentsBasedOnDropdown(){
     nodes.update(
       networkJson
     );
+
+    if(changeHash == true){
+      hashChange = false;
+      console.log("setting hash 2")
+      location.hash = SetHashFromPageState();
+    }
+
 }
 
 
@@ -1417,7 +1611,7 @@ prameters:
  1) docId: the id of the alignments. Also the id of the coorisponding table row.
 *******************************************************************************************/
 function IsAlignedToStandard(docId, docType){
-  console.log(docType)
+
   var ids = [];
   for(var i = 0; i < graph.numVertices; i++){
     if(graph.vertices[i].sCode == currentSelectedNode){
@@ -2163,7 +2357,7 @@ function GetNetworkDataAJAX(){
                OSAlignments = result[3];
                setTimeout(function(){
                HideLoadingScreen();
-               submit(DEFAULT_STANDARD);
+               submit(DEFAULT_STANDARD, true);
              }, 200);
 
            }
@@ -2189,13 +2383,13 @@ function initDropdown(){
    for(var i = 0; i < docTypesForDropDown.length; i++){
      document.getElementById(docTypesForDropDown[i].checkBoxId).checked = false;
    }
-      //make sure cursor is set to default when user hovers over dropdown
-      document.getElementById("alignments").addEventListener("mouseover", (e) =>{
-      document.getElementById(e.target.id).style.cursor = "default"
+    //make sure cursor is set to default when user hovers over dropdown
+    document.getElementById("alignments").addEventListener("mouseover", (e) =>{
+    document.getElementById(e.target.id).style.cursor = "default"
     });
 
 
-  var displayType = "";
+    var displayType = "";
     document.getElementById("alignments").addEventListener("click", function(){
 
       //if dropdown options  is not currently being displayed
@@ -2254,6 +2448,7 @@ function initDropdown(){
       }
     });
 
+   //onclick event for the TE checkbox items in the resource type dropdown
    for(var i = 0; i < docTypesForDropDown.length; i++){
      (function(i){
          document.getElementById(docTypesForDropDown[i].checkBoxId).addEventListener("click", (e)=>{

@@ -45,35 +45,119 @@ function GetNetworkData(){
    $standardsHashMap = array(); //hashes on sCode for standards and document name for documents. Holds ids that coorispont to $standardsList
 
    //Get an array of the NGSS standards
-   $standardsList = GetASNStandards($dbConnection);
+   $standardsList = GetNGSSStandards($dbConnection);
 
-   //get array of TE documents
-   $tEAlignments = GetTEAlignments($standardsList, $standardsHashMap, $dbConnection);
+   $resourceDefinitions = DefineResources(); //Define the collectinos and db tables for those collections
 
-   //get array of science buddies documents
-   $sBAlignments = GetSBAlignments(10000, $standardsHashMap, $dbConnection);
+   $numStandards = count($standardsList);
+   $resources = GetAllAlignedResources($resourceDefinitions, $standardsHashMap, $numStandards); //Get an array of resources from all collections
 
-   $oSAlignments = GetOSAlignments(20000 , $standardsHashMap, $dbConnection);
+    //Add connections between standards
+    AddNeighborStandardsToAdjList($standardsList, $resources ,$dbConnection);
 
-   //For each standard,add its neighboring standards to the adjacency list.
-   AddNeighborStandardsToAdjList($standardsList, $dbConnection);
 
-   //For each standard, add its neighboring TE alignments to the alignments adjacency list
-   AddTEAlignmentsToAdjList($standardsList, $tEAlignments, $dbConnection);
+    //For each standard, build its aligned resource list. Do this for all resource types.
+    AddALLAlignmentsToAdjList($standardsList, $resources, $resourceDefinitions, $standardsHashMap, $dbConnection);
 
-   //For each standard, add its neighboring Science buddies alignments to the adjacency list
-   AddSBAlignmentsToAdjList($standardsList, $sBAlignments, $dbConnection);
 
-   //For each standard, add its neighboring outdoor school alignments to the adjacency list
-   AddOSAlignmentsToAdjList($standardsList, $oSAlignments, $dbConnection);
+    $results = array();
+    array_push($results, $standardsList, $resources);
 
-   //build a 2d array out of standardsList[] and alignments[]
-   $results = array();
-   array_push($results, $standardsList, $tEAlignments, $sBAlignments, $oSAlignments);
-
-   return json_encode($results);
+    return json_encode($results);
 }
 
+
+function DefineResources(){
+  $resourceDefList = array();
+  $r1 = new ResourceCollection(TE_DOC_COLOR, TE_DOC_HIGHLIGHT_COLOR, "teach_engr_collection", "teach_engr_alignments", "DocumentTE");
+  $r2 = new ResourceCollection(OS_DOC_COLOR, OS_DOC_HIGHLIGHT_COLOR, "outdoorschool_collection", "outdoorschool_alignments", "DocumentOS");
+  $r3 = new ResourceCollection(SB_DOC_COLOR, SB_DOC_HIGHLIGHT_COLOR, "sciencebuddies_collection", "sciencebuddies_alignments", "DocumentSB");
+
+  array_push($resourceDefList, $r1, $r2, $r3);
+  return $resourceDefList;
+}
+
+
+class ResourceCollection{
+  public function __construct($color, $highlightColor, $resourcesTable, $alignmentsTable, $nodeType){
+    $this->color = $color;
+    $this->highlightColor = $highlightColor;
+    $this->resourcesTable = $resourcesTable;
+    $this->alignmentsTable = $alignmentsTable;
+    $this->nodeType = $nodeType;
+  }
+}
+
+
+function GetAllAlignedResources($resourceDefinition, & $standardsHashMap, $numStandards){
+
+   $resources = array();
+   $index = 10001;
+   $idIndex = $numStandards;
+   for($i = 0; $i < count($resourceDefinition); $i++){
+       _GetResourceForCollection($resources, $resourceDefinition[$i], $standardsHashMap, $index, $idIndex, $i);
+       $index++;
+   }
+   return $resources;
+}
+
+
+function _GetResourceForCollection(& $resources, $curResource, & $standardsHashMap, $index, $idIndex, $order){
+
+  $dbConnection = GetDBConnection();
+
+  $q = null;
+  if($curResource->resourcesTable == "teach_engr_collection"){
+     $q = "SELECT c.doc_id, c.summary, c.title, c.doc_type FROM {$curResource->resourcesTable} c ORDER BY c.doc_id";
+  }
+  else{
+    $q = "SELECT c.doc_id, c.summary, c.title, c.url FROM {$curResource->resourcesTable} c ORDER BY c.doc_id";
+  }
+
+  if($res = mysqli_query($dbConnection, $q)){
+        //  $curId = count($standardsList);
+          while($row = $res->fetch_assoc()){
+            $r = new Resource();
+            $r->id = $idIndex;
+            $r->MySqlId = $index;
+            $r->color = $curResource->color;
+            $r->highlightColor = $curResource->highlightColor;
+            $r->nodeType = $curResource->nodeType;
+            $r->summary = $row["summary"];
+            $r->document = $row["doc_id"];
+            $r->title = $row["title"];
+            $r->order = $order;
+            $standardsHashMap[$row['doc_id']] = $idIndex;
+            //get data attributes that are unique to TE
+            if($curResource->resourcesTable == "teach_engr_collection"){
+              $r->docType = $row["doc_type"];
+              $r->url = _GetTEUrl($r->docType, $row["doc_id"]);
+            }
+            else{
+              $r->url = $row["url"];
+            }
+            $idIndex++;
+            $index++;
+            array_push($resources, $r);
+          }
+    }
+}
+
+
+//Add each resource collection object as defined in the database
+function AddAllResourceCollections(& $resources){
+  //The TE resource collection object
+  $TEResources = new ResourceCollection("teach_engr_alignments", "teach_engr_collection", "TE", TE_DOC_COLOR, TE_DOC_HIGHLIGHT_COLOR);
+  $resources->addResourceCollection($TEResources);
+
+  //The science buddies resources
+  $SBResources = new ResourceCollection("sciencebuddies_alignments", "sciencebuddies_collection", "SB", SB_DOC_COLOR, SB_DOC_HIGHLIGHT_COLOR);
+  $resources->addResourceCollection($SBResources);
+
+  //The outdoor school resources
+  $OSResources = new ResourceCollection("outdoorschool_alignments", "outdoorschool_collection", "OS", OS_DOC_COLOR, OS_DOC_HIGHLIGHT_COLOR);
+  $resources->addResourceCollection($OSResources);
+}
 
 
 function AddOSAlignmentsToAdjList(& $standardsList, $alignmentsList, $dbConnection){
@@ -104,78 +188,150 @@ function AddOSAlignmentsToAdjList(& $standardsList, $alignmentsList, $dbConnecti
     }
 }
 
-
-/*************************************************************************************************
-* Parameters:
-    1) $standardsList: A reference to an adjacency list of standards. Is made up of Standards objects
-    2) $alignmentsList: An array of aligned resources. It is made up of SBAlignments objects.
-    3) $dbConnection: The connection string to prod_edu_standards_db.
-* Description:
-   Goes through each standard in $standardsList and builds its adjacency list that determine
-   the aligned science buddies standards.
-**************************************************************************************************/
-function AddSBAlignmentsToAdjList(& $standardsList, $alignmentsList, $dbConnection){
-
-  //Create a hash map on the alignments so we can do a fast lookup
-   $alignmentsHashMap = array();
-   for($i = 0 ; $i < count($alignmentsList); $i++){
-     $cur = strval($alignmentsList[$i]->document) ;
-     $alignmentsHashMap[$cur] = $i;
-   }
-
-   $alignmentMappings = getAlignmentMappings($dbConnection, "SB");
-
-   //for each standard
-   for($i = 0; $i < count($standardsList); $i++){
-     $ids = array();
-     //get the aligned documents to that standard
-     if(array_key_exists(strval($standardsList[$i]->MySqlId), $alignmentMappings)){
-
-
-       $alignmentsForStandard = $alignmentMappings[$standardsList[$i]->MySqlId];
-       for($j = 0; $j < count($alignmentsForStandard); $j++){
-         $id = $alignmentsHashMap[$alignmentsForStandard[$j]];
-
-         array_push($ids, $id);
-       }
-      $standardsList[$i]->scienceBuddiesNeighbors = $ids;
-     }
-   }
+function pr($data){
+  print_r($data);
 }
 
-/*************************************************************************************************
-* Parameters:
-    1) $standardsList: A reference to an adjacency list of standards. Is made up of Standards objects
-    2) $alignmentsList: An array of aligned resources. It is made up of TEAlignments objects.
-    3) $dbConnection: The connection string to prod_edu_standards_db.
-* Description:
-   Goes through each standard in $standardsList and builds its adjacency list that determine
-   the standards alignments in $alignmentsList.
-**************************************************************************************************/
-function AddTEAlignmentsToAdjList(& $standardsList, $alignmentsList, $dbConnection){
+function p($data){
+  print($data . "\n");
+}
 
-    //Create a hash map on the alignments so we can do a fast lookup
-     $alignmentsHashMap = array();
-     for($i = 0 ; $i < count($alignmentsList); $i++){
-       $cur = strval($alignmentsList[$i]->document) ;
-       $alignmentsHashMap[$cur] = $i;
+function pc($data){
+  print(count($data) . "\n");
+}
+
+
+function AddAllAlignmentsToAdjList(& $standardsList, $resources, $resourceDefinitions, $standardsHashMap,  $dbConnection){
+
+     //Create a hash map on $resources so we can perform a constant time lookup for the index of a resource by its name.
+      $alignmentsHashMap = array();
+      for($i = 0 ; $i < count($resources); $i++){
+        $cur = strval($resources[$i]->document) ;
+        $alignmentsHashMap[$cur] = $i;
+      }
+
+      $alignmentMappings = getAlignmentMappings($resourceDefinitions, $dbConnection);
+
+      //for each standard
+      for($i = 0; $i < count($standardsList); $i++){
+        $ids = array();
+        //get the aligned documents to that standard
+        if(array_key_exists(strval($standardsList[$i]->MySqlId), $alignmentMappings)){
+          $alignmentsForStandard = $alignmentMappings[$standardsList[$i]->MySqlId];
+          for($j = 0; $j < count($alignmentsForStandard); $j++){
+            $id = $alignmentsHashMap[$alignmentsForStandard[$j]];
+            array_push($ids, $id);
+          }
+         $standardsList[$i]->alignedResources = $ids;
+        }
+      }
+}
+
+
+function getAlignmentMappings($resourceDefinitions, $dbConnection){
+
+    $alignmentMappings = array();
+
+    //query alignment mappings for each collection of resources as defined in the $resourceDefinitions object.
+    $tmpArr = array();
+
+   $q = "SELECT o.id, o.doc_id FROM" . " (\n";
+
+    for($i = 0; $i < count($resourceDefinitions); $i++){
+       $q .=  "SELECT p.id, p.doc_id FROM(
+                     SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
+                    (
+                      SELECT sCode, doc_id FROM {$resourceDefinitions[$i]->alignmentsTable} ORDER BY sCode
+                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM {$resourceDefinitions[$i]->resourcesTable})";
+     if($i < count($resourceDefinitions) - 1){
+       $q .= "\nUNION\n";
      }
 
-     //get hash map from std ids to array of alignments
-     $alignmentMappings = getAlignmentMappings($dbConnection, "TE");
-     //for each standard
-     for($i = 0; $i < count($standardsList); $i++){
-       $ids = array();
-       //get the aligned documents to that standard
-       if(array_key_exists(strval($standardsList[$i]->MySqlId), $alignmentMappings)){
-         $alignmentsForStandard = $alignmentMappings[$standardsList[$i]->MySqlId];
-         for($j = 0; $j < count($alignmentsForStandard); $j++){
-           $id = $alignmentsHashMap[$alignmentsForStandard[$j]];
-           array_push($ids, $id);
-         }
-        $standardsList[$i]->teachEngrNeighbors = $ids;
+    }
+    $q .= "\n ) o ORDER BY o.id, o.doc_id";
+
+    if($res = mysqli_query($dbConnection, $q)){
+      $arr = array(); //will hold a list of doc ids that coorispont to a standard.
+
+      //Queries a list of all standards and their aligned documents. For every standard we get its
+      //list of aligned documents. We build the data structure alignedMappings[] which is an associative
+      //array that hashes on a standard id to its list of alignments.
+      $isStart = true;
+      $prev = "";
+      while($row = $res->fetch_assoc()){  //for every row
+           if($isStart){  //first time through
+              array_push($arr, $row['doc_id']);
+              $isStart = false;
+           }
+           else{   //subsequent times through
+             if($prev == $row["id"]){ //if we are still on the same standard
+               array_push($arr, $row['doc_id']);
+             }
+             else{ //we reached a new standard in the list
+               $alignmentMappings[$prev] = $arr;
+               $arr = null;
+               $arr = array();
+
+               array_push($arr, $row['doc_id']);
+             }
+           }
+          $prev = $row["id"];
        }
-     }
+       $alignmentMappings[$prev] = $arr;
+    }
+    return $alignmentMappings;
+}
+
+
+class AlignmentMapping{
+  public $id;
+  public $docId;
+}
+
+
+function GetAlignmentsMappingsForCollection($dbConnection, $resourcesListForCollection){
+  $alignmentsTable = $resourcesListForCollection->alignmentsTable;
+  $resourcesTable = $resourcesListForCollection->resourcesTable;
+  $MySqlQuery = "SELECT p.id, p.doc_id FROM(
+                 SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
+                (
+                  SELECT sCode, doc_id FROM {$alignmentsTable} ORDER BY sCode
+                ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM {$resourcesTable})
+                ORDER BY p.id, p.doc_id";
+
+    //array holds the mappings from a resource to an aligned standard
+    $alignmentMappings = array();
+
+    if($res = mysqli_query($dbConnection, $MySqlQuery)){
+        $arr = array(); //will hold a list of doc ids that coorispont to a standard.
+
+          //Queries a list of all standards and their aligned documents. For every standard we get its
+          //list of aligned documents. We build the data structure alignedMappings[] which is an associative
+          //array that hashes on a standard id to its list of alignments.
+          $isStart = true;
+          $prev = "";
+          while($row = $res->fetch_assoc()){  //for every row
+               if($isStart){  //first time through
+                    array_push($arr, $row['doc_id']);
+                    $isStart = false;
+               }
+               else{   //subsequent times through
+                     if($prev == $row["id"]){ //if we are still on the same standard
+                       array_push($arr, $row['doc_id']);
+                     }
+                     else{ //we reached a new standard in the list
+                          $alignmentMappings[$prev] = $arr;
+                           $arr = null;
+                           $arr = array();
+
+                         array_push($arr, $row['doc_id']);
+                     }
+               }
+               $prev = $row["id"];
+         }
+         $alignmentMappings[$prev] = $arr;
+    }
+    return $alignmentMappings;
 }
 
 
@@ -209,11 +365,11 @@ function GetIdsOfAlignedDocs($sCode, $dbConnection){
      Goes through each standard in $standardsList and builds that standard's
      adjacency list of aligned standerds.
 *******************************************************************************/
-function AddNeighborStandardsToAdjList(& $standardsList, $dbConnection){
+function AddNeighborStandardsToAdjList(& $standardsList, $dbConnection){ //FIXME
   //for every standard in the list (This is for every NGSS standerd in the collection)
   for($i = 0; $i < count($standardsList); $i++){
      //get all the standards that are linked to the current standard.
-     $tmpNeighbors = GetAlignedStandards($standardsList[$i]->MySqlId, $dbConnection);
+     $tmpNeighbors = GetConnectedStandards($standardsList[$i]->MySqlId);
 
      //Build out a list of neighboring standards and add to the current standers adj list
      $neighborsArray = array();
@@ -254,10 +410,10 @@ function GetIndexFromMySqlId($standardsList, $MySqlId){
     Takes a mySQl standard identifier and returns a list of ids of standards that are
     linked to that standard.
 *************************************************************************************/
-function GetAlignedStandards($MySqlId, $dbConnection){
+function GetConnectedStandards($MySqlId){ //FIXME
     $neighborIds = array();
     $query = "SELECT m.mapped_id FROM ngss_network_edge_list m WHERE m.node_id  = '".$MySqlId."';";
-    if($res = mysqli_query($dbConnection, $query)){
+    if($res = mysqli_query(GetDBConnection(), $query)){
       while($row = $res->fetch_assoc()){
         array_push($neighborIds, $row["mapped_id"]);
       }
@@ -276,7 +432,7 @@ function GetAlignedStandards($MySqlId, $dbConnection){
    Builds an edge list of standards and aligned TE resources. This is build into the the
    array alignedMappings();
 ********************************************************************************/
-function getAlignmentMappings($dbConnection, $collection){
+/*function getAlignmentMappings($dbConnection, $collection){
 
   $alignmentsTable = null;
   $collectionTable = null;
@@ -333,8 +489,8 @@ function getAlignmentMappings($dbConnection, $collection){
      }
      $alignmentMappings[$prev] = $arr;
   }
-  return $alignmentMappings;
-}
+  return $alignmentMappings;*/
+//}
 
 
 /*******************************************************************************************
@@ -344,7 +500,7 @@ function getAlignmentMappings($dbConnection, $collection){
     Builds an array of Standard objects from the databases representation of the NGSS.
     This array of Standards is then returned.
 *******************************************************************************************/
-function GetASNStandards($dbConnection){
+function GetNGSSStandards($dbConnection){
    //an array to hold the list of standards.
     $standards = array();
 
@@ -444,46 +600,41 @@ function GetSBAlignments($nodeCount, & $standardsHashMap, $dbConnection){
   return $alignments;
 }
 
-/*****************************************************************************************
-* Parameters:
-    1) $standardsList: a reference to the adj list of standards that make up the nw.
-    2) $standardsHashMap: a reference to a assoc array of standards that hashes on standard id.
-    3) $dbConnection: connection string to prod_edu_standards_db.
-* Description:
-   Builds a list of documents that are aligned to NGSS standards.
-******************************************************************************************/
-function GetTEAlignments(& $standardsList, & $standardsHashMap, $dbConnection){
 
-      $alignments = array();//array to hold the list of all alignments
 
-      //query to return list doc ids and aligned standards
-     $MySqlQuery = "SELECT a.doc_id, n.id FROM teach_engr_alignments a
-                   INNER JOIN ngss_network_nodes n ON n.sCode = a.sCode
-                   ORDER BY a.doc_id";
 
-    if($res = mysqli_query($dbConnection, $MySqlQuery)){
-        //for every alignment, create an Alignment object
-        $curRow = "";
-        $MySqlId = 10001;
-        $curId = count($standardsList);
-        while($row = $res->fetch_assoc()){
-           if($row['doc_id'] != $curRow){  //once we reach the next document in the ordered list
-             $curRow = $row['doc_id'];
-             $alignment = new TEAlignment();
-             $alignment->id = $curId;
-             $alignment->color = TE_DOC_COLOR;
-             $alignment->highlightColor = TE_DOC_HIGHLIGHT_COLOR;
-             $alignment->MySqlId = $MySqlId;
-             $standardsHashMap[$row['doc_id']] = $curId;
-             GetTEAlignmentMetadata($alignment, $dbConnection, $curRow);
-             array_push($alignments, $alignment);
-             $curId++;
-             $MySqlId++;
-           }
+
+
+function GetMetadataForResource(& $resource, & $resourceCollection, $dbConnection, $doc){
+
+   //query TE or other collections depending on doc type
+   $query = null;
+   if($resourceCollection->collection == "TE"){
+     $query  = "SELECT doc_id, summary, title, doc_type FROM {$resourceCollection->resourcesTable} WHERE doc_id  = '".$doc."';";
+   }
+   else{
+        $query  = "SELECT doc_id, summary, title, url FROM {$resourceCollection->resourcesTable} WHERE doc_id  = '".$doc."';";
+   }
+
+   if($res = mysqli_query($dbConnection, $query)){
+        if($row = $res->fetch_assoc()){
+          $resource->summary = iconv("UTF-8", "UTF-8//IGNORE", $row['summary']);
+          $resource->title =  iconv("UTF-8", "UTF-8//IGNORE", $row['title']);
+          if($resourceCollection->collection == "TE"){
+                $resource->nodeType = $row["doc_type"];
+                $resource->url = _GetTEUrl($resource->nodeType, $doc);
+
+          }
+          else{
+             $resource->url = $row["url"];
+          }
+          $resource->document = $doc;
+
         }
-      }
-      return $alignments;
+    }
 }
+
+
 
 
 /********************************************************************************
@@ -783,9 +934,7 @@ class Standard{
     public $origonalColor; //NA
     public $highlightColor; //The color that will be rendered when the node is highlighed
     public $neighbors = array(); //An adjacency list of neighboring standards.
-    public $teachEngrNeighbors = array(); //An adjacency list of alignments to TE resources
-    public $scienceBuddiesNeighbors = array(); //An adj list of alignments to Science buddies resources.
-    public $outdoorschoolNeighbors = array();
+    public $alignedResources = array();
     public $rId = 0;  //The id that will eventually be set, zero indexed, so the data can be passed to r
     public $uri = null; //the URI to the NGSS web page
 
@@ -798,44 +947,23 @@ class Edge{
   public $id2;
 }
 
-class SBAlignment{
-  public $id;
-  public $MySqlId;
-  public $title;
-  public $summary;
-  public $document;
-  public $rId;
-  public $nodeType = "DocumentSB";
-  public $SBURI;
-  public $color;
-  public $highlightColor;
-}
 
 
-class OSAlignment{
-  public $id;
-  public $MySqlId;
-  public $title;
-  public $summary;
-  public $document;
-  public $rId;
-  public $nodeType = "DocumentOS";
-  public $color;
-  public $url;
-  public $highlightColor;
-}
 
-//Represents a TE document. Comprizes $alignmentsList[].
-class TEAlignment{
+class Resource{
+
   public $id;  //The id of the document.
   public $MySqlId; //The mysql identifier of the document
   public $title;  //The TE title of the document
   public $summary; //The TE summary of the document
   public $url; //The TE URI of the document
-  public $docType; //The type of document (activity, lesson, etc)
+  public $docType;
+  public $color;
+  public $highlightColor;
   public $document; //The name of the document. (Same as document name in Raven)
   public $rId = 0;  //The id that will eventually be set, zero indexed, so the data can be passed to r
-  public $nodeType = "DocumentTE"; //Identifier of the type of node so we can distinguish from Standards
+  public $nodeType = null; //For TE only
+  public $order; //numerical ordering that will allow us to sort by collection type
 
 }
 

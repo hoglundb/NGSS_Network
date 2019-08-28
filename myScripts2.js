@@ -24,31 +24,35 @@ const COLOR_INDEX = 2;
 
 const DEFAULT_STANDARD = "S2467886";
 
+const RESOURCE_TYPES = ["TE", "SBCheckBox", "OSCheckBox"];
+const RESOURCE_TYPES_IDS = ["TE", "Outdoorschools", "Sciencebuddies"]
+const RESOURCE_TYPES_NAMES = ["DocumentTE", "DocumentOS", "DocumentSB"] //FIXME
 //Data structure to track the alignments dropdown list items and their node id's
 const DOC_TYPES = ["activity", "lesson", "curricularUnit"] //, "all"]
 
 //global variables for the network
 var docTypesForDropDown = getDropDownTypesArray();
 var NGSSGraph = null;
-var TEAlignments = null;
-var SBAlignments = null;
+var NGSSResources = null;
 var standardsCount = 0;
 var ADD_DOCS = true;
 var graph = null;
 var currentTableRow = "";
 var currentSelectedNode = null;
 var currentDocsTableRow = null;
+var currentDocsTableRowColor = null;
 var currentDocsTableRowType = null;  //tracks the type of document selected in the alignments table
 var selectedDocNode = null;
 var edgesToPrint = null;
 
+var hashChange = false;
 
 //The options for viewing the network. Either we are viewing the ASN or the NGSS
 var ModeEnum = {
   NGSS: 1,
   ASN:2
 };
-var hashChange = false;
+
 //The options for the types of alignments
 var ResourceTypes = {
     activities:false,
@@ -59,28 +63,68 @@ var ResourceTypes = {
 //Traks the display type as defined in ModeEnum{}
 var NodeDisplayType;
 
+
+window.onhashchange = function(){
+  if(hashChange){
+    SubmitFromHash();
+  }
+  hashChange = true;
+}
+
+
 function SubmitFromHash(){
 
-  //Clear the dom for the standards table and the alignments table and the network
-    ClearTable(document.getElementById('t1'));
-  ClearTable(document.getElementById('t2'));
-  RemoveNetwork("mynetwork");
+   //Clear the dom for the standards table and the alignments table and the network
+   ClearTable(document.getElementById('t1'));
+   ClearTable(document.getElementById('t2'));
+   RemoveNetwork("mynetwork");
 
-  var hashStr = location.hash;
-  params = _ParseHash(hashStr);
-/*  console.log(params)*/
+   var hashStr = location.hash;
+  console.log(hashStr)
+   params = _ParseHash(hashStr);
 
- var showAllTEDocs = false;
-  if(params["showTE"]["showActivies"] && params["showTE"]["showLessons"] && params["showTE"]["showCurricularUnits"])
-  showAllTEDocs = true;
-  console.log(params["showScienceBuddies"]);
-  BuildNetwork(params["sCode"], params["networkDepth"], params["displayType"], params["gradeBand"],
-               params["showTE"]["showActivies"],  params["showTE"]["showLessons"],
-               params["showTE"]["showCurricularUnits"], showAllTEDocs,
-               params["showScienceBuddies"], params["showOutdoorschool"]);
+ console.log(params)
+   var showAllTEDocs = false;
+   if(params["showTE"]["showActivies"] && params["showTE"]["showLessons"] && params["showTE"]["showCurricularUnits"])
+   showAllTEDocs = true;
+
+   var r = {};
+   r.activities =   params["showTE"]["showActivies"];
+   r.lessons = params["showTE"]["showLessons"];
+   r.curricularUnits = params["showTE"]["showCurricularUnits"];
+   r.allTEDocs = params["allTEDocs"]
+
+
+   otherResources = [];
+   for(var i = 0; i < RESOURCE_TYPES.length - 1; i++){
+     var n = {}
+     n.item = RESOURCE_TYPES_NAMES[i + 1];
+     n.show =  params["other"][i]
+     otherResources[i] = n;
+   }
+
+    r.otherResources = otherResources;
+    var sCode = params["sCode"];
+    var gradeBand = params["gradeBand"];
+    var displayType = params["displayType"];
+    var networkDepth = params["networkDepth"]
+    if(gradeBand != 0) networkDepth = 50;
+
+    BuildNetwork(sCode, networkDepth, displayType, gradeBand, r);
+
+  // console.log(GetResourceTypeSelectionFromDropdown())
+
+  /* BuildNetwork(params["sCode"], params["networkDepth"], params["displayType"], params["gradeBand"],
+                params["showTE"]["showActivies"],  params["showTE"]["showLessons"],
+                params["showTE"]["showCurricularUnits"], showAllTEDocs,
+                params["showScienceBuddies"], params["showOutdoorschool"]);*/
+/*
+*/
 }
 
 function _ParseHash(hashStr){
+
+  //get the sCode from the hash string
   var i = 1;
   var sCodeLen = 8;
   var sCode = "";
@@ -89,73 +133,61 @@ function _ParseHash(hashStr){
   }
 
   var gradeBand = "none";
-  var showOutdoorschool = "none";
-  var showScienceBuddies = "none";
   var displayType = "none";
   var networkDepth = "none";
   var showTE = {};
+  var showAll = false;
+  var other = [];
+
+
   for(var i = 0; i < hashStr.toString().length; i++){
-    if(hashStr[i] == "g"){
-      gradeBand = hashStr[i + 1].toString();
-    }
-    else if(hashStr[i] == "l"){
-      displayType = hashStr[i + 1].toString();
-    }
-    else if(hashStr[i] == "d"){
-      networkDepth = hashStr[i + 1].toString();
-    }
+   if(hashStr[i] == "g"){
+     gradeBand = hashStr[i + 1].toString();
+   }
+   else if(hashStr[i] == "l"){
+     displayType = hashStr[i + 1].toString();
+   }
+   else if(hashStr[i] == "d"){
+     networkDepth = hashStr[i + 1].toString();
+   }
 
-    //any boolian 1 and 0s get set to true or false for consistancy
-    else if(hashStr[i] == "o" && hashStr[i + 1] == "s"){
-      showOutdoorschool = hashStr[i + 2].toString();
-      showOutdoorschool = (showOutdoorschool == 0) ? false : true;
-    }
-    else if(hashStr[i] == "s" && hashStr[i + 1] == "b"){
-      showScienceBuddies = hashStr[i + 2].toString();
-      showScienceBuddies = (showScienceBuddies == 0) ? false : true;
-    }
-    else if(hashStr[i] == "t" && hashStr[i + 1] == "e"){
-      showTE["showActivies"] = (hashStr[i + 2] == 0) ? false : true;
-      showTE["showLessons"] = (hashStr[i + 3] == 0) ? false : true;
-      showTE["showCurricularUnits"] = (hashStr[i + 4] == 0) ? false : true;
-    }
-  }
+   else if(hashStr[i] == "t"){
+     showTE["showActivies"] = (hashStr[i + 1] == 0) ? false : true;
+     showTE["showLessons"] = (hashStr[i + 2] == 0) ? false : true;
+     showTE["showCurricularUnits"] = (hashStr[i + 3] == 0) ? false : true;
 
-  // 1 and 0 to true and false respectivly
+     if(showTE["showActivies"] && showTE["showLessons"] && showTE["showCurricularUnits"] ) showAll = true;
 
+   }
+
+   else if(hashStr[i] == "o"){
+       for(var j = 1; j < 3 ; j++){
+         other[j - 1] = (hashStr[i + j] == 0) ? false : true;
+       }
+   }
+ }
 
   var resultArr = {};
   resultArr["sCode"] = sCode;
   resultArr["gradeBand"] = gradeBand;
   resultArr["displayType"] = displayType;
   resultArr["networkDepth"] = networkDepth;
-  resultArr["showOutdoorschool"] = showOutdoorschool;
-  resultArr["showScienceBuddies"] = showScienceBuddies;
   resultArr["showTE"] = showTE;
+  resultArr["other"] = other;
+  resultArr["allTEDocs"] = showAll;
 
-   return resultArr;
-  /*console.log(gradeBand)*/
-}
-
-
-window.onhashchange = function(){
-
-  if(hashChange == true){
-      console.log("calling SubmitFromHash()")
-      SubmitFromHash();
-
-  }
-  hashChange = true;
-
+  return resultArr;
 }
 
 //Initization function
 window.onload = function onLoad(){
-
    ShowLoadingScreen();
-   window.location.href = window.location.href + "#10"
+
   //Load the nw data via a post request to getNetworkDataAPI.php
    GetNetworkDataAJAX();
+
+  hashChange = false;
+  location.hash = SetHashFromPageState();
 
    //The node display type defaults to ASN
    NodeDisplayType = ModeEnum.ASN;
@@ -176,11 +208,15 @@ window.onload = function onLoad(){
 
   //event listender for the type of resources dropdown.
   document.getElementById("dropdownToggle").addEventListener("click", function(){
+
         if(graph == null){
-          SetResourceTypesFromDropdown();
+          SetResourceTypesFromDropdown()
           return;
         }
         HandleResouceTypeDropdown();
+
+        hashChange = false;
+        location.hash = SetHashFromPageState();
   });
 
   //event listener for the display type dropdown
@@ -195,6 +231,7 @@ window.onload = function onLoad(){
     }
      ToggleNetworkLables();
 
+     //update the hash but don't submit
      hashChange = false;
      location.hash = SetHashFromPageState();
   });
@@ -203,13 +240,20 @@ window.onload = function onLoad(){
   document.getElementById("networkDepth").addEventListener("change", function(){
     if(graph != null && currentSelectedNode != null){
       document.getElementById("gradeBand").value = 0;
-      submit(currentSelectedNode, true);
+
+      //update the hash without submitting
+      hashChange = false;
+      location.hash = SetHashFromPageState();
+
+      submit(currentSelectedNode);
     }
   });
 
   //event listener for the gradeband dropdown
   document.getElementById("gradeBand").addEventListener("change",  function(){
-     submit(null, true);
+     hashChange = false;
+     location.hash = SetHashFromPageState();
+     submit(null);
   });
 
 //User can search by Enter key
@@ -232,8 +276,7 @@ window.onload = function onLoad(){
    document.getElementById("item2Box").checked = checked;
    document.getElementById("item3Box").checked = checked;
 
-   hashChange = false;
-   location.hash = SetHashFromPageState();
+
 
  });
 
@@ -256,31 +299,62 @@ window.onload = function onLoad(){
       document.getElementById(e.target.id).style.cursor = "pointer";
  });
 
- document.getElementById("item1Box").addEventListener("click", (e) => {
-     hashChange = false;
-     location.hash = SetHashFromPageState();
- });
-document.getElementById("item2Box").addEventListener("click", (e) => {
-  hashChange = false;
-  location.hash = SetHashFromPageState();
-});
-document.getElementById("item3Box").addEventListener("click", (e) => {
-    hashChange = false;
-    location.hash = SetHashFromPageState();
- });
-
- document.getElementById("SB").addEventListener("click", (e) => {
-
-  // SetHashFromPageState();
-   submitBtn();
- });
- document.getElementById("OS").addEventListener("click", (e) => {
-
-
-  //  SetHashFromPageState();
-    submitBtn();
- });
 }
+
+
+function SetHashFromPageState(sCode){
+
+  var hash = "";
+  var nodeHash = null;
+
+   if(sCode != undefined && sCode != null){
+      nodeHash = sCode;
+   }
+
+   else if(currentSelectedNode) nodeHash = currentSelectedNode;
+
+   else nodeHash = DEFAULT_STANDARD;
+
+   hash += nodeHash.toString() + ";";
+
+  //set the hash value  for the grade band dropdown state
+   var gb = document.getElementById("gradeBand").value;
+   hash += "g" + gb + ";";
+
+   //set the hash value for the display type dropdown state
+   var dt = document.getElementById("displayType").value;
+   hash += "l" + dt + ";";
+
+  //set the hash value for the network depth dropdown state
+   var nwDepth = document.getElementById("networkDepth").value;
+   hash += "d" + nwDepth + ";"
+
+   //set the hash values for each of the aligned resource collections
+   var a  = document.getElementById("item1Box").checked ? 1 : 0;
+   var l = document.getElementById("item2Box").checked ? 1 : 0;
+   var c = document.getElementById("item3Box").checked ? 1 : 0;
+
+
+   //set the hash params for the TE data state
+   var t =  "t" + a.toString() + l.toString() + c.toString() + ";";
+   hash += t;
+
+   //set the hash params for the other collections and their state
+   var o = "o";
+
+     var other = GetResourceTypeSelectionFromDropdown();
+     resources = other.otherResources;
+
+     for(var i = 0; i < resources.length; i++){
+       var val = resources[i].show ? 1 : 0;
+       o += val;
+     }
+
+   hash += o;
+
+   return hash;
+}
+
 
 
 /***************************************************************************************************************
@@ -361,8 +435,6 @@ function SetResourceTypesFromDropdown(){
 Function handles the logic of the resource type dropdown. Calls helper functions accordingly
 *******************************************************************************************************/
 function HandleResouceTypeDropdown(){
-
-
     //show or hide documents label in the graph legend
     showHideDocsLabel();
 
@@ -375,12 +447,12 @@ function HandleResouceTypeDropdown(){
 
     //if we went from no item to on item or from all items to not all items, redraw the graph
     if(showingDocsCur != showingDocsPrev){
-      submit(currentSelectedNode, false);
+
+      submit(currentSelectedNode);
     }
     //Just show/hide alignment nodes as required and rebuild the alignments table to reflect which alignments are showing.
     else{
-      ShowHideAlignmentsBasedOnDropdown(false);
-
+      ShowHideAlignmentsBasedOnDropdown();
       if(IsShowingDocs()){
               BuildAlignedDocumentsTable(currentSelectedNode);
       }
@@ -432,7 +504,7 @@ function submitBtn(resetDropdown){
 
    else {
 
-     submit(input, true)
+     submit(input)
    }
 }
 
@@ -463,7 +535,7 @@ function DisplayDCIModal(dciList, input){
       newRow.addEventListener("click", function(e){
         var classNameClicked = e.target.className;
         var sCode = classNameClicked.slice(4, classNameClicked.length)
-        submit(sCode, true);
+        submit(sCode);
         $('#myModal').modal('hide');
 
       });
@@ -516,7 +588,11 @@ function SubmitTableClick(sCode){
   if(document.getElementById("gradeBand").value != 0){
     document.getElementById("gradeBand").value =0;
   }
-  submit(sCode, true);
+
+  hashChange = false;
+  location.hash = SetHashFromPageState(sCode);
+
+  submit(sCode);
 
 }
 
@@ -538,62 +614,6 @@ function GetSCodeFromPCode(pCode){
 }
 
 
-function SetHashFromPageState(){
-
-   var hash = "";
-
-   //set the scode for the hash parameter
-   var nodeHash = null;
-   if(currentSelectedNode) nodeHash = currentSelectedNode;
-   else nodeHash = DEFAULT_STANDARD;
-   hash += nodeHash.toString() + ";";
-
-   //set the values for the ResourceType dropdown in the hash parameter
-   var gb = document.getElementById("gradeBand").value;
-   hash += "g" + gb + ";";
-
-   var dispType = document.getElementById("displayType").value;
-   hash += "l" + dispType + ";";
-
-   var nwDepth = document.getElementById("networkDepth").value;
-   hash += "d" + nwDepth + ";"
-
-
-   var os = document.getElementById("OSCheckBox").checked;
-   if(os) os = 1;
-   else os = 0;
-   hash += "os" + os.toString() + ";"
-
-   var sb = document.getElementById("SBCheckBox").checked;
-   if(sb) sb = 1;
-   else sb = 0;
-   hash += "sb" + sb.toString() + ";"
-
-   var teActivities = document.getElementById("item1Box").checked;
-   var teLessons = document.getElementById("item2Box").checked;
-   var teCU = document.getElementById("item3Box").checked;
-
-   if(teActivities) teActivities = 1;
-   else teActivities = 0;
-
-   if(teLessons) teLessons = 1;
-   else teLessons = 0;
-
-   if(teCU) teCU = 1;
-   else teCU = 0;
-
-   hash += "te" + teActivities.toString() + teLessons.toString() + teCU.toString()
-
-   //set the value for the network depth in the hash parameter
-
-   //set the value for the display type in the hash parameter
-
-   //set the grade band for the hash parameter
-
-   return hash;
-
-}
-
 
 /*************************************************************************************
   This function will get the imput values from the form elements and than call BuildNetwork()
@@ -602,7 +622,7 @@ function SetHashFromPageState(){
   Parameters:
     1) sCode: The sCode of the root node from which we build the graph.
 **************************************************************************************/
-function submit(code, updateHash){
+function submit(code){
 
   curNodeSize = 18
   var sCode = null;
@@ -610,10 +630,11 @@ function submit(code, updateHash){
   if(code != null && code.substring(0,1) == "S"){
     sCode = code;
   }
-  else if(code != null){
+  else if(code != null && code != undefined){
     sCode = GetSCodeFromPCode(code);  //get the sCode that corisponds with the NGSS code
     document.getElementById("displayType").value = 2  //set the dropdown to NGSS codes option
   }
+
   if(document.getElementById("networkDepth").value == 0){
     document.getElementById("networkDepth").value = 2;
   }
@@ -627,21 +648,13 @@ function submit(code, updateHash){
 
   //Update the global that holds the current sCode to be the sCode just submitted
   currentSelectedNode = sCode;
-
-  //Set the hash to remember the page state and make sure it doesn't trigger hash change submit action.
-  if(updateHash == true){
-    hashChange = false;
-    console.log("setting hash 1")
-    location.hash = "#" + SetHashFromPageState();
-
-  //
-  }
   document.getElementById("sCode").value = code
 
   //Clear the dom for the standards table and the alignments table and the network
   ClearTable(document.getElementById('t1'));
   ClearTable(document.getElementById('t2'));
   RemoveNetwork("mynetwork");
+
   //Get the user specified network depth from the dropdown menu. Default to 2 if no option selected.
   var depth = document.getElementById("networkDepth").value;
   depth = (depth == 0) ? 2 : depth;
@@ -656,7 +669,7 @@ function submit(code, updateHash){
 
 
   //Get the checkbox values that determine what type of alignments will be displayed.
-  var showActivies = document.getElementById("item1Box").checked;
+  var showActivities = document.getElementById("item1Box").checked;
   var showLessons = document.getElementById("item2Box").checked;
   var showCurricularUnits = document.getElementById("item3Box").checked;
 /*  var showAll = document.getElementById("item4Box").checked;*/
@@ -672,24 +685,63 @@ function submit(code, updateHash){
 
   //show the loading bar if showing an entire network with documents (exept for k-2 since it loads fast)
   var selectedGradeBand = document.getElementById("gradeBand").value;
-  if( (showActivies || showLessons || showCurricularUnits) && selectedGradeBand > 1 ){
+  if( (showActivities || showLessons || showCurricularUnits) && selectedGradeBand > 1 ){
     ShowLoadingScreen();
   }
 
-  var showScienceBuddies = document.getElementById("SBCheckBox").checked;
+  var resourceTypeSelection = GetResourceTypeSelectionFromDropdown();
 
-  var showOutdoorschool = document.getElementById("OSCheckBox").checked;
+
 
   //if grade band is set, we will automatically iterate up to the max depth to get every standard in that grade band
+
   if(document.getElementById("gradeBand").value > 0){
     document.getElementById("networkDepth").value = 0;
     depth = 50;
   }
 
   //Entry point for building the network and the alignments and standards tables.
- BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool);
+  BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypeSelection);
 
 }
+
+
+function GetResourceTypeSelectionFromDropdown(){
+
+  var result = {};
+  var showActivities = document.getElementById("item1Box").checked;
+  var showLessons = document.getElementById("item2Box").checked;
+  var showCurricularUnits = document.getElementById("item3Box").checked;
+  var showAllTEDocs = document.getElementById("TECheckBox").checked;
+
+  result.activities = showActivities;
+  result.lessons = showLessons;
+  result.curricularUnits = showCurricularUnits;
+  result.allTEDocs = showAllTEDocs;
+
+  var otherItems = [];
+  for(var i = 1; i < RESOURCE_TYPES_IDS.length; i++){
+   document.getElementById(RESOURCE_TYPES_IDS[i])
+    var showit = null;
+     if(document.getElementById(RESOURCE_TYPES_IDS[i])){
+       showit = document.getElementById(RESOURCE_TYPES_IDS[i]).checked;
+     }
+     else showit = false;
+     var item = {}
+     item.item = RESOURCE_TYPES_NAMES[i];
+     item.show = showit;
+
+     otherItems[i - 1] = item;
+  }
+  result.otherResources = otherItems;
+  return result
+}
+
+/*class DropdownState{
+  constructor(){
+
+  }
+}*/
 
 
 /****************************************************************************************
@@ -701,12 +753,12 @@ Parameters:
   2) depth: The max from the root node for which to build the network
   3) displayType: The type of node label to display (either NGSS or ASN)
   4) gradeBand: The gradeBand of the current subnetwork (formatted as lowgrade - highGrade)
-  5) showActivies: a boolean that determines if aligned activities will be displayed.
+  5) showActivities: a boolean that determines if aligned activities will be displayed.
   6) showLessons: a boolean that determines if aligned lessons will be displayed.
   7) showCurricularUnits: a boolean that determines if units will be displayed.
   8) showAll: a boolean that overrides the previous 3 that determines if all alignment types will be displayed.
 ****************************************************************************************/
-function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool){
+function BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypes){
 
   //If user has selected a gradeband, we search by that gradeBand and iterate up to a depth of 50 to display the entire gradeband.
   if(gradeBand != 0){
@@ -716,13 +768,11 @@ function BuildNetwork(sCode, depth, displayType, gradeBand, showActivies, showLe
     else if(gradeBand == 4) sCode = "S2467907"; //9-12 gradeband
     currentSelectedNode = sCode;
     document.getElementById("sCode").value = sCode
-    BuildNetworkNSteps(sCode, 50, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool );
+    depth = 50;  //set depth to max if grade band is set.
   }
 
-  //if user has not selected a gradeband, we build the network up to the specified depth.
-  else{
-    BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAllTEDocs, showScienceBuddies, showOutdoorschool);
-  }
+  BuildNetworkNSteps(sCode, depth, displayType, resourceTypes);
+
 }
 
 
@@ -782,27 +832,7 @@ can be passed to R.
 *************************************************************************************************/
 function GetEdgesInRFormat(){
    edges = JSON.parse(JSON.stringify(graph.edges));
-/*   for(var i = 0; i < edges.length; i++){
-        console.log(edges[i].to + ", " + edges[i].from)
-    }*/
-/*   var nodes = JSON.parse(JSON.stringify(graph.vertices));
-    for(var i = 0; i < edges.length; i++){
-        var from = edges[i].from;
-        var to = edges[i].to;
-        for(var j = 0; j < nodes.length; j++){
-      if(nodes[j].id == from){
-         var v = nodes[j].rId;
-            edges[i].from = nodes[j].rId;
-          }
-          if(nodes[j].id == to){
-            edges[i].to = nodes[j].rId;
-          }
-        }
-    }
-*/
-
    edgesToPrint = edges;
-
    var rString = GetGMLData();
    return rString;
 }
@@ -830,39 +860,26 @@ Parameters:
   1)  sCode: the ASN code of the root node of the network
   2) depth: the distince from the root node that we will have in the network
   3) displayType: The option for if ASN or NGSS codes will be displayed
-  4) showActivies: true if activity documents will be displayed in the graph.
+  4) showActivities: true if activity documents will be displayed in the graph.
   5) showLessons: True if lesson documents will be displayed in the graph
   6) showCurricularUnits: True if curricularunits will be displayed in the graph
   7) showAll: True if all document types will be displayed in the graph
 *************************************************************************************************/
-function BuildNetworkNSteps(sCode, depth, displayType, showActivies, showLessons, showCurricularUnits, showAll, showScienceBuddies, showOutdoorschool){
+function BuildNetworkNSteps(sCode, depth, displayType, resourceTypes){
   graph = new GraphObject(); //Allocate a new Graph object to store the current graph
   if(depth){
       AddStandarsNodes(depth, sCode);  //add all the standards to the graph up to the specified depth
   }
   else AddAllStandards();
-
   AddStandardsEdges();  //add vertex connections to the graph for the standards
-  //Add the alignemnts only if selected from the check box
-  if(ResourceTypes.activities || ResourceTypes.lessons || ResourceTypes.curricularunits){
-       AddTEAlignmentsNodes(); //Add all alignments to the graph
-       AddTEAlignmentEdges();  //Add edges to each alignment
-  }
-
- if(showScienceBuddies == true){
-   AddSBAlignmentsNodes();
-   AddSBAlignmentEdges();
- }
+  AddResourceAlignmentNodes(resourceTypes);
+  AddResourceAlignmentEdges(resourceTypes);
 
 //S2454525
- if(showOutdoorschool == true){
-   AddOSAlignmentsNodes();
-   AddOSAlignmentEdges();
- }
-
 
 
   var edgesRFormat = GetEdgesInRFormat(); //Format edge list as zero indexed so R can compute KK on it
+
 
   GetKamadaKawaiCoords(edgesRFormat); //gets the kk layout via an AJAX post. Begins the chain of events for drawing the netork
 }
@@ -876,44 +893,19 @@ function GetGMLData(){
   for(var i = 0; i < graph.numVertices; i++){
      var nodeString = "\tnode[\n";
      nodeString += padding + "id " +  (graph.vertices[i].id + 1).toString()  + "\n";
-    /* nodeString += padding + "ASN " + "\"" + graph.vertices[i].sCode + "\"" + "\n";
-     if(graph.vertices[i].nodeType == "Performance Expectation" || graph.vertices[i].nodeType == "Standard"){
-        nodeString += padding + "NGSS " + "\"" +  graph.vertices[i].pCode + "\"" + "\n";
-     }
-     else{
-       nodeString += padding + "NGSS " + "\"" +  "\"" + "\n";
-     }
-     nodeString += padding + "type " + "\"" +  _GetGMLDataType(graph.vertices[i].nodeType) + "\"" + "\n";
-     nodeString += padding + "desc " + "\"" + "des" + "\"" + "\n";*/
      nodeString += "\t]\n"
      gmlString += nodeString;
   }
 
  //build the node gml data for TE docs
- for(var i = 0; i < graph.numAlignmentsTE; i++){
+ for(var i = 0; i < graph.numAlignments; i++){
    var nodeString = "\tnode[\n";
-    nodeString += padding + "id " +  (graph.alignmentsTE[i].id + 1).toString()  + "\n";
+    nodeString += padding + "id " +  (graph.alignments[i].id + 1).toString()  + "\n";
     nodeString += "\t]\n"
     gmlString += nodeString
  }
 
- //build the node gml data for science buddies docs
- for(var i = 0; i < graph.numAlignmentsSB; i++){
-   var nodeString = "\tnode[\n";
-    nodeString += padding + "id " +  (graph.alignmentsSB[i].id + 1).toString()  + "\n";
-    nodeString += "\t]\n"
-    gmlString += nodeString
- }
-
- //build the node gml data for outdoor school docs
- for(var i = 0; i < graph.numAlignmentsOS; i++){
-   var nodeString = "\tnode[\n";
-    nodeString += padding + "id " +  (graph.alignmentsOS[i].id + 1).toString()  + "\n";
-    nodeString += "\t]\n"
-    gmlString += nodeString
- }
-
-   for(var i = 0; i < edgesToPrint.length; i++){
+ for(var i = 0; i < edgesToPrint.length; i++){
      var edgeString = "\tedge[\n";
      edgeString += padding + "source " + (edgesToPrint[i].to + 1).toString()  + "\n";
      edgeString += padding + "target " +  (edgesToPrint[i].from + 1).toString() + "\n";
@@ -947,63 +939,19 @@ function _GetGMLDataType(nodeType){
 }
 
 
-function AddOSAlignmentsNodes(){
-
-  //for each standards in the current NGSS graph
-  for(var i = 0; i < graph.numVertices; i++){
-    //Get the standard's adj list of alignments
-    var alignmentIds = graph.vertices[i].outdoorschoolNeighbors;
-    if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
-    //for every alignment to the current standard
-    for(var j = 0; j < alignmentIds.length; j++ ){
-      var curAlignmentId = alignmentIds[j];
-
-      var curAlignment = OSAlignments[curAlignmentId];
-      if(!graph.hasOSAlignment(curAlignment)){
-
-        graph.addOSAlignment(curAlignment);
-      }
-    }
+function AddAlignmentsNodes(){
+    //for each different resource in the list of collections
+  for(var i = 0; i < NGSSResources.length; i++){
+    _AddAlignmentsNodes(NGSSResources[i]);
   }
 }
 
 
-function AddSBAlignmentsNodes(){
-  //for each standards in the current NGSS graph
-  for(var i = 0; i < graph.numVertices; i++){
-
-    //Get the standard's adj list of alignments
-    var alignmentIds = graph.vertices[i].scienceBuddiesNeighbors;
-    if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
-    //for every alignment to the current standard
-    for(var j = 0; j < alignmentIds.length; j++ ){
-      var curAlignmentId = alignmentIds[j];
-      var curAlignment = SBAlignments[curAlignmentId];
-      if(!graph.hasSBAlignment(curAlignment)){
-        graph.addSBAlignment(curAlignment);
-      }
-    }
-  }
+function _AddAlignmentsNodes(resouceItems){
+/*  for(var i = 0; i < graph.numVertices; i ++){
+    var resourceIds
+  }*/
 }
-
-
-/****************************************************************************************************
-For every standard in the globa graph object, this function adds any alignments to it.
-****************************************************************************************************/
-function AddTEAlignmentsNodes(){
-  for(var i = 0; i < graph.numVertices; i++){  //for each standard
-       var alignmentIds = graph.vertices[i].teachEngrNeighbors;  //get list of documnets aligned to that standard
-       if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
-       for(var j = 0; j < alignmentIds.length; j++){
-            var curAlignmentId = alignmentIds[j];
-            var curAlignment = TEAlignments[curAlignmentId];
-            if(!graph.hasTEAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
-              graph.addTEAlignment(curAlignment);
-            }
-       }
-  }
-}
-
 
 function AddOSAlignmentEdges(){
   for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
@@ -1047,19 +995,72 @@ function AddOSAlignmentEdges(){
 }
 
 
-/****************************************************************************************************
-     This function addes edges between all standards and their alignments in the global graph object.
-****************************************************************************************************/
-function AddTEAlignmentEdges(){
+
+function AddResourceAlignmentNodes(resourceTypes){ //FIXME
+
+
+  for(var i = 0; i < graph.numVertices; i++){  //for each standard
+     var alignmentIds = graph.vertices[i].alignedResources;  //get list of documnets aligned to that standard
+       if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
+       for(var j = 0; j < alignmentIds.length; j++){
+            var curAlignmentId = alignmentIds[j];
+            var curAlignment = NGSSResources[curAlignmentId];
+            if(_ShouldShowResource(curAlignment.nodeType , resourceTypes) == false){
+              continue;
+            }
+            if(!graph.hasAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
+              graph.addAlignment(curAlignment);
+            }
+       }
+  }
+
+}
+
+
+
+function AddResourceAlignmentEdges(resourceTypes){ //FIXME
   for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
-    var alignmentIds = graph.vertices[i].teachEngrNeighbors;  //get all alignments for that standard
+    var alignmentIds = graph.vertices[i].alignedResources;  //get all alignments for that standard
     if(alignmentIds.length == 0) continue;  //skip if no documents to add
-    for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in graph
+    for(var j = 0; j < alignmentIds.length; j++){   //for every alignment, add edge if alignment in grap
+         //check if alignment should be showing or not
          var curAlignmentId = alignmentIds[j];
-         var curAlignment = TEAlignments[curAlignmentId].id;
-         graph.addEdge(graph.vertices[i].id, curAlignment);
+         var curAlignment = NGSSResources[curAlignmentId];
+
+         //only add resources as specified in the resourceType dropdown object
+         if(_ShouldShowResource(curAlignment.nodeType, resourceTypes) == false){
+           continue;
+         }
+         if(graph.hasEdge(graph.vertices[i].id, curAlignment.id) == true) continue
+         graph.addEdge(graph.vertices[i].id, curAlignment.id);
      }
   }
+}
+
+
+function _ShouldShowResource(nodeType, displayType){
+
+
+    if(nodeType == "DocumentTE"){  //hard coded for TE
+        return document.getElementById("TECheckBox").checked
+    }
+
+    else{ //handle all other doc type dynamically
+        var nonTEResources = displayType.otherResources;
+
+        //for every item in the global list of documents
+           //if item is checked in displayType list, return true, else return false.
+        for(var i = 0; i < nonTEResources.length; i++){
+           r = nonTEResources[i];
+           if(nodeType == r.item){
+             return r.show;
+           }
+        }
+
+        throw new Error("Could not get item from dropdown");
+    }
+
+    return false;
 }
 
 
@@ -1147,73 +1148,32 @@ function BuildNetworkStandards(kkCoords){
 }
 
 
-function BuildNetworkAlignmentsTE(kkCoords){
+function BuildNetworkAlignments(kkCoords){
   //Build a vertex for every document in the graph object
-  for(var j = 0; j < graph.numAlignmentsTE; j++){
+
+  for(var j = 0; j < graph.numAlignments; j++){
+
     nodes.add({
-      id:graph.alignmentsTE[j].id,
-      title:graph.alignmentsTE[j].title,
-      color: graph.alignmentsTE[j].color,
-      regularColor:TE_DOCS_COLOR[0],
-      highlightColor:TE_DOCS_COLOR[1],
+      id:graph.alignments[j].id,
+      title:graph.alignments[j].title,
+      color: graph.alignments[j].color,
+      regularColor:graph.alignments[j].color,
+      highlightColor:graph.alignments[j].highlightColor,
       shape:'circle',
       width:.1,
       font:{size:DOC_NODE_SIZE},
       labal:" ",
-      nodeType:graph.alignmentsTE[j].nodeType,
-      doc:graph.alignmentsTE[j].document,
+      nodeType:graph.alignments[j].nodeType,
+      doc:graph.alignments[j].document,
       x:kkCoords[graph.numVertices + j].x,
       y:-kkCoords[graph.numVertices + j].y,
-      hidden:true
+      hidden:false
     });
   }
 
   return graph.numVertices + j;
 }
 
-
-function BuildNetworkAlignmentsOS(kkCoords, startIndex){
-  for(var i = 0; i < graph.numAlignmentsOS; i++){
-    nodes.add({
-      id:graph.alignmentsOS[i].id,
-      color:graph.alignmentsOS[i].color,
-      shape:'circle',
-      width:.1,
-      regularColor:OS_DOCS_COLOR[0],
-      highlightColor:OS_DOCS_COLOR[1],
-      font:{size:DOC_NODE_SIZE},
-      labal: " ",
-      showing:true,
-      nodeType:graph.alignmentsOS[i].nodeType,
-      doc:graph.alignmentsOS[i].document,
-      x:kkCoords[startIndex + i].x,
-      y:-kkCoords[startIndex + i].y
-    });
-  }
-  return startIndex + i;
-}
-
-function BuildNetworkAlignmentsSB(kkCoords, startIndex){
-
-  for(var i = 0; i < graph.numAlignmentsSB; i++){
-    nodes.add({
-      id:graph.alignmentsSB[i].id,
-      color:graph.alignmentsSB[i].color,
-      shape:'circle',
-      width:.1,
-      regularColor:SB_DOCS_COLOR[0],
-      highlightColor:SB_DOCS_COLOR[1],
-      font:{size:DOC_NODE_SIZE},
-      labal: " ",
-      showing:true,
-      nodeType:graph.alignmentsSB[i].nodeType,
-      doc:graph.alignmentsSB[i].document,
-      x:kkCoords[startIndex + i].x,
-      y:-kkCoords[startIndex + i].y
-    });
-  }
-  return startIndex + i;
-}
 
 
 function BuildNetworkEdges(){
@@ -1243,9 +1203,7 @@ Parameters:
 
      //Build vis.js nodes for each alignment according to the collection
      var index = 0;
-     index = BuildNetworkAlignmentsTE(kkCoords);
-     index = BuildNetworkAlignmentsSB(kkCoords, index);
-     index = BuildNetworkAlignmentsOS(kkCoords, index);
+     BuildNetworkAlignments(kkCoords)
 
      //Build edges between all connected nodes (standards and resources)
      BuildNetworkEdges()
@@ -1264,7 +1222,7 @@ Parameters:
     };
 
     //Show the document nodes filtered by the resouce type dropdown list that the user selected. Default is none.
-    ShowHideAlignmentsBasedOnDropdown(false);
+    ShowHideAlignmentsBasedOnDropdown();
 
     //draw the vis.js network graph
     var container = document.getElementById("mynetwork");
@@ -1276,7 +1234,7 @@ Parameters:
 
     //Create the tables for Alignments and Standards. Also get the root node since it gets mixed up during sorting
      var root = CreateStandardsTable(REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10)
-     BuildAlignedDocumentsTable(root.sCode)
+  //   BuildAlignedDocumentsTable(root.sCode)
 
      //Highlight the starting node that was returned from CreateStandardsTable().
      HighlightNode(root.id, root.color, REGULAR_NODE_SIZE, REGULAR_NODE_SIZE + 10);
@@ -1332,50 +1290,28 @@ function NWClickActionResult(nw){
           }
         }
 
-        /*//handle onclick event for sciencebuddies nodess
-        else if(clickedNodes[0].nodeType == "DocumentSB"){
-            if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
-               HighlightDocumentNode(clickedNodes[0])
-            }
-        }*/
-
-        else if(clickedNodes[0].nodeType == "DocumentTE" || clickedNodes[0].nodeType == "DocumentSB" || clickedNodes[0].nodeType == "DocumentOS"){  //node clicked on was a document
-            //only clicking on an Alignment connected with the currently selected standard does anything
+      //clicked on aligned resource node
+      else{
+           //only clicking on an Alignment connected with the currently selected standard does anything
            if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
 
-              //highlight the node that was just clicked on
-              HighlightDocumentNode(clickedNodes[0]);
+             //highlight the node that was clicked on by making it bigger and giving it a lighter color
+             HighlightDocumentNode(clickedNodes[0]);
 
-              //set the highlight color of the clicked document node
-              var newType = null;
-              var newColor = null;
-              if(clickedNodes[0].nodeType == "DocumentTE") {
-                newType = "TE";
-                newColor = TE_DOCS_COLOR[1];
-              }
-              else if(clickedNodes[0].nodeType == "DocumentSB"){
-                 newType = "SB";
-                 newColor = SB_DOCS_COLOR[1];
-              }
-              else if(clickedNodes[0].nodeType == "DocumentOS"){
-                newType = "OS";
-                newColor = OS_DOCS_COLOR[1];
-              }
+             //Highlight the coorisponding alignments table cell to the highlight color of the selected node
+             var newColor = clickedNodes[0].highlightColor;
+             HighlightDocsTableCell(clickedNodes[0].doc, newColor);
+             document.getElementById(clickedNodes[0].doc).scrollIntoView();
 
-
-              HighlightDocsTableCell(clickedNodes[0].doc, newColor);  //highlight documents table cell when clicked
-              document.getElementById(clickedNodes[0].doc).scrollIntoView(); //scroll to the highlighted part of the alignments table
-              currentDocsTableRowType = newType;
-              selectedDocNode = clickedNodes[0];
-            /*  HighlightDocsTableCell(clickedNodes[0].doc) //handle docs table highlighting
-              if(document.getElementById(clickedNodes[0].doc) && IsShowingDocs()){
-                  document.getElementById(clickedNodes[0].doc).scrollIntoView();  //Scroll to the document in the documents table
-              }*/
-            }
-            //Clicking on a random node will unighlight the current standard.
-          //  else UnHighlightDocumentNode(selectedDocNodeId)
-        }
+             //Set the global value that keeps track of the currently selected alignment node
+             selectedDocNode = clickedNodes[0];
+           }
       }
+
+
+      }
+
+
   });
 }
 
@@ -1391,7 +1327,10 @@ function NWDoubleClickActionResult(nw){
       if(document.getElementById("gradeBand").value != 0){
         document.getElementById("gradeBand").value =0;
       }
-      submit(sCode, true);
+
+      hashChange = false;
+      location.hash = SetHashFromPageState();
+      submit(sCode);
     }
   });
 }
@@ -1443,10 +1382,10 @@ function ImproveNetworkLayout(nw){
 
 
 function SetZoom(nwSize){
-  var total = nwSize + graph.numAlignmentsTE
+  var total = nwSize + graph.numAlignments
   var res = -.224 * Math.log(total) + 1.6379;
-  if(graph.numAlignmentsTE > 100 && nwSize > 50) res = 1.6* res
-  if(graph.numAlignmentsTE > 500 && nwSize > 50){
+  if(graph.numAlignments > 100 && nwSize > 50) res = 1.6* res
+  if(graph.numAlignments > 500 && nwSize > 50){
     res = 1.5*res
   }
   return res
@@ -1490,13 +1429,13 @@ Function toggles the display of the alignments label in the legend depending on 
 showing in the graph. Also adjusts the position of the legend accordinly.
 **************************************************************************************************/
 function showHideDocsLabel(){
-  var showActivies = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
+  var showActivities = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
   var showLessons = document.getElementById(docTypesForDropDown[1].checkBoxId).checked;
   var showCurricularUnits = document.getElementById(docTypesForDropDown[2].checkBoxId).checked;
 
   var docsLabel = document.getElementById("alignedDocsLabel");
   var legend = document.getElementById("theLegend");
-  if(showActivies || showLessons || showCurricularUnits){
+  if(showActivities || showLessons || showCurricularUnits){
     if(legend){
      legend.style.top = "74vh"
     }
@@ -1523,13 +1462,12 @@ function alignLegend(){
 Functions handles the display of alignments in the nw based on items selected from the dropwown.
 A json string is build and then passed to vis.js to update the nw to show/hide alignments.
 ******************************************************************************************/
-function ShowHideAlignmentsBasedOnDropdown(changeHash){
-
+function ShowHideAlignmentsBasedOnDropdown(){
    //don't to anything if the graph has not been drawn yet
    if(graph == null) return;
 
    //Get the selections from the docTypes dropdown checkboxes
-   var showActivies = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
+   var showActivities = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
    var showLessons = document.getElementById(docTypesForDropDown[1].checkBoxId).checked;
    var showCurricularUnits = document.getElementById(docTypesForDropDown[2].checkBoxId).checked;
   /* var showAll =  document.getElementById(docTypesForDropDown[3].checkBoxId).checked;*/
@@ -1537,30 +1475,26 @@ function ShowHideAlignmentsBasedOnDropdown(changeHash){
 
    //Build a json string in vis.js format based on the options above
    var count = 0;
-   var hidden = "true"
+
    var dataString = "[";
-   for(var i = 0; i < graph.numAlignmentsTE; i++){
-     var curAlignment = graph.alignmentsTE[i];
-     if(graph.alignmentsTE[i].docType == "activity" && showActivies) {
-       hidden = "false";
-     }
-     else if(graph.alignmentsTE[i].docType == "lesson" && showLessons) {
-       hidden = "false"
-     }
-     else if(graph.alignmentsTE[i].docType == "curricularUnit" && showCurricularUnits){
-        hidden = "false";
-      }
+   for(var i = 0; i < graph.numAlignments; i++){
+      var hidden = "false"
+      if(graph.alignments[i].nodeType != "DocumentTE" ) continue;
+     var curAlignment = graph.alignments[i];
+     if(graph.alignments[i].docType == "activity" &&  !showActivities) hidden = "true";
+     else if(graph.alignments[i].docType == "lesson" && !showLessons) hidden = "true";
+     else if(graph.alignments[i].docType == "curricularUnit" && !showCurricularUnits) hidden = "true";
      dataString =  dataString + "{";
-     dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignmentsTE[i].id.toString()  + ",";
+     dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignments[i].id.toString()  + ",";
      dataString =  dataString +'"'+ "hidden" + '"' + ":" + hidden;
-     dataString =  dataString + "}"
-     dataString = dataString + ","
+     dataString =  dataString + "}";
+     dataString = dataString + ",";
 
      if(hidden == "false"){
-       graph.alignmentsTE[i].showing = true;
+       graph.alignments[i].showing = true;
      }
      else{
-       graph.alignmentsTE[i].showing = false;
+       graph.alignments[i].showing = false;
      }
 
      count++;
@@ -1575,13 +1509,6 @@ function ShowHideAlignmentsBasedOnDropdown(changeHash){
     nodes.update(
       networkJson
     );
-
-    if(changeHash == true){
-      hashChange = false;
-      console.log("setting hash 2")
-      location.hash = SetHashFromPageState();
-    }
-
 }
 
 
@@ -1612,26 +1539,20 @@ prameters:
 *******************************************************************************************/
 function IsAlignedToStandard(docId, docType){
 
+  //get list of aligned resources for the current selected node by sCode
   var ids = [];
   for(var i = 0; i < graph.numVertices; i++){
-    if(graph.vertices[i].sCode == currentSelectedNode){
-      if(docType == "DocumentTE"){
-          ids = graph.vertices[i].teachEngrNeighbors;
-      }
-      else if(docType == "DocumentSB"){
-        ids = graph.vertices[i].scienceBuddiesNeighbors;
-      }
-      else if(docType == "DocumentOS"){
-        ids = graph.vertices[i].outdoorschoolNeighbors;
-      }
-      break;
-    }
-  }
 
+      if(graph.vertices[i].sCode == currentSelectedNode){
+         ids = graph.vertices[i].alignedResources;
+        break
+      }
+  }
   for(var i = 0; i < ids.length; i++){
-    if(docType == "DocumentTE" && docId == TEAlignments[ids[i]].id) return true;
-    if(docType == "DocumentSB" && docId == SBAlignments[ids[i]].id) return true;
-    if(docType == "DocumentOS" && docId == OSAlignments[ids[i]].id) return true;
+    if(docId == NGSSResources[ids[i]].id) {
+      var resourceTypes = GetResourceTypeSelectionFromDropdown();
+      return _ShouldShowResource( NGSSResources[ids[i]].nodeType, resourceTypes);
+    }
   }
   return false;
 }
@@ -1644,37 +1565,39 @@ Parameters:
  1) sCode: the ASN identifier of the standard.
  2) dataSet: itentifies the type of documents we are using)
 ***************************************************************************************/
-function GetAlignmentsForStandard(sCode, type){
+function GetAlignmentsForStandard(sCode){
 
-    var dataSet = null;
-    var alignments = null
-    var curStandard = null;
+  //get the state of the ResourceTypes dropdown
+  var resourceTypes = GetResourceTypeSelectionFromDropdown();
 
+  var dataSet = null;
+  var alignments = null
+  var curStandard = null;
+
+  //get the list of all aligned resources for that standard
   for(var i = 0; i < graph.numVertices; i++){
     if(graph.vertices[i].sCode == sCode){
       curStandard = graph.vertices[i]
     }
   }
+  alignments = curStandard.alignedResources;
 
-  if(type == "TE"){
-    dataSet = TEAlignments;
-    alignments = curStandard.teachEngrNeighbors;
-  }
-  else if(type == "SB"){
-     dataSet = SBAlignments;
-     alignments = curStandard.scienceBuddiesNeighbors;
-  }
-  else if(type == "OS"){
-    dataSet = OSAlignments;
-    alignments = curStandard.outdoorschoolNeighbors;
-  }
-  else{
-    throw new Error("Cannot get alignments for this standard type " + type);
-  }
+  //List of all NGSS resources indexed
+  dataSet = NGSSResources;
   var als = [];
+  var count = 0
+
+  //For every resource aligned to that standard
   for(var i = 0; i < alignments.length; i++){
-     als[i] = dataSet[alignments[i]].id
+
+     //Filter out all doctypes not selected from the dropdown
+     if( _ShouldShowResource(dataSet[alignments[i]].nodeType, resourceTypes)){
+       als[count] = dataSet[alignments[i]].id;
+       count++
+     }
   }
+
+  //return list of ids of aligned resources to build the table for
   return als;
 }
 
@@ -1689,28 +1612,35 @@ Parameters:
 *****************************************************************************************/
 function ArrayContains(arr, value){
   for(var i = 0; i < arr.length; i++){
-    if(arr[i] == value) return true;
+    if(arr[i] == value){
+      return true;
+    }
   }
   return false;
 }
 
+function IsShowingResource(node){
 
-function _BuildAlignedDocumentsForCollection(nodeSet, sCode, type){
+  var resourceTypes = GetResourceTypeSelectionFromDropdown();
+  var nodeType = node.nodeType;
+  return _ShouldShowResource(node.nodeType, resourceTypes);
+}
+
+
+function _BuildAlignedDocumentsForCollection(nodeSet, sCode){
 
   var count = 0;
   //get a reference to the table in the DOM and clear the previously build table if any.
   var tableRef = document.getElementById('t2');
 
   //Get a list of resources aligned to the standard with the given sCode.
-  myList = GetAlignmentsForStandard(sCode, type);
+  myList = GetAlignmentsForStandard(sCode);
 
   //For every resource aligned to sCode, add a row to the table with its metadata and onclick event handler
   for(var i = 0; i <nodeSet.length; i++){
     var curNode = nodeSet[i];
     if(!ArrayContains(myList, nodeSet[i].id)) continue;
-
-    if(!nodeSet[i].showing) continue;
-
+    if(!IsShowingResource(nodeSet[i])) continue;
     count++;
     var curDocId = nodeSet[i].document;
     var newRow = tableRef.insertRow(tableRef.rows.length);
@@ -1719,18 +1649,20 @@ function _BuildAlignedDocumentsForCollection(nodeSet, sCode, type){
 
     var curColor = nodeSet[i].color;
     var curHighlightColor = nodeSet[i].highlightColor;
+
     //add closure to on click callback for row click action
     newRow.onclick = (function(){
-      var currentDoc = curDocId;
-      var currentId = nodeSet.id;
-      var c = curNode
-      return function(){
-        unHighlightCurrentSelectedDocument();
-        HighlightDocsTableCell(currentDoc, curHighlightColor);  //highlight documents table cell when clicked
-        HighlightDocumentNode(c)
-        currentDocsTableRowType = type;
-      }
-    })();
+       var currentDoc = curDocId;
+       var currentId = nodeSet.id;
+       var highlightColor = curHighlightColor;
+       var c = curNode
+       return function(){
+         unHighlightCurrentSelectedDocument();
+         HighlightDocsTableCell(currentDoc, highlightColor);  //highlight documents table cell when clicked
+         HighlightDocumentNode(c)
+       //  currentDocsTableRowType = type;
+       }
+     })();
 
     //build the inner html for the new table row.
     var docType = "";
@@ -1763,13 +1695,10 @@ function BuildAlignedDocumentsTable(sCode){
     ClearTable(document.getElementById('t2'));
 
    //Build document table for TE documents
-   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsTE, sCode, "TE");
+   graph.sortAlignments();
 
-   //Build document table for Sciencebuddies documents
-   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsSB,sCode, "SB");
+   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignments, sCode);
 
-   //Build documents table for Outdoorschool collection
-   alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignmentsOS, sCode, "OS");
 
    //Set the table row count in the table header
    document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
@@ -1817,26 +1746,19 @@ and putting a border around it.
 Parameters:
  1) docId: the id of the table row in the DOM that will get highlighed.
 ************************************************************************************************/
-function HighlightDocsTableCell(docId, highlightColor){
+function HighlightDocsTableCell(docId, highlightColor){ //FIXME
    //unighlight table row if set
    if(document.getElementById(currentDocsTableRow)){
 
      //set the color to unhighlight table cell based on the type of the previous selected document in the table
      var color = null;
-     if(currentDocsTableRowType == "TE"){ //unhighlight to TE color
-       color = TE_DOCS_COLOR[0];
-     }
-     else if(currentDocsTableRowType == "SB"){ //unhighlight to SB color
-       color = SB_DOCS_COLOR[0];
-     }
-     else if(currentDocsTableRowType == "OS"){
-       color = OS_DOCS_COLOR[0];
-     }
+
+     //reset the color of the row that was previously selected
      document.getElementById(currentDocsTableRow).style.border = "none";
-     document.getElementById(currentDocsTableRow).style.background = color;
+     document.getElementById(currentDocsTableRow).style.background =  GetResourceColor(currentDocsTableRow);
    }
 
-   //highlight the table row and add border
+   //highlight the table row and add border to the new row
    if(document.getElementById(docId)){
       document.getElementById(docId).style.border = "4px solid grey";
       document.getElementById(docId).style.background = highlightColor;
@@ -1846,6 +1768,27 @@ function HighlightDocsTableCell(docId, highlightColor){
    currentDocsTableRow = docId;
 }
 
+
+function GetResourceColor(resourceId){
+
+   //Search the global resource list for the resource with the given id
+    var color = null;
+    for(var i = 0;  i < NGSSResources.length; i++){
+      if(NGSSResources[i].document == resourceId){
+
+         //get the color attribute of the resource
+         color = NGSSResources[i].color;
+         break;
+      }
+    }
+
+    //return the color if found
+    if(color != null)
+    return color;
+
+    //throw error if color not found
+    throw new Error("Could not find resource color");
+}
 
 /**********************************************************************************
 Function takes a URL and opens the a new window in the browser and navigates to that
@@ -2066,7 +2009,7 @@ function getNodeUnighlightColor(color){
   if(color == BLUE_COLOR[2]) return BLUE_COLOR[0];
   if(color == GREEN_COLOR[2]) return GREEN_COLOR[0];
   if(color == ORANGE_COLOR[2]) return ORANGE_COLOR[0];
-  console.log("color error!!!")
+
   return 'red';
 }
 
@@ -2166,6 +2109,8 @@ function _InsertRowIntoStandardsTable(tableRef, description, sCode, ngssCode,  g
        currentSelectedNode = sCode;
      }
 
+
+
      //Build and format the html for the table row
      var ul = "underline";
      var n = "none";
@@ -2173,7 +2118,7 @@ function _InsertRowIntoStandardsTable(tableRef, description, sCode, ngssCode,  g
      var colorId = sCode + "Color";
      if(color == GREY_COLOR[0] || color == PURPLE_COLOR[0] || color == ORANGE_COLOR[0]){
        NGSSLink =  '<span style="margin-right:3%">|</span>' + '<span style="">'
-       + '<a class = "clickableTableCell" onclick=SubmitTableClick(\'' + sCode + '\'); style = "margin-right:2%; color:blue; cursor: pointer; font-size:10pt;">' + ngssCode + '</a>'
+       + '<a class = "clickableTableCell" onclick=SubmitTableClick(\'' + sCode +  '\'); style = "margin-right:2%; color:blue; cursor: pointer; font-size:10pt;">' + ngssCode + '</a>'
        + '<a onmouseover= this.style.textDecoration="underline" onmouseout=this.style.textDecoration="none"  onclick=ViewNGSSPage(\'' + uri + '\') style="color:blue; cursor:pointer; hover:red">NGSS/NSTA</a>'
        + '</span>' + '<br>';
      }
@@ -2352,12 +2297,10 @@ function GetNetworkDataAJAX(){
            if(req.status == 200){
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
-               TEAlignments = result[1];
-               SBAlignments = result[2];
-               OSAlignments = result[3];
+               NGSSResources = result[1];
+               BuildResourcesDropdown();
                setTimeout(function(){
-               HideLoadingScreen();
-               submit(DEFAULT_STANDARD, true);
+               submit(DEFAULT_STANDARD);
              }, 200);
 
            }
@@ -2369,6 +2312,70 @@ function GetNetworkDataAJAX(){
    req.send(null)
 }
 
+
+
+
+
+//Takes the post from the server and builds a dropdown to accomidate all the resource types
+function BuildResourcesDropdown(){
+
+  for(var i = 1; i < RESOURCE_TYPES.length; i++){
+    var newItem = document.createElement("div");
+    newItem.id = RESOURCE_TYPES[i]
+    var newCheckbox = document.createElement("input")
+    newCheckbox.type = "checkbox";
+    newCheckbox.id = RESOURCE_TYPES_IDS[i]
+
+    var newLabel = document.createElement("Label");
+    newLabel.setAttribute("for", newCheckbox);
+    newLabel.innerHTML = RESOURCE_TYPES_IDS[i]
+
+    newItem.appendChild(newCheckbox);
+    newItem.appendChild(newLabel)
+    newItem.style.marginBottom = "0px"
+    newItem.style.lineHeight = "14px";
+    newItem.style.marginLeft = "3px"
+    newItem.style.display = "none";
+    newCheckbox.setAttribute("class", "customDropdown")
+    newLabel.setAttribute("class", "customDropdown")
+    var dropdown = document.getElementById("item3");
+    dropdown.parentNode.insertBefore(newItem, dropdown.nextSibling)
+
+   //rebuild the graph when the check box is checked or unchecked
+    newItem.addEventListener("change", function(){
+        submit(document.getElementById("sCode").value);
+    });
+
+/*    document.getElementById("item1Box").addEventListener("change", function(){
+        hashChange = false;
+        location.hash = SetHashFromPageState();
+    });
+    document.getElementById("item2Box").addEventListener("change", function(){
+      hashChange = false;
+      location.hash = SetHashFromPageState();
+    });
+    document.getElementById("item2Box").addEventListener("change", function(){
+      hashChange = false;
+      location.hash = SetHashFromPageState();
+    });*/
+  }
+/*
+  var container = document.createElement("div");
+  var checkbox = document.createElement("input");
+  checkbox.innerText = "foo"
+  checkbox.type = "checkbox"
+  container.appendChild(checkbox)
+  container.type = "checkbox"
+
+
+
+    var dropdown = document.getElementById("item3")
+    dropdown.parentNode.insertBefore(container, dropdown.nextSibling)
+    console.log(dropdown)
+*/
+/*  <div id = "item2" class="customDropdown" style="display:none; font-size:10pt"><input id="item2Box" type="checkbox" class="customDropdown" name = "lessons" value = "2" style='margin-left:10px'> lessons</div>*/
+  // <div id = "item3" class="customDropdown" style="display:none; font-size:11pt"><input id="item3Box" type="checkbox" class="customDropdown" name = "curricular units" value = "3" style='margin-left:10px'> curricular units</div>
+}
 
  //tracks if the alignments dropdown is open. Initialize to not showing.
 var isShowing = false;
@@ -2383,13 +2390,13 @@ function initDropdown(){
    for(var i = 0; i < docTypesForDropDown.length; i++){
      document.getElementById(docTypesForDropDown[i].checkBoxId).checked = false;
    }
-    //make sure cursor is set to default when user hovers over dropdown
-    document.getElementById("alignments").addEventListener("mouseover", (e) =>{
-    document.getElementById(e.target.id).style.cursor = "default"
+      //make sure cursor is set to default when user hovers over dropdown
+      document.getElementById("alignments").addEventListener("mouseover", (e) =>{
+      document.getElementById(e.target.id).style.cursor = "default"
     });
 
 
-    var displayType = "";
+  var displayType = "";
     document.getElementById("alignments").addEventListener("click", function(){
 
       //if dropdown options  is not currently being displayed
@@ -2409,12 +2416,9 @@ function initDropdown(){
       }
 
       //show or hide the items in the dropdown based on the previously set dropdown options.
-    /*  for(var i = 0; i < docTypesForDropDown.length; i++){
-        document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
-      }*/
-      document.getElementById("TE").style.display = displayType;
-      document.getElementById("SB").style.display = displayType;
-      document.getElementById("OS").style.display = displayType;
+      for(var i = 0; i < RESOURCE_TYPES.length; i++){
+        document.getElementById(RESOURCE_TYPES[i]).style.display = displayType;
+      }
     });
 
     //Onclick handler for when user clicks anywhere on the page outside of the dropdown.
@@ -2427,9 +2431,9 @@ function initDropdown(){
           for(var i = 0; i < docTypesForDropDown.length; i++){
             document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
           }
-          document.getElementById("TE").style.display = displayType;
-          document.getElementById("SB").style.display = displayType;
-          document.getElementById("OS").style.display = displayType;
+          for(var i = 0; i < RESOURCE_TYPES.length; i++){
+            document.getElementById(RESOURCE_TYPES[i]).style.display = displayType;
+          }
         }
       }
     });
@@ -2448,7 +2452,6 @@ function initDropdown(){
       }
     });
 
-   //onclick event for the TE checkbox items in the resource type dropdown
    for(var i = 0; i < docTypesForDropDown.length; i++){
      (function(i){
          document.getElementById(docTypesForDropDown[i].checkBoxId).addEventListener("click", (e)=>{
@@ -2506,7 +2509,7 @@ function HasTEDocSelected(){
 
 
 /******************************************************************************************
-returns true if activies, lessons and curricular units are all not selected. Returns false
+returns true if activities, lessons and curricular units are all not selected. Returns false
 otherwise.
 *****************************************************************************************/
 function areAllNotSelected(){
@@ -2520,10 +2523,10 @@ function areAllNotSelected(){
 
 
 /******************************************************************************************
-returns true if activies, lessons and curricular units are all selected Returns false
+returns true if activities, lessons and curricular units are all selected Returns false
 otherwise.
 *****************************************************************************************/
-//returns true if activies, lessons and curricular units are all selected
+//returns true if activities, lessons and curricular units are all selected
 function areAllSelected(){
     for(var i = 0; i < docTypesForDropDown.length - 1; i++){  //every item in  dropdown except for last item
       if(!document.getElementById(docTypesForDropDown[i].checkBoxId).checked){
@@ -2611,13 +2614,37 @@ Parameters:
 *****************************************************************************************************************/
 function FormatStdDescription(des, sCode, gradeBand){
   if(des == null) var des = "error";
-  var resultHTML = '<div style=line-height:' + STD_LINE_HEIGHT + ' >';
-  if(des.length < STD_DESCRIPTION_LENGTH){
-    resultHTML +=  '('+gradeBand+')  ' + des;
-  }
+  var resultHTML = '<span style=line-height:' + STD_LINE_HEIGHT + ' >';
+      resultHTML +=  '('+gradeBand+')  '
 
+    resultHTML += '</span>'
+
+    var displayElipsis = "none";
+    var displayMore = "none";
+    var displayD1 = "inline";
+    var displayD2 = "inline";
+    var displayLess = "inline";
+    var d1 = des;
+    var d2 = "";
+    if(des.length > STD_DESCRIPTION_LENGTH){
+      d1 = des.substring(0, STD_DESCRIPTION_LENGTH);
+      d2 = des.substring(STD_DESCRIPTION_LENGTH, des.length)
+      displayMore = "inline";
+      displayElipsis = "inline";
+      displayD2 = "none";
+      displayLess = "none";
+    }
+    else{
+      displayLess = "none"
+    }
+
+    resultHTML +=   '<span style="display:'+displayD1+'" id = d1_'+sCode+'>' + d1 + '</span>'
+    resultHTML +=   '<span style="display:'+displayElipsis+'" id = elipsis_'+sCode+'>' + " ..." + '</span>';
+    resultHTML +=   '<span style =" display:'+displayMore+';color:blue;cursor: pointer" id = more_'+ sCode +' onclick = showFullStdDescription(\'' + sCode + '\')> more </span>'
+    resultHTML +=   '<span  style="display:'+displayD2+'" id = d2_'+sCode+'>' + d2 + '</span>'
+    resultHTML +=   '<span style ="display:'+displayLess+'; color:blue;cursor: pointer" id = less_'+ sCode +' onclick = showLessStdDescription(\'' + sCode + '\')> less </span>'
   //If long discription and need to have a show hide feature
-  else{
+/*  else{
     var firstChunk = '('+gradeBand+')  ' + des.substring(0, STD_DESCRIPTION_LENGTH);
     var secondChunk = des.substring(STD_DESCRIPTION_LENGTH);
     resultHTML += firstChunk;
@@ -2626,10 +2653,27 @@ function FormatStdDescription(des, sCode, gradeBand){
     resultHTML += '<span style="display:none" id = secondChunk_'+sCode+'>' + secondChunk + '</span>'
     resultHTML += '<span style = "display:none; color:blue;cursor: pointer" id = less_'+sCode+' onclick = showLessStdDescription(\'' + sCode + '\')> less</span>'
   }
-  resultHTML += '</div>'
+'*/
   return resultHTML
 }
 
+
+function showFullStdDescription(sCode){
+  document.getElementById("more_" + sCode).style.display = "none";
+    document.getElementById("elipsis_" + sCode).style.display = "none";
+    document.getElementById("elipsis_" + sCode).style.display = "none";
+    document.getElementById("less_" + sCode).style.display = "inline";
+    document.getElementById("d2_" + sCode).style.display = "inline";
+}
+
+
+function showLessStdDescription(sCode){
+  document.getElementById("more_" + sCode).style.display = "inline";
+    document.getElementById("elipsis_" + sCode).style.display = "inline";
+    document.getElementById("elipsis_" + sCode).style.display = "inline";
+    document.getElementById("less_" + sCode).style.display = "none";
+    document.getElementById("d2_" + sCode).style.display = "none";
+}
 
 /**************************************************************************************************************
 Used to show the full description in the documents table when the user clickes "more"
@@ -2680,23 +2724,23 @@ class GraphObject{
     this.numEdges = 0;      //the total number of edges in the graph
     this.kamadaKawaiCoords = [];  //array of x-y kk coord for each vertex in the graph.
 
-    //TE alignments data
-    this.alignmentsTE = [];         //array of alignment vertices
-    this.numAlignmentsTE = 0;       //total number of alignments in the graph
-    this.alignmentsHashTE = {};    //Hash map of the alignmenst in the graph so we can quickly check if an alignment is in the graph.
+    this.alignments = [];
+    this.numAlignments = 0
+    this.alignmentsHash = {};
 
     this.numNodes = 0;          //Total node count = numStandards + numAlignments
+  }
 
-    //SB alignments data
-    this.alignmentsSB = [];
-    this.numAlignmentsSB = 0;
-    this.alignmentsHashSB = {};
-
-    //Outdoor school alignments data
-    this.alignmentsOS = [];
-    this.numAlignmentsOS = 0;
-    this.alignmentsHashOS = {};
-
+  sortAlignments(){
+    for(var i = 1; i < this.alignments.length; i++){
+      var tmp = this.alignments[i];
+      var j = i - 1;
+      while(j >= 0 && this.alignments[j].order > tmp.order){
+        this.alignments[j + 1] = this.alignments[j];
+        j--;
+      }
+      this.alignments[j + 1] = tmp;
+    }
   }
 
   //Prints the verices in the graph to the console.
@@ -2723,71 +2767,28 @@ class GraphObject{
     }
   }
 
+
   //Adds a TE alignment vertex to the graph.
-  addTEAlignment(a){
-    if(this.alignmentsHashTE[a.id]){
+  addAlignment(a){
+    if(this.alignmentsHash[a.id]){
       throw new Error("An alignment with this id already exists");
     }
-     this.alignmentsTE[this.numAlignmentsTE] = a;
-     this.alignmentsTE[this.numAlignmentsTE].showing =  false;
-     this.numAlignmentsTE++;
-     this.alignmentsHashTE[a.id] = a.id;
+     this.alignments[this.numAlignments] = a;
+     this.alignments[this.numAlignments].showing =  false;
+     this.numAlignments++;
+     this.alignmentsHash[a.id] = a.id;
      a.rId = this.numNodes;
      this.numNodes++;
   }
 
-  //adds a SB alignment to the graph
-  addSBAlignment(a){
-     if(this.alignmentsHashSB[a.id]){
-         throw new Error("An alignment with this id already exists");
-     }
-
-     this.alignmentsSB[this.numAlignmentsSB] = a;
-     this.alignmentsSB[this.numAlignmentsSB].showing = true;
-     this.numAlignmentsSB++;
-     this.alignmentsHashSB[a.id] = a.id;
-     a.rId = this.numNodes;
-     this.numNodes++;
-
-  }
-
-  //adds a SB alignment to the graph
-  addOSAlignment(a){
-     if(this.alignmentsHashOS[a.id]){
-         throw new Error("An alignment with this id already exists");
-     }
-
-     this.alignmentsOS[this.numAlignmentsOS] = a;
-     this.alignmentsOS[this.numAlignmentsOS].showing = true;
-     this.numAlignmentsOS++;
-     this.alignmentsHashOS[a.id] = a.id;
-     a.rId = this.numNodes;
-     this.numNodes++;
-
-  }
 
   //Takes a vertex object and returns true if alignment is in the graph already. Returns false otherwise
-  hasTEAlignment(a){
-    if(this.alignmentsHashTE[a.id]){
+  hasAlignment(a){
+    if(this.alignmentsHash[a.id]){
       return true;
     }
     return false;
   }
-
-  hasSBAlignment(a){
-    if(this.alignmentsHashSB[a.id]){
-      return true;
-    }
-    return false;
-  }
-
-  hasOSAlignment(a){
-    if(this.alignmentsHashOS[a.id]){
-      return true;
-    }
-    return false;
-  }
-
 
   //Takes a vertex id or a vertex object. Returns true if vertex is in the graph.
   hasVertex(v){

@@ -23,7 +23,6 @@ Database Info:
 
 
 include 'DBConnection.php';
-include 'colorDefinitions.php';
 
 session_start();
 
@@ -47,41 +46,28 @@ function GetNetworkData(){
    //Get an array of the NGSS standards
    $standardsList = GetNGSSStandards($dbConnection);
 
-   $resourceDefinitions = DefineResources(); //Define the collectinos and db tables for those collections
-
    $numStandards = count($standardsList);
    $resources = GetAllAlignedResources($standardsHashMap, $numStandards); //Get an array of resources from all collections
 
-    //Add connections between standards
-    AddNeighborStandardsToAdjList($standardsList, $resources ,$dbConnection);
+   //Add connections between standards
+   AddNeighborStandardsToAdjList($standardsList, $resources ,$dbConnection);
+
+   //For each standard, build its aligned resource list. Do this for all resource types.
+   AddALLAlignmentsToAdjList($standardsList, $resources, $standardsHashMap, $dbConnection);
 
 
-    //For each standard, build its aligned resource list. Do this for all resource types.
-    AddALLAlignmentsToAdjList($standardsList, $resources, $resourceDefinitions, $standardsHashMap, $dbConnection);
+   $results = array();
+   array_push($results, $standardsList, $resources);
 
-
-    $results = array();
-    array_push($results, $standardsList, $resources);
-
-    return json_encode($results);
+   return json_encode($results);
 }
 
-
-function DefineResources(){
-  $resourceDefList = array();
-  $r1 = new ResourceCollection("teach_engr_collection", "teach_engr_alignments", "Teachengineering");
-  $r2 = new ResourceCollection("outdoorschool_collection", "outdoorschool_alignments", "Outdoorschools");
-  $r3 = new ResourceCollection("sciencebuddies_collection", "sciencebuddies_alignments", "Sciencebuddies");
-
-  array_push($resourceDefList, $r1, $r2, $r3);
-  return $resourceDefList;
-}
 
 
 class ResourceCollection{
   public function __construct($resourcesTable, $alignmentsTable, $nodeType){
     $this->color = null;
-    $this->highlightColor = $null;
+    $this->highlightColor = null;
     $this->resourcesTable = $resourcesTable;
     $this->alignmentsTable = $alignmentsTable;
     $this->nodeType = $nodeType;
@@ -222,7 +208,7 @@ function pc($data){
 }
 
 
-function AddAllAlignmentsToAdjList(& $standardsList, $resources, $resourceDefinitions, $standardsHashMap,  $dbConnection){
+function AddAllAlignmentsToAdjList(& $standardsList, $resources, $standardsHashMap,  $dbConnection){
 
      //Create a hash map on $resources so we can perform a constant time lookup for the index of a resource by its name.
       $alignmentsHashMap = array();
@@ -231,7 +217,7 @@ function AddAllAlignmentsToAdjList(& $standardsList, $resources, $resourceDefini
         $alignmentsHashMap[$cur] = $i;
       }
 
-      $alignmentMappings = getAlignmentMappings($resourceDefinitions, $dbConnection);
+      $alignmentMappings = getAlignmentMappings($dbConnection);
 
       //for each standard
       for($i = 0; $i < count($standardsList); $i++){
@@ -249,27 +235,19 @@ function AddAllAlignmentsToAdjList(& $standardsList, $resources, $resourceDefini
 }
 
 
-function getAlignmentMappings($resourceDefinitions, $dbConnection){
+function getAlignmentMappings($dbConnection){
 
     $alignmentMappings = array();
 
     //query alignment mappings for each collection of resources as defined in the $resourceDefinitions object.
     $tmpArr = array();
 
-   $q = "SELECT o.id, o.doc_id FROM" . " (\n";
-
-    for($i = 0; $i < count($resourceDefinitions); $i++){
-       $q .=  "SELECT p.id, p.doc_id FROM(
+   $q = "SELECT p.id, p.doc_id FROM(
                      SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
                     (
-                      SELECT sCode, doc_id FROM {$resourceDefinitions[$i]->alignmentsTable} ORDER BY sCode
-                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM {$resourceDefinitions[$i]->resourcesTable})";
-     if($i < count($resourceDefinitions) - 1){
-       $q .= "\nUNION\n";
-     }
-
-    }
-    $q .= "\n ) o ORDER BY o.id, o.doc_id";
+                      SELECT sCode, doc_id FROM resource_alignments ORDER BY sCode
+                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data)
+                    ORDER BY p.id, p.doc_id";
 
     if($res = mysqli_query($dbConnection, $q)){
       $arr = array(); //will hold a list of doc ids that coorispont to a standard.
@@ -541,9 +519,9 @@ function GetNGSSStandards($dbConnection){
         //Get the metadata attributes for the NGSS standard.
         $standard->nodeType = _SetStandardType($row['std_type'], $row['sCode'], $dbConnection);
         $standard->gradeBand = _GetStandardGradeBand($row['lowgrade'], $row['highgrade']);
-        $standard->color = _GetNodeColor($standard->nodeType);
-        $standard->origonalColor = $standard->color;
-        $standard->highlightColor = _GetNodeHighlightColor($standard->nodeType);
+        $standard->color = null;
+        $standard->origonalColor = null;
+        $standard->highlightColor = null;
         $standard->des = iconv("UTF-8", "UTF-8//IGNORE", $row['description']);
         $standard->pCode = _GetPCode($row['sCode'], $dbConnection);
         $standard->uri = _GetNGSSURI($standard, $dbConnection);
@@ -901,8 +879,6 @@ class Edge{
   public $id1;
   public $id2;
 }
-
-
 
 
 class Resource{

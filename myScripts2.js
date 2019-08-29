@@ -9,8 +9,9 @@ const EDGE_COLOR = '#626161';
 const STD_DESCRIPTION_LENGTH = 120;
 const STD_LINE_HEIGHT = 1.2;
 const DOCS_LINE_HEIGHT = 1.2;
-const SELECTED_NODE_COLOR = '#3F3D3D'
-const BLANK_NODE_LABEL = "          "
+const SELECTED_NODE_COLOR = '#3F3D3D';
+const BLANK_NODE_LABEL = "          ";
+
 //node and standards table colors. First entry is regular color, second value is matching border highlight color, third is highlight node color
 const PURPLE_COLOR = ["#EFB2F2", "#EA39F0", "#FEE2FF", "#F2CFF3" ];
 const GREY_COLOR = ['#D4D4D4',"#808080", "#EFEFEF"];
@@ -22,13 +23,14 @@ const COLOR_INDEX = 2;
 
 const DEFAULT_STANDARD = "S2467886";
 
-const RESOURCE_TYPES_CHECKBOXES = ["TE", "SBCheckBox", "OSCheckBox"];
-const RESOURCE_TYPES_NAMES = ["teachengineering", "outdoorschools", "sciencebuddies"];
+const RESOURCE_TYPES_CHECKBOXES = ["TE", "SBCheckBox", "OSCheckBox", "GGCheckBox"];
+const RESOURCE_TYPES_NAMES = ["teachengineering", "outdoorschools", "sciencebuddies", "generationgenius"];
 
 var RESOURCE_COLORS = [
   {name:RESOURCE_TYPES_NAMES[0], color:"#DFD4C8", highlightColor:"#F2E4D3"},
   {name:RESOURCE_TYPES_NAMES[1], color:"#A6D7CD", highlightColor:"#C2EEE6"},
-  {name:RESOURCE_TYPES_NAMES[2], color:"#BDA6F5", highlightColor:"#D3C5F6"}
+  {name:RESOURCE_TYPES_NAMES[2], color:"#BDA6F5", highlightColor:"#D3C5F6"},
+  {name:RESOURCE_TYPES_NAMES[3], color:"#95E4A0", highlightColor:"#B1F2BA"}
 ];
 
 //Data structure to track the alignments dropdown list items and their node id'ss
@@ -84,10 +86,8 @@ function SubmitFromHash(){
    RemoveNetwork("mynetwork");
 
    var hashStr = location.hash;
-  console.log(hashStr)
    params = _ParseHash(hashStr);
 
- console.log(params)
    var showAllTEDocs = false;
    if(params["showTE"]["showActivies"] && params["showTE"]["showLessons"] && params["showTE"]["showCurricularUnits"])
    showAllTEDocs = true;
@@ -115,15 +115,6 @@ function SubmitFromHash(){
     if(gradeBand != 0) networkDepth = 50;
 
     BuildNetwork(sCode, networkDepth, displayType, gradeBand, r);
-
-  // console.log(GetResourceTypeSelectionFromDropdown())
-
-  /* BuildNetwork(params["sCode"], params["networkDepth"], params["displayType"], params["gradeBand"],
-                params["showTE"]["showActivies"],  params["showTE"]["showLessons"],
-                params["showTE"]["showCurricularUnits"], showAllTEDocs,
-                params["showScienceBuddies"], params["showOutdoorschool"]);*/
-/*
-*/
 }
 
 function _ParseHash(hashStr){
@@ -806,6 +797,7 @@ function addNeighborStandards(neighbors, vertex, depth){
     for(var i = 0; i < neighbors.length; i++){
         if(!graph.hasVertex(neighbors[i])){
           neighbors[i].order = depth;
+          GetStandardColors(neighbors[i])
           graph.addVertex(neighbors[i]);
         }
     }
@@ -1056,14 +1048,12 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
 
 function _ShouldShowResource(nodeType, displayType){
 
-     console.log(nodeType)
     if(nodeType == "teachengineering"){  //hard coded for TE
         return document.getElementById("TECheckBox").checked
     }
 
     else{ //handle all other doc type dynamically
         var nonTEResources = displayType.otherResources;
-        console.log(nonTEResources)
         //for every item in the global list of documents
            //if item is checked in displayType list, return true, else return false.
         for(var i = 0; i < nonTEResources.length; i++){
@@ -1095,6 +1085,7 @@ function AddStandarsNodes(depth, sCode){
   //Get the starting node and add it to the NGSSGraph
   var root = GetStandardFromSCode(sCode);
   root.order = 0;
+  GetStandardColors(root);
   graph.addVertex(root);
 
   //Iterate up to the specified depth. At each level, add neihboring standards and their connections to the graph
@@ -1109,6 +1100,31 @@ function AddStandarsNodes(depth, sCode){
   }
 }
 
+
+function GetStandardColors(node){
+  if(node.nodeType == "Standard"){
+    node.color = PURPLE_COLOR[0];
+    node.highlightColor = PURPLE_COLOR[1];
+  }
+  else if(node.nodeType == "Performance Expectation"){
+    node.color = GREY_COLOR[0];
+    node.highlightColor = GREY_COLOR[1];
+  }
+  else if(node.nodeType == "Crosscutting Concepts"){
+     node.color = GREEN_COLOR[0];
+     node.highlightColor = GREEN_COLOR[1];
+  }
+  else if(node.nodeType == "Science and Engineering Practices"){
+    node.color = BLUE_COLOR[0];
+    node.highlightColor = BLUE_COLOR[1];
+  }
+  else if(node.nodeType == "Disciplinary Core Ideas"){
+    node.color = ORANGE_COLOR[0];
+    node.highlightColor = ORANGE_COLOR[1];
+  }
+
+  console.log(node)
+}
 
 /*************************************************************************************************
 Addes every standard from NGSSGraph[] that is in the current gradeband to the global graph object.
@@ -2327,8 +2343,6 @@ function GetNetworkDataAJAX(){
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
                NGSSResources = result[1];
-               console.log(result)
-               console.log(NGSSResources)
                BuildResourcesDropdown();
                setTimeout(function(){
                submit(DEFAULT_STANDARD);
@@ -2390,22 +2404,7 @@ function BuildResourcesDropdown(){
       location.hash = SetHashFromPageState();
     });*/
   }
-/*
-  var container = document.createElement("div");
-  var checkbox = document.createElement("input");
-  checkbox.innerText = "foo"
-  checkbox.type = "checkbox"
-  container.appendChild(checkbox)
-  container.type = "checkbox"
 
-
-
-    var dropdown = document.getElementById("item3")
-    dropdown.parentNode.insertBefore(container, dropdown.nextSibling)
-    console.log(dropdown)
-*/
-/*  <div id = "item2" class="customDropdown" style="display:none; font-size:10pt"><input id="item2Box" type="checkbox" class="customDropdown" name = "lessons" value = "2" style='margin-left:10px'> lessons</div>*/
-  // <div id = "item3" class="customDropdown" style="display:none; font-size:11pt"><input id="item3Box" type="checkbox" class="customDropdown" name = "curricular units" value = "3" style='margin-left:10px'> curricular units</div>
 }
 
  //tracks if the alignments dropdown is open. Initialize to not showing.

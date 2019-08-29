@@ -28,8 +28,8 @@ include 'colorDefinitions.php';
 session_start();
 
 //Get the network data and send back to the client.
+//echo GetNetworkData();
 echo GetNetworkData();
-
 
 /*********************************************************************************
 Description:
@@ -50,7 +50,7 @@ function GetNetworkData(){
    $resourceDefinitions = DefineResources(); //Define the collectinos and db tables for those collections
 
    $numStandards = count($standardsList);
-   $resources = GetAllAlignedResources($resourceDefinitions, $standardsHashMap, $numStandards); //Get an array of resources from all collections
+   $resources = GetAllAlignedResources($standardsHashMap, $numStandards); //Get an array of resources from all collections
 
     //Add connections between standards
     AddNeighborStandardsToAdjList($standardsList, $resources ,$dbConnection);
@@ -69,9 +69,9 @@ function GetNetworkData(){
 
 function DefineResources(){
   $resourceDefList = array();
-  $r1 = new ResourceCollection(TE_DOC_COLOR, TE_DOC_HIGHLIGHT_COLOR, "teach_engr_collection", "teach_engr_alignments", "DocumentTE");
-  $r2 = new ResourceCollection(OS_DOC_COLOR, OS_DOC_HIGHLIGHT_COLOR, "outdoorschool_collection", "outdoorschool_alignments", "DocumentOS");
-  $r3 = new ResourceCollection(SB_DOC_COLOR, SB_DOC_HIGHLIGHT_COLOR, "sciencebuddies_collection", "sciencebuddies_alignments", "DocumentSB");
+  $r1 = new ResourceCollection("teach_engr_collection", "teach_engr_alignments", "Teachengineering");
+  $r2 = new ResourceCollection("outdoorschool_collection", "outdoorschool_alignments", "Outdoorschools");
+  $r3 = new ResourceCollection("sciencebuddies_collection", "sciencebuddies_alignments", "Sciencebuddies");
 
   array_push($resourceDefList, $r1, $r2, $r3);
   return $resourceDefList;
@@ -79,9 +79,9 @@ function DefineResources(){
 
 
 class ResourceCollection{
-  public function __construct($color, $highlightColor, $resourcesTable, $alignmentsTable, $nodeType){
-    $this->color = $color;
-    $this->highlightColor = $highlightColor;
+  public function __construct($resourcesTable, $alignmentsTable, $nodeType){
+    $this->color = null;
+    $this->highlightColor = $null;
     $this->resourcesTable = $resourcesTable;
     $this->alignmentsTable = $alignmentsTable;
     $this->nodeType = $nodeType;
@@ -89,15 +89,36 @@ class ResourceCollection{
 }
 
 
-function GetAllAlignedResources($resourceDefinition, & $standardsHashMap, $numStandards){
+function GetAllAlignedResources(& $standardsHashMap, $numStandards){
 
    $resources = array();
    $index = 10001;
    $idIndex = $numStandards;
-   for($i = 0; $i < count($resourceDefinition); $i++){
-       _GetResourceForCollection($resources, $resourceDefinition[$i], $standardsHashMap, $index, $idIndex, $i);
-       $index++;
-   }
+
+   //query to get list of alignments with metadata
+   $q = "SELECT r.doc_id, r.url, r.summary, r.title, r.doc_type, c.resource_name, c.resource_id FROM resource_data r
+             INNER JOIN
+             resource_collections c on c.resource_id = r.resource_id";
+
+  //for every row, create new Resource() object with its metadata
+  if($res = mysqli_query(GetDBConnection(), $q)){
+           while($row = $res->fetch_assoc()){
+              $r = new Resource();
+              $r->id = $idIndex;
+              $r->MySqlId = $index;
+              $r->nodeType = $row["resource_name"];
+              $r->summary = $row["summary"];
+              $r->title = $row["title"];
+              $r->order = $row["resource_id"];
+              $r->document = $row["doc_id"];
+              $r->url = $row["url"];
+              $r->docType = $row["doc_type"];
+              $standardsHashMap[$row['doc_id']] = $idIndex;
+              array_push($resources, $r);
+              $index++;
+              $idIndex++;
+           }
+  }
    return $resources;
 }
 
@@ -120,8 +141,8 @@ function _GetResourceForCollection(& $resources, $curResource, & $standardsHashM
             $r = new Resource();
             $r->id = $idIndex;
             $r->MySqlId = $index;
-            $r->color = $curResource->color;
-            $r->highlightColor = $curResource->highlightColor;
+            $r->color = null;
+            $r->highlightColor = null;
             $r->nodeType = $curResource->nodeType;
             $r->summary = $row["summary"];
             $r->document = $row["doc_id"];
@@ -537,72 +558,6 @@ function GetNGSSStandards($dbConnection){
     //return the list of Standard objects
     return $standards;
 }
-
-
-function GetOSAlignments($nodeCount, & $standardsHashMap, $dbConnection){
-   $alignments = array();
-   $MySqlQuery = "SELECT a.doc_id, n.id FROM outdoorschool_alignments a
-                  INNER JOIN ngss_network_nodes n ON n.sCode = a.sCode
-                  ORDER BY a.doc_id";
-   if($res = mysqli_query($dbConnection, $MySqlQuery)){
-        //for every alignment, create an Alignment object
-        $curRow = "";
-        $MySqlId = 30001;
-        $curId = $nodeCount;
-        while($row = $res->fetch_assoc()){
-               if($row['doc_id'] != $curRow){  //once we reach the next document in the ordered list
-                     $curRow = $row['doc_id'];
-                     $alignment = new OSAlignment();
-                     $alignment->id = $curId;
-                     $alignment->color = OS_DOC_COLOR;
-                     $alignment->highlightColor = OS_DOC_HIGHLIGHT_COLOR;
-                     $alignment->MySqlId = $MySqlId;
-                     $standardsHashMap[$row['doc_id']] = $curId;
-                     GetOSAlignmentMetadata($alignment, $dbConnection, $curRow);
-                     array_push($alignments, $alignment);
-                     $curId++;
-                     $MySqlId++;
-                 }
-          }
-    }
-   return $alignments;
-}
-
-
-function GetSBAlignments($nodeCount, & $standardsHashMap, $dbConnection){
-  $alignments = array();
-  $MySqlQuery = "SELECT a.doc_id, n.id FROM sciencebuddies_alignments a
-                 INNER JOIN ngss_network_nodes n ON n.sCode = a.sCode
-                 ORDER BY a.doc_id";
-
-  if($res = mysqli_query($dbConnection, $MySqlQuery)){
-    //for every alignment, create an Alignment object
-    $curRow = "";
-    $MySqlId = 20001;
-    $curId = $nodeCount;
-    while($row = $res->fetch_assoc()){
-       if($row['doc_id'] != $curRow){  //once we reach the next document in the ordered list
-         $curRow = $row['doc_id'];
-         $alignment = new SBAlignment();
-         $alignment->id = $curId;
-         $alignment->color = SB_DOC_COLOR;
-         $alignment->highlightColor = SB_DOC_HIGHLIGHT_COLOR;
-         $alignment->MySqlId = $MySqlId;
-         $standardsHashMap[$row['doc_id']] = $curId;
-         GetSBAlignmentMetadata($alignment, $dbConnection, $curRow);
-         array_push($alignments, $alignment);
-         $curId++;
-         $MySqlId++;
-       }
-    }
-  }
-
-  return $alignments;
-}
-
-
-
-
 
 
 function GetMetadataForResource(& $resource, & $resourceCollection, $dbConnection, $doc){

@@ -17,17 +17,21 @@ const GREY_COLOR = ['#D4D4D4',"#808080", "#EFEFEF"];
 const BLUE_COLOR =   ["#9FBDE4", "#2B7BE4", "#C2DAF9", "#C2D0E4"];
 const ORANGE_COLOR = ["#FBC08C","#F67401","#FFE4CB", "#FBCFAB"];
 const GREEN_COLOR =  ["#CDE49F", "#85C702","#E8F3D6", "#D8E4C2"];
-const TE_DOCS_COLOR = ["#DFD4C8", "#F2E4D3" ];  //regualr and highlight color for teach engr nodes
-const SB_DOCS_COLOR = ["#BDA6F5", "#D3C5F6"]; //regualr and highlight color for science buddies nodes
-const OS_DOCS_COLOR = ["#A6D7CD", "#C2EEE6"];
+
 const COLOR_INDEX = 2;
 
 const DEFAULT_STANDARD = "S2467886";
 
-const RESOURCE_TYPES = ["TE", "SBCheckBox", "OSCheckBox"];
-const RESOURCE_TYPES_IDS = ["TE", "Outdoorschools", "Sciencebuddies"]
-const RESOURCE_TYPES_NAMES = ["DocumentTE", "DocumentOS", "DocumentSB"] //FIXME
-//Data structure to track the alignments dropdown list items and their node id's
+const RESOURCE_TYPES_CHECKBOXES = ["TE", "SBCheckBox", "OSCheckBox"];
+const RESOURCE_TYPES_NAMES = ["teachengineering", "outdoorschools", "sciencebuddies"];
+
+var RESOURCE_COLORS = [
+  {name:RESOURCE_TYPES_NAMES[0], color:"#DFD4C8", highlightColor:"#F2E4D3"},
+  {name:RESOURCE_TYPES_NAMES[1], color:"#A6D7CD", highlightColor:"#C2EEE6"},
+  {name:RESOURCE_TYPES_NAMES[2], color:"#BDA6F5", highlightColor:"#D3C5F6"}
+];
+
+//Data structure to track the alignments dropdown list items and their node id'ss
 const DOC_TYPES = ["activity", "lesson", "curricularUnit"] //, "all"]
 
 //global variables for the network
@@ -96,7 +100,7 @@ function SubmitFromHash(){
 
 
    otherResources = [];
-   for(var i = 0; i < RESOURCE_TYPES.length - 1; i++){
+   for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length - 1; i++){
      var n = {}
      n.item = RESOURCE_TYPES_NAMES[i + 1];
      n.show =  params["other"][i]
@@ -720,11 +724,11 @@ function GetResourceTypeSelectionFromDropdown(){
   result.allTEDocs = showAllTEDocs;
 
   var otherItems = [];
-  for(var i = 1; i < RESOURCE_TYPES_IDS.length; i++){
-   document.getElementById(RESOURCE_TYPES_IDS[i])
+  for(var i = 1; i < RESOURCE_TYPES_NAMES.length; i++){
+   document.getElementById(RESOURCE_TYPES_NAMES[i])
     var showit = null;
-     if(document.getElementById(RESOURCE_TYPES_IDS[i])){
-       showit = document.getElementById(RESOURCE_TYPES_IDS[i]).checked;
+     if(document.getElementById(RESOURCE_TYPES_NAMES[i])){
+       showit = document.getElementById(RESOURCE_TYPES_NAMES[i]).checked;
      }
      else showit = false;
      var item = {}
@@ -872,6 +876,8 @@ function BuildNetworkNSteps(sCode, depth, displayType, resourceTypes){
   }
   else AddAllStandards();
   AddStandardsEdges();  //add vertex connections to the graph for the standards
+
+  //add nodes and edges for resources
   AddResourceAlignmentNodes(resourceTypes);
   AddResourceAlignmentEdges(resourceTypes);
 
@@ -1009,14 +1015,24 @@ function AddResourceAlignmentNodes(resourceTypes){ //FIXME
               continue;
             }
             if(!graph.hasAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
+              GetResourceColor2(curAlignment);
               graph.addAlignment(curAlignment);
             }
        }
   }
-
 }
 
+function GetResourceColor2(a){
 
+     var t = a.nodeType;
+     var i = 0;
+     for(i; i < RESOURCE_TYPES_NAMES.length; i++){
+       if(t == RESOURCE_TYPES_NAMES[i]) break;
+     }
+     a.color = RESOURCE_COLORS[i].color;
+     a.highlightColor = RESOURCE_COLORS[i].highlightColor;
+
+}
 
 function AddResourceAlignmentEdges(resourceTypes){ //FIXME
   for(var i = 0; i < graph.numVertices; i++){  //for every standard in the graph
@@ -1040,14 +1056,14 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
 
 function _ShouldShowResource(nodeType, displayType){
 
-
-    if(nodeType == "DocumentTE"){  //hard coded for TE
+     console.log(nodeType)
+    if(nodeType == "teachengineering"){  //hard coded for TE
         return document.getElementById("TECheckBox").checked
     }
 
     else{ //handle all other doc type dynamically
         var nonTEResources = displayType.otherResources;
-
+        console.log(nonTEResources)
         //for every item in the global list of documents
            //if item is checked in displayType list, return true, else return false.
         for(var i = 0; i < nonTEResources.length; i++){
@@ -1148,6 +1164,19 @@ function BuildNetworkStandards(kkCoords){
 }
 
 
+function FormatHoverTextForAlignment(title, collection){
+
+    for(var i  = 0; i < RESOURCE_TYPES_NAMES.length; i++){
+      if (collection == RESOURCE_TYPES_NAMES[i])
+      collection = RESOURCE_TYPES_NAMES[i];
+    }
+
+    var resultHTML = '<div style = "font-size:10pt">';
+    resultHTML += collection + ':<br /> ' + title;
+    resultHTML += '</div>';
+    return resultHTML;
+}
+
 function BuildNetworkAlignments(kkCoords){
   //Build a vertex for every document in the graph object
 
@@ -1155,7 +1184,7 @@ function BuildNetworkAlignments(kkCoords){
 
     nodes.add({
       id:graph.alignments[j].id,
-      title:graph.alignments[j].title,
+      title:FormatHoverTextForAlignment(graph.alignments[j].title, graph.alignments[j].nodeType),
       color: graph.alignments[j].color,
       regularColor:graph.alignments[j].color,
       highlightColor:graph.alignments[j].highlightColor,
@@ -1479,7 +1508,7 @@ function ShowHideAlignmentsBasedOnDropdown(){
    var dataString = "[";
    for(var i = 0; i < graph.numAlignments; i++){
       var hidden = "false"
-      if(graph.alignments[i].nodeType != "DocumentTE" ) continue;
+      if(graph.alignments[i].nodeType != "Teachengineering" ) continue;
      var curAlignment = graph.alignments[i];
      if(graph.alignments[i].docType == "activity" &&  !showActivities) hidden = "true";
      else if(graph.alignments[i].docType == "lesson" && !showLessons) hidden = "true";
@@ -2298,6 +2327,8 @@ function GetNetworkDataAJAX(){
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
                NGSSResources = result[1];
+               console.log(result)
+               console.log(NGSSResources)
                BuildResourcesDropdown();
                setTimeout(function(){
                submit(DEFAULT_STANDARD);
@@ -2319,16 +2350,16 @@ function GetNetworkDataAJAX(){
 //Takes the post from the server and builds a dropdown to accomidate all the resource types
 function BuildResourcesDropdown(){
 
-  for(var i = 1; i < RESOURCE_TYPES.length; i++){
+  for(var i = 1; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
     var newItem = document.createElement("div");
-    newItem.id = RESOURCE_TYPES[i]
+    newItem.id = RESOURCE_TYPES_CHECKBOXES[i]
     var newCheckbox = document.createElement("input")
     newCheckbox.type = "checkbox";
-    newCheckbox.id = RESOURCE_TYPES_IDS[i]
+    newCheckbox.id = RESOURCE_TYPES_NAMES[i]
 
     var newLabel = document.createElement("Label");
     newLabel.setAttribute("for", newCheckbox);
-    newLabel.innerHTML = RESOURCE_TYPES_IDS[i]
+    newLabel.innerHTML = RESOURCE_TYPES_NAMES[i]
 
     newItem.appendChild(newCheckbox);
     newItem.appendChild(newLabel)
@@ -2416,8 +2447,8 @@ function initDropdown(){
       }
 
       //show or hide the items in the dropdown based on the previously set dropdown options.
-      for(var i = 0; i < RESOURCE_TYPES.length; i++){
-        document.getElementById(RESOURCE_TYPES[i]).style.display = displayType;
+      for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
+        document.getElementById(RESOURCE_TYPES_CHECKBOXES[i]).style.display = displayType;
       }
     });
 
@@ -2431,8 +2462,8 @@ function initDropdown(){
           for(var i = 0; i < docTypesForDropDown.length; i++){
             document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
           }
-          for(var i = 0; i < RESOURCE_TYPES.length; i++){
-            document.getElementById(RESOURCE_TYPES[i]).style.display = displayType;
+          for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
+            document.getElementById(RESOURCE_TYPES_CHECKBOXES[i]).style.display = displayType;
           }
         }
       }
@@ -2643,24 +2674,12 @@ function FormatStdDescription(des, sCode, gradeBand){
     resultHTML +=   '<span style =" display:'+displayMore+';color:blue;cursor: pointer" id = more_'+ sCode +' onclick = showFullStdDescription(\'' + sCode + '\')> more </span>'
     resultHTML +=   '<span  style="display:'+displayD2+'" id = d2_'+sCode+'>' + d2 + '</span>'
     resultHTML +=   '<span style ="display:'+displayLess+'; color:blue;cursor: pointer" id = less_'+ sCode +' onclick = showLessStdDescription(\'' + sCode + '\')> less </span>'
-  //If long discription and need to have a show hide feature
-/*  else{
-    var firstChunk = '('+gradeBand+')  ' + des.substring(0, STD_DESCRIPTION_LENGTH);
-    var secondChunk = des.substring(STD_DESCRIPTION_LENGTH);
-    resultHTML += firstChunk;
-    resultHTML += '<span id = elipsis_' + sCode +'>...</span>'
-    resultHTML += '<span style ="color:blue;cursor: pointer" id = more_'+ sCode +' onclick = showFullStdDescription(\'' + sCode + '\')> more </span>'
-    resultHTML += '<span style="display:none" id = secondChunk_'+sCode+'>' + secondChunk + '</span>'
-    resultHTML += '<span style = "display:none; color:blue;cursor: pointer" id = less_'+sCode+' onclick = showLessStdDescription(\'' + sCode + '\')> less</span>'
-  }
-'*/
-  return resultHTML
+    return resultHTML
 }
 
 
 function showFullStdDescription(sCode){
   document.getElementById("more_" + sCode).style.display = "none";
-    document.getElementById("elipsis_" + sCode).style.display = "none";
     document.getElementById("elipsis_" + sCode).style.display = "none";
     document.getElementById("less_" + sCode).style.display = "inline";
     document.getElementById("d2_" + sCode).style.display = "inline";
@@ -2670,10 +2689,10 @@ function showFullStdDescription(sCode){
 function showLessStdDescription(sCode){
   document.getElementById("more_" + sCode).style.display = "inline";
     document.getElementById("elipsis_" + sCode).style.display = "inline";
-    document.getElementById("elipsis_" + sCode).style.display = "inline";
     document.getElementById("less_" + sCode).style.display = "none";
     document.getElementById("d2_" + sCode).style.display = "none";
 }
+
 
 /**************************************************************************************************************
 Used to show the full description in the documents table when the user clickes "more"

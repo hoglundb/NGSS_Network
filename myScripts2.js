@@ -698,6 +698,7 @@ function submit(code){
   //Entry point for building the network and the alignments and standards tables.
   BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypeSelection);
 
+
 }
 
 
@@ -996,14 +997,13 @@ function AddOSAlignmentEdges(){
 
 function AddResourceAlignmentNodes(resourceTypes){ //FIXME
 
-
   for(var i = 0; i < graph.numVertices; i++){  //for each standard
      var alignmentIds = graph.vertices[i].alignedResources;  //get list of documnets aligned to that standard
        if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
        for(var j = 0; j < alignmentIds.length; j++){
             var curAlignmentId = alignmentIds[j];
             var curAlignment = NGSSResources[curAlignmentId];
-            if(_ShouldShowResource(curAlignment.nodeType , resourceTypes) == false){
+            if(_ShouldShowResource(curAlignment, resourceTypes) == false){
               continue;
             }
             if(!graph.hasAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
@@ -1036,7 +1036,7 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
          var curAlignment = NGSSResources[curAlignmentId];
 
          //only add resources as specified in the resourceType dropdown object
-         if(_ShouldShowResource(curAlignment.nodeType, resourceTypes) == false){
+         if(_ShouldShowResource(curAlignment, resourceTypes) == false){
            continue;
          }
          if(graph.hasEdge(graph.vertices[i].id, curAlignment.id) == true) continue
@@ -1046,9 +1046,22 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
 }
 
 
-function _ShouldShowResource(nodeType, displayType){
+//returns true if if documents of that type are selected in the resource dropdown..
+//If TE and docType, return true if that TE doc type is selected in the dropdown. 
+function _ShouldShowResource(node, displayType, docType){
+   var nodeType = node.nodeType;
 
     if(nodeType == "teachengineering"){  //hard coded for TE
+      if(docType != undefined){
+        if(node.docType == "activity" && document.getElementById("item1Box").checked) return true;
+        if(node.docType == "lesson" && document.getElementById("item2Box").checked) return true;
+        if(node.docType == "curricularUnit" && document.getElementById("item3Box").checked) return true;
+        return false;
+      }
+    /*  return true;
+       console.log(node.docType)
+
+        /**/
         return document.getElementById("TECheckBox").checked
     }
 
@@ -1123,7 +1136,7 @@ function GetStandardColors(node){
     node.highlightColor = ORANGE_COLOR[1];
   }
 
-  console.log(node)
+
 }
 
 /*************************************************************************************************
@@ -1197,7 +1210,6 @@ function BuildNetworkAlignments(kkCoords){
   //Build a vertex for every document in the graph object
 
   for(var j = 0; j < graph.numAlignments; j++){
-
     nodes.add({
       id:graph.alignments[j].id,
       title:FormatHoverTextForAlignment(graph.alignments[j].title, graph.alignments[j].nodeType),
@@ -1515,16 +1527,17 @@ function ShowHideAlignmentsBasedOnDropdown(){
    var showActivities = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
    var showLessons = document.getElementById(docTypesForDropDown[1].checkBoxId).checked;
    var showCurricularUnits = document.getElementById(docTypesForDropDown[2].checkBoxId).checked;
+
+
   /* var showAll =  document.getElementById(docTypesForDropDown[3].checkBoxId).checked;*/
     var showAll = document.getElementById("TECheckBox").checked;
-
    //Build a json string in vis.js format based on the options above
    var count = 0;
 
    var dataString = "[";
    for(var i = 0; i < graph.numAlignments; i++){
       var hidden = "false"
-      if(graph.alignments[i].nodeType != "Teachengineering" ) continue;
+      if(graph.alignments[i].nodeType != "teachengineering" ) continue;
      var curAlignment = graph.alignments[i];
      if(graph.alignments[i].docType == "activity" &&  !showActivities) hidden = "true";
      else if(graph.alignments[i].docType == "lesson" && !showLessons) hidden = "true";
@@ -1532,6 +1545,7 @@ function ShowHideAlignmentsBasedOnDropdown(){
      dataString =  dataString + "{";
      dataString =  dataString + '"'+ "id" + '"' + ":" +  graph.alignments[i].id.toString()  + ",";
      dataString =  dataString +'"'+ "hidden" + '"' + ":" + hidden;
+
      dataString =  dataString + "}";
      dataString = dataString + ",";
 
@@ -1551,6 +1565,7 @@ function ShowHideAlignmentsBasedOnDropdown(){
 
     //Update vis.js with the json string.
     var networkJson  = JSON.parse(dataString);
+
     nodes.update(
       networkJson
     );
@@ -1596,7 +1611,7 @@ function IsAlignedToStandard(docId, docType){
   for(var i = 0; i < ids.length; i++){
     if(docId == NGSSResources[ids[i]].id) {
       var resourceTypes = GetResourceTypeSelectionFromDropdown();
-      return _ShouldShowResource( NGSSResources[ids[i]].nodeType, resourceTypes);
+      return _ShouldShowResource( NGSSResources[ids[i]], resourceTypes);
     }
   }
   return false;
@@ -1636,7 +1651,7 @@ function GetAlignmentsForStandard(sCode){
   for(var i = 0; i < alignments.length; i++){
 
      //Filter out all doctypes not selected from the dropdown
-     if( _ShouldShowResource(dataSet[alignments[i]].nodeType, resourceTypes)){
+     if( _ShouldShowResource(dataSet[alignments[i]], resourceTypes)){
        als[count] = dataSet[alignments[i]].id;
        count++
      }
@@ -1668,7 +1683,7 @@ function IsShowingResource(node){
 
   var resourceTypes = GetResourceTypeSelectionFromDropdown();
   var nodeType = node.nodeType;
-  return _ShouldShowResource(node.nodeType, resourceTypes);
+  return _ShouldShowResource(node, resourceTypes, node.docType);
 }
 
 
@@ -1680,9 +1695,8 @@ function _BuildAlignedDocumentsForCollection(nodeSet, sCode){
 
   //Get a list of resources aligned to the standard with the given sCode.
   myList = GetAlignmentsForStandard(sCode);
-
   //For every resource aligned to sCode, add a row to the table with its metadata and onclick event handler
-  for(var i = 0; i <nodeSet.length; i++){
+  for(var i = 0; i < nodeSet.length; i++){
     var curNode = nodeSet[i];
     if(!ArrayContains(myList, nodeSet[i].id)) continue;
     if(!IsShowingResource(nodeSet[i])) continue;

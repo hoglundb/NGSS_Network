@@ -61,6 +61,21 @@
           </div>
         </div>
 
+        <div id="creditModal" class="modal fade" role="dialog" style="z-index:10000;">
+          <div class="modal-dialog" style= "">
+            <div class="modal-content" style="width:500px">
+              <div class="modal-header">
+                <h4 class="modal-title" id = "dciPopup"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="modal-body">The <a href="https://visjs.org/" target="_blank">Vis.js<a> Library was used to render this network. <br>
+                  The Kamada Kawai layout for the network was generated using the <a href="https://igraph.org/r/" target="_blank">igraph</a> Library.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
           <!-- Modal -->
           <div id="myModals" class="modal fade" role="dialog" style="z-index:10000;">
             <div class="modal-dialog" style= "">
@@ -144,6 +159,7 @@
                     <div id="label5" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts</div>
                     <div id = "alignedDocsLabel" style = "display:none; font-size: 9pt; background: #DFD4C8; margin-left:2%; width:190px; margin-top:100px; position:absolute; float:left;border-radius:3px; padding-left:4px">Aligned TE Documents</div>
                 </div>
+                <div style="position:absolute; margin-left:40px;" onclick = "ShowCreditsPopup()"><a href="javascript:undefined">Credit</a></div>
             </div>
             <div class="stdTable" style=" margin-top:38px; margin-left:1.4% ;padding-right:0%; padding-left:0%;width:18%; " >
            <span id="standardsTableHeader" style ="font-size:10pt; font-weight:bold">Standards</span>

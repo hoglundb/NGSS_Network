@@ -1047,10 +1047,12 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
 
 
 //returns true if if documents of that type are selected in the resource dropdown..
-//If TE and docType, return true if that TE doc type is selected in the dropdown. 
+//If TE and docType, return true if that TE doc type is selected in the dropdown.
 function _ShouldShowResource(node, displayType, docType){
-   var nodeType = node.nodeType;
 
+    var nodeType = node.nodeType; //the collection type identifier
+
+    //return true if specific TE doc type is selected in dropdown
     if(nodeType == "teachengineering"){  //hard coded for TE
       if(docType != undefined){
         if(node.docType == "activity" && document.getElementById("item1Box").checked) return true;
@@ -1058,11 +1060,9 @@ function _ShouldShowResource(node, displayType, docType){
         if(node.docType == "curricularUnit" && document.getElementById("item3Box").checked) return true;
         return false;
       }
-    /*  return true;
-       console.log(node.docType)
 
-        /**/
-        return document.getElementById("TECheckBox").checked
+      //return true if any TE items selected in checbox
+      return document.getElementById("TECheckBox").checked
     }
 
     else{ //handle all other doc type dynamically
@@ -1114,26 +1114,38 @@ function AddStandarsNodes(depth, sCode){
 }
 
 
+function ShowCreditsPopup(){
+  $('#creditModal').modal('show');
+
+  //display the modal header
+/*  document.getElementById("dciPopup").innerText = "Disiplinary core ideas for " + input
+
+  //get a reference to the table in the DOM
+  var tableRef = document.getElementById("dciTable").getElementsByTagName('tbody')[0];*/
+
+}
+
 function GetStandardColors(node){
+  var highlightIndex = 2; //FIXME
   if(node.nodeType == "Standard"){
     node.color = PURPLE_COLOR[0];
-    node.highlightColor = PURPLE_COLOR[1];
+    node.highlightColor = PURPLE_COLOR[highlightIndex];
   }
   else if(node.nodeType == "Performance Expectation"){
     node.color = GREY_COLOR[0];
-    node.highlightColor = GREY_COLOR[1];
+    node.highlightColor = GREY_COLOR[highlightIndex];
   }
   else if(node.nodeType == "Crosscutting Concepts"){
      node.color = GREEN_COLOR[0];
-     node.highlightColor = GREEN_COLOR[1];
+     node.highlightColor = GREEN_COLOR[highlightIndex];
   }
   else if(node.nodeType == "Science and Engineering Practices"){
     node.color = BLUE_COLOR[0];
-    node.highlightColor = BLUE_COLOR[1];
+    node.highlightColor = BLUE_COLOR[highlightIndex];
   }
   else if(node.nodeType == "Disciplinary Core Ideas"){
     node.color = ORANGE_COLOR[0];
-    node.highlightColor = ORANGE_COLOR[1];
+    node.highlightColor = ORANGE_COLOR[highlightIndex];
   }
 
 
@@ -1340,6 +1352,7 @@ function NWClickActionResult(nw){
                 currentTableRow = sCode;
                 SetTableRowColor(document.getElementById('t1'), sCode, clickedNodes[0].color);
                 _unighlightStandardsTable();
+
                 _highlightStandardsTableRow(clickedNodes[0].color, sCode);
                  document.getElementById(sCode).scrollIntoView();
                 BuildAlignedDocumentsTable(sCode);
@@ -1364,11 +1377,7 @@ function NWClickActionResult(nw){
              selectedDocNode = clickedNodes[0];
            }
       }
-
-
       }
-
-
   });
 }
 

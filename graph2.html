@@ -8,16 +8,20 @@
           <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script  src="myScripts2.js"></script>
-
+        <script src="mo.min.js"></script>
          <script type="text/javascript" src="MapLib/vis.min.js"></script>
          <noscript> JavaScript is off. Please enable to view full site</noscript>
         <link rel="stylesheet" href="MapLib/vis.min.css" />
         <link rel="stylesheet" href="styles.css">
+        <link rel = 'stylesheet' href='noty.css'>
         <style>
 
         .table-hover tbody tr:hover td {
            background: #FFBE5B;
 
+          }
+          .modal-backdrop{
+            opacity: 0.0 !important
           }
 
           .loader {
@@ -62,15 +66,14 @@
         </div>
 
         <div id="creditModal" class="modal fade" role="dialog" style="z-index:10000;">
-          <div class="modal-dialog" style= "">
+          <div class="modal-dialog" style= "; margin-left:30%; bottom:80%;  position:absolute">
             <div class="modal-content" style="width:500px">
-              <div class="modal-header">
-                <h4 class="modal-title" id = "dciPopup"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <div class="modal-body">The <a href="https://visjs.org/" target="_blank">Vis.js<a> Library was used to render this network. <br>
-                  The Kamada Kawai layout for the network was generated using the <a href="https://igraph.org/r/" target="_blank">igraph</a> Library.
-                </div>
+
+              <div class="modal-body">This network was rendered using the <a href="https://visjs.org/" target="_blank">Vis.js<a> library <br>
+                The Kamada-Kawai layout was generated using the R <a href="https://igraph.org/r/" target="_blank">igraph</a> Library. <br>
               </div>
+                <div  style="margin-left:2%;  padding-bottom:none; margin-bottom:none"><button class="btn btn-info"  data-dismiss="modal" style="padding:none">Close</button></div>
+
             </div>
           </div>
         </div>
@@ -107,14 +110,15 @@
           </div>
 
           <div class="row">
+
             <div class="col-lg-7" style="" >
               <div class='input-group' style='margin-top:15px; margin-left:3%; margin-bottom: 10px;width:100%'>
               <input class="form-control" id = "sCode" type="text" style="min-width:100px;max-width: 110px;margin-right:5px; margin-top:3px; height:35px" aria-label="Search" >
               <input type="button" id="submitButton" name="submitButton" class="btn btn-info" value="Generate" style="line-height:2px; margin-top:0.31%; margin-right:20px; height:35px; display:inline-flex; align-items:center" onclick = "submitBtn(); return false;"/>
-                  <div id = "start" style="margin-left:230px; position:fixed; z-index:10000; margin-top: 2px">
-                    <div id = "dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:150px; border-width:1px">
-                      <div id = "alignments" class="customDropdown" style="font-size:10.5pt ; height: 18.4px; margin-left:5px">  --Resource type--  <span id="dropdownSymbol" class="customDropdown" style="float:right; margin-top:3px; margin-right:5px; font-size:6pt">&#9660</span></div>
-                      <div id = "TE" class="customDropdown" style="display:none; font-size:10.5pt"><input id="TECheckBox" type="checkbox" class="customDropdown" name ="TE" style="margin-left:3px;font-size:1pt">TE  <span id="dropdownSymbolForTEDocs" class="customDropdown" style=" margin-top:3px; margin-right:5px; font-size:9pt">&#9660</span></div>
+                  <div id = "start" style="margin-left:230px; position:fixed; z-index:10000; margin-top: 2px;">
+                    <div id = "dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:150px; border-width:1px; font-size:10pt;">
+                      <div id = "alignments" class="customDropdown" style="font-size:10.5pt; height: 18.4px; margin-left:5px">  --Resource type--  <span id="dropdownSymbol" class="customDropdown" style="float:right; margin-top:3px; margin-right:5px; font-size:6pt">&#9660</span></div>
+                      <div id = "TE" class="customDropdown" style="display:none; font-size:10.5pt;margin-bottom:3px"><input id="TECheckBox" type="checkbox" class="customDropdown" name ="TE" style="margin-left:3px;font-size:1pt;">TE  <span id="dropdownSymbolForTEDocs" class="customDropdown" style=" margin-top:3px; margin-right:5px; font-size:9pt">&#9660</span></div>
                       <div id = "item1" class="customDropdown" style="display:none; font-size:10pt"><input id="item1Box" type="checkbox" class="customDropdown" name = "activies" value = "1" style='margin-left:10px'> activies </div>
                       <div id = "item2" class="customDropdown" style="display:none; font-size:10pt"><input id="item2Box" type="checkbox" class="customDropdown" name = "lessons" value = "2" style='margin-left:10px'> lessons</div>
                       <div id = "item3" class="customDropdown" style="display:none; font-size:11pt"><input id="item3Box" type="checkbox" class="customDropdown" name = "curricular units" value = "3" style='margin-left:10px; margin-bottom:10px'> curricular units</div>
@@ -148,7 +152,7 @@
               </select>
             </div>
             <div id = "foo">
-          <div id="mynetwork" style="height:82vh">
+          <div id="mynetwork" style="height:82vh; background:#FcFcFc">
               </div>
             </div>
                  <div id= "theLegend" style="top:75vh; position:absolute; margin-left:3.2%">
@@ -159,7 +163,7 @@
                     <div id="label5" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts</div>
                     <div id = "alignedDocsLabel" style = "display:none; font-size: 9pt; background: #DFD4C8; margin-left:2%; width:190px; margin-top:100px; position:absolute; float:left;border-radius:3px; padding-left:4px">Aligned TE Documents</div>
                 </div>
-                <div style="position:absolute; margin-left:40px;" onclick = "ShowCreditsPopup()"><a href="javascript:undefined">Credit</a></div>
+                <div style="position:absolute; margin-left:40px;" onclick = "ShowCreditsPopup()"><a href="javascript:undefined">credits</a></div>
             </div>
             <div class="stdTable" style=" margin-top:38px; margin-left:1.4% ;padding-right:0%; padding-left:0%;width:18%; " >
            <span id="standardsTableHeader" style ="font-size:10pt; font-weight:bold">Standards</span>

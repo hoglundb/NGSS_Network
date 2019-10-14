@@ -23,23 +23,47 @@ const COLOR_INDEX = 2;
 
 const DEFAULT_STANDARD = "S2467886";
 
-const RESOURCE_TYPES_CHECKBOXES = ["TE", "SBCheckBox", "OSCheckBox", "GGCheckBox"];
-const RESOURCE_TYPES_NAMES = ["teachengineering", "outdoorschools", "sciencebuddies", "generationgenius"];
+var RESOURCE_TYPES_CHECKBOXES = ["TE"];
+var RESOURCE_TYPES_NAMES = ["TeachEngineering"];
 
-var RESOURCE_COLORS = [
-  {name:RESOURCE_TYPES_NAMES[0], color:"#DFD4C8", highlightColor:"#F2E4D3"},
-  {name:RESOURCE_TYPES_NAMES[1], color:"#A6D7CD", highlightColor:"#C2EEE6"},
-  {name:RESOURCE_TYPES_NAMES[2], color:"#BDA6F5", highlightColor:"#D3C5F6"},
-  {name:RESOURCE_TYPES_NAMES[3], color:"#95E4A0", highlightColor:"#B1F2BA"}
-];
+RESOURCE_TYPES_NAMES.sort().reverse();
+
+
+//Globals to keep track of which color and symbol go with which resource.
+var resourceColors = [];
+resourceColors[0] = {color:"#F3C300", highlightColor:"#FFDF63"} //brown
+resourceColors[1] = {color:"#A1CAF1", highlightColor:"#C9E4FF"} //cyan
+resourceColors[2] = {color:"#F38400", highlightColor:"#F6B764"} //orange
+resourceColors[3] = {color:"#C1A784", highlightColor:"#CDB99E"} //purple pink
+resourceColors[4] = {color:"#79A99E", highlightColor:"#9FC6BD"}//grey
+resourceColors[5] = {color:"#FF6BA1", highlightColor:"#FFA4C5"} //light greeen
+resourceColors[6] = {color:"#9ACD32", highlightColor:"#BAE85F"} //olive
+resourceColors[7] = {color:"#E295E0", highlightColor:"#F5C6F3"} //cyan
+resourceColors[8] = {color:"#C0C0C0", highlightColor:"#DEDEDE"} //orange
+
+
+
+var resourceShapes = ["circle", "diamond", "square","triangle", "triangleDown", "star"];
+
+var resourceSymbols = [];
+
+var count = 0;
+for(var i = 0; i < resourceColors.length; i++){
+  for(var j = 0; j < resourceShapes.length; j++){
+     resourceSymbols[count] = {color:resourceColors[i].color, highlightColor:resourceColors[i].highlightColor, shape:resourceShapes[j]}
+     count++;
+  }
+}
+
 
 //Data structure to track the alignments dropdown list items and their node id'ss
-const DOC_TYPES = ["activity", "lesson", "curricularUnit"] //, "all"]
+const DOC_TYPES = ["activity", "lesson", "curricularUnit"]
 
 //global variables for the network
 var docTypesForDropDown = getDropDownTypesArray();
 var NGSSGraph = null;
 var NGSSResources = null;
+var NGSSResourcesList = ["TE"];
 var standardsCount = 0;
 var ADD_DOCS = true;
 var graph = null;
@@ -103,7 +127,7 @@ function SubmitFromHash(){
    for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length - 1; i++){
      var n = {}
      n.item = RESOURCE_TYPES_NAMES[i + 1];
-     n.show =  params["other"][i]
+     n.show =  params["other"][i];
      otherResources[i] = n;
    }
 
@@ -111,7 +135,7 @@ function SubmitFromHash(){
     var sCode = params["sCode"];
     var gradeBand = params["gradeBand"];
     var displayType = params["displayType"];
-    var networkDepth = params["networkDepth"]
+    var networkDepth = params["networkDepth"];
     if(gradeBand != 0) networkDepth = 50;
 
     BuildNetwork(sCode, networkDepth, displayType, gradeBand, r);
@@ -151,7 +175,7 @@ function _ParseHash(hashStr){
      showTE["showLessons"] = (hashStr[i + 2] == 0) ? false : true;
      showTE["showCurricularUnits"] = (hashStr[i + 3] == 0) ? false : true;
 
-     if(showTE["showActivies"] && showTE["showLessons"] && showTE["showCurricularUnits"] ) showAll = true;
+     if(showTE["showActivies"] && showTE["showLessons"] && showTE["showCurricularUnits"]) showAll = true;
 
    }
 
@@ -174,8 +198,23 @@ function _ParseHash(hashStr){
   return resultArr;
 }
 
+
+function ShowCreditsPopup(){
+  new Noty({
+    type: 'success',
+    layout: 'top',
+    text: 'This Network was rendered using the <a href="https://visjs.org/" target="_blank">Vis.js<a> Library. </ br>'
+           + 'The Kamada-Kawai layout was generated using the R  <a href="https://igraph.org/r/" target="_blank">igraph</a> Library.',
+    timeout: '3000',
+    killer:true
+  }).show();
+
+}
+
 //Initization function
 window.onload = function onLoad(){
+
+
    ShowLoadingScreen();
 
   //Load the nw data via a post request to getNetworkDataAPI.php
@@ -605,7 +644,7 @@ function GetSCodeFromPCode(pCode){
     }
   }
   //Throws an exception of a node with the pCode can't be found for some reason
-  throw new Error("Stanard with NGSS code " + pCode + " not found\n");
+  throw new Error("Standard with NGSS code " + pCode + " not found\n");
 }
 
 
@@ -684,7 +723,7 @@ function submit(code){
     ShowLoadingScreen();
   }
 
-  var resourceTypeSelection = GetResourceTypeSelectionFromDropdown();
+//  var resourceTypeSelection = GetResourceTypeSelectionFromDropdown();
 
 
 
@@ -696,8 +735,7 @@ function submit(code){
   }
 
   //Entry point for building the network and the alignments and standards tables.
-  BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypeSelection);
-
+  BuildNetwork(sCode, depth, displayType, gradeBand);
 
 }
 
@@ -716,28 +754,29 @@ function GetResourceTypeSelectionFromDropdown(){
   result.allTEDocs = showAllTEDocs;
 
   var otherItems = [];
-  for(var i = 1; i < RESOURCE_TYPES_NAMES.length; i++){
-   document.getElementById(RESOURCE_TYPES_NAMES[i])
-    var showit = null;
-     if(document.getElementById(RESOURCE_TYPES_NAMES[i])){
-       showit = document.getElementById(RESOURCE_TYPES_NAMES[i]).checked;
+  for(var i = 0; i < NGSSResourcesList.length; i++){
+   document.getElementById(NGSSResourcesList[i])
+    var showIt = null;
+     if(document.getElementById(NGSSResourcesList[i])){
+
+       if(NGSSResourcesList[i] == "TE"){
+         showIt = document.getElementById(NGSSResourcesList[i]).checked;
+       }
+
+       else{
+         showIt = document.getElementById(NGSSResourcesList[i] + "_Checkbox").checked
+       }
      }
      else showit = false;
      var item = {}
-     item.item = RESOURCE_TYPES_NAMES[i];
-     item.show = showit;
+     item.item = NGSSResourcesList[i];
+     item.show = showIt;
 
-     otherItems[i - 1] = item;
+     otherItems[i] = item;
   }
   result.otherResources = otherItems;
   return result
 }
-
-/*class DropdownState{
-  constructor(){
-
-  }
-}*/
 
 
 /****************************************************************************************
@@ -754,7 +793,7 @@ Parameters:
   7) showCurricularUnits: a boolean that determines if units will be displayed.
   8) showAll: a boolean that overrides the previous 3 that determines if all alignment types will be displayed.
 ****************************************************************************************/
-function BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypes){
+function BuildNetwork(sCode, depth, displayType, gradeBand){
 
   //If user has selected a gradeband, we search by that gradeBand and iterate up to a depth of 50 to display the entire gradeband.
   if(gradeBand != 0){
@@ -767,7 +806,9 @@ function BuildNetwork(sCode, depth, displayType, gradeBand, resourceTypes){
     depth = 50;  //set depth to max if grade band is set.
   }
 
-  BuildNetworkNSteps(sCode, depth, displayType, resourceTypes);
+  BuildNetworkNSteps(sCode, depth, displayType);
+  //BuildAlignedDocumentsTable(sCode) //test me
+
 
 }
 
@@ -828,8 +869,9 @@ for igraph in R. Finally, we take the zero-indexed edge list and build a string 
 can be passed to R.
 *************************************************************************************************/
 function GetEdgesInRFormat(){
-   edges = JSON.parse(JSON.stringify(graph.edges));
-   edgesToPrint = edges;
+
+   //edges = JSON.parse(JSON.stringify(graph.edges));
+
    var rString = GetGMLData();
    return rString;
 }
@@ -846,7 +888,7 @@ function ShowResourceType(){
      }
      return false;
 }
-
+var FOO = false;
 
 /************************************************************************************************
 Description:
@@ -862,7 +904,9 @@ Parameters:
   6) showCurricularUnits: True if curricularunits will be displayed in the graph
   7) showAll: True if all document types will be displayed in the graph
 *************************************************************************************************/
-function BuildNetworkNSteps(sCode, depth, displayType, resourceTypes){
+var FIRST = true;
+function BuildNetworkNSteps(sCode, depth, displayType){
+
   graph = new GraphObject(); //Allocate a new Graph object to store the current graph
   if(depth){
       AddStandarsNodes(depth, sCode);  //add all the standards to the graph up to the specified depth
@@ -871,27 +915,54 @@ function BuildNetworkNSteps(sCode, depth, displayType, resourceTypes){
   AddStandardsEdges();  //add vertex connections to the graph for the standards
 
   //add nodes and edges for resources
+  var resourceTypes = GetResourceTypeSelectionFromDropdown()
+
   AddResourceAlignmentNodes(resourceTypes);
   AddResourceAlignmentEdges(resourceTypes);
 
-//S2454525
-
-
   var edgesRFormat = GetEdgesInRFormat(); //Format edge list as zero indexed so R can compute KK on it
-
-
+  if(FIRST){
+      BuildResourcesDropdown();
+      FIRST = false;
+  }
+  else{
+    UpdateResourceDropdown();
+  }
+  BuildAlignedDocumentsTable(sCode)
   GetKamadaKawaiCoords(edgesRFormat); //gets the kk layout via an AJAX post. Begins the chain of events for drawing the netork
+
+
 }
 
 
 function GetGMLData(){
+
+  var currentIndex = graph.alignments.length;
+ 	var temporaryValue, randomIndex;
+
+     //sort the alignments.
+     let length = graph.alignments.length;
+      for (let i = 1; i < length; i++) {
+          let key = graph.alignments[i];
+          let j = i - 1;
+          while (j >= 0 && graph.alignments[j].id > key.id) {
+              graph.alignments[j + 1] = graph.alignments[j];
+              j = j - 1;
+          }
+          graph.alignments[j + 1] = key;
+      }
+
+
+
   var gmlString = "graph[\n";
   var padding = "\t\t";
   var label = "NGSS k-2";
   gmlString += "\t"+  "label " + "\"" + label + "\"" + "\n";
   for(var i = 0; i < graph.numVertices; i++){
+    var lab = graph.vertices[i].sCode;
+    lab = lab.substring(6,8);
      var nodeString = "\tnode[\n";
-     nodeString += padding + "id " +  (graph.vertices[i].id + 1).toString()  + "\n";
+     nodeString += padding + "id " +  (graph.vertices[i].id).toString()  + "\n";
      nodeString += "\t]\n"
      gmlString += nodeString;
   }
@@ -899,23 +970,32 @@ function GetGMLData(){
  //build the node gml data for TE docs
  for(var i = 0; i < graph.numAlignments; i++){
    var nodeString = "\tnode[\n";
-    nodeString += padding + "id " +  (graph.alignments[i].id + 1).toString()  + "\n";
+    nodeString += padding + "id " +  (graph.alignments[i].id).toString()  + "\n";
     nodeString += "\t]\n"
     gmlString += nodeString
  }
 
- for(var i = 0; i < edgesToPrint.length; i++){
+
+ //built the edges for every connection in the graph
+ var edgeList = {};
+ for(var i = 0; i < graph.edges.length; i++){
      var edgeString = "\tedge[\n";
-     edgeString += padding + "source " + (edgesToPrint[i].to + 1).toString()  + "\n";
-     edgeString += padding + "target " +  (edgesToPrint[i].from + 1).toString() + "\n";
+     edgeString += padding + "source " + (graph.edges[i].to).toString()  + "\n";
+     edgeString += padding + "target " +  (graph.edges[i].from ).toString() + "\n";
      edgeString += "\t]\n";
      gmlString += edgeString;
    }
    gmlString += "]";
 
   gmlString = gmlString.replace("'","");
+  var res = "";
+  if(graph.numVertices != 26){
+     res = "GetKKCoords(" + "'" +  gmlString.toString()  + "'" +  ")";
+  }
+  else{
+    res = "GetFRCoords(" + "'" +  gmlString.toString()  + "'" +  ")";
+  }
 
-  var res =  "GetKKCoords(" + "'" +  gmlString.toString()  + "'" +  ")";
 
   return res;
 }
@@ -994,35 +1074,55 @@ function AddOSAlignmentEdges(){
 }
 
 
+function ShouldShowResource(resourceName){
+      for(var i = 0; i < RESOURCE_TYPES_NAMES.length; i++){
+        if(resourceName == RESOURCE_TYPES_NAMES[i]){
+          return true;
+        }
+      }
+      return false;
+}
 
-function AddResourceAlignmentNodes(resourceTypes){ //FIXME
 
+function AddResourceAlignmentNodes(resourceTypes){ //FIXM
   for(var i = 0; i < graph.numVertices; i++){  //for each standard
      var alignmentIds = graph.vertices[i].alignedResources;  //get list of documnets aligned to that standard
        if(alignmentIds.length == 0) continue;  //skip if no aligned documents to add
        for(var j = 0; j < alignmentIds.length; j++){
             var curAlignmentId = alignmentIds[j];
             var curAlignment = NGSSResources[curAlignmentId];
-            if(_ShouldShowResource(curAlignment, resourceTypes) == false){
+            //skip nodes not in collecion list FIXME
+            if(curAlignment == undefined || curAlignment == null){
+              continue;
+            }
+            resourceTypes = GetResourceTypeSelectionFromDropdown();
+
+            if(!_ShouldShowResource(curAlignment, resourceTypes, curAlignment.nodeType)){
               continue;
             }
             if(!graph.hasAlignment(curAlignment)){ //If alignment not in graph, add it to the graph
               GetResourceColor2(curAlignment);
               graph.addAlignment(curAlignment);
+
             }
        }
   }
 }
 
+//foof
 function GetResourceColor2(a){
 
      var t = a.nodeType;
      var i = 0;
-     for(i; i < RESOURCE_TYPES_NAMES.length; i++){
-       if(t == RESOURCE_TYPES_NAMES[i]) break;
+     var symbolId = 0;
+     for(i; i < NGSSResourcesList.length; i++){
+       if(t == NGSSResourcesList[i]) {
+         symbolId = getAlignmentSymbolIndex(a.nodeType);
+         break;
+       }
      }
-     a.color = RESOURCE_COLORS[i].color;
-     a.highlightColor = RESOURCE_COLORS[i].highlightColor;
+     a.color = resourceSymbols[symbolId].color;
+     a.highlightColor = resourceSymbols[symbolId].highlightColor;
 
 }
 
@@ -1036,24 +1136,31 @@ function AddResourceAlignmentEdges(resourceTypes){ //FIXME
          var curAlignment = NGSSResources[curAlignmentId];
 
          //only add resources as specified in the resourceType dropdown object
-         if(_ShouldShowResource(curAlignment, resourceTypes) == false){
+      /*   if(_ShouldShowResource(curAlignment, resourceTypes) == false){
+           continue;
+         }*/
+         if(!_ShouldShowResource(curAlignment, resourceTypes, curAlignment.nodeType)){
            continue;
          }
          if(graph.hasEdge(graph.vertices[i].id, curAlignment.id) == true) continue
+         if(graph.vertices[i].sCode == "S2454533"){
+
+         }
          graph.addEdge(graph.vertices[i].id, curAlignment.id);
      }
   }
 }
-
 
 //returns true if if documents of that type are selected in the resource dropdown..
 //If TE and docType, return true if that TE doc type is selected in the dropdown.
 function _ShouldShowResource(node, displayType, docType){
 
     var nodeType = node.nodeType; //the collection type identifier
-
+    displayType = GetResourceTypeSelectionFromDropdown()
+    //this is sometimes null for some weird reason
+    if(displayType == undefined) return false;
     //return true if specific TE doc type is selected in dropdown
-    if(nodeType == "teachengineering"){  //hard coded for TE
+    if(nodeType == "TeachEngineering"){  //hard coded for TE
       if(docType != undefined){
         if(node.docType == "activity" && document.getElementById("item1Box").checked) return true;
         if(node.docType == "lesson" && document.getElementById("item2Box").checked) return true;
@@ -1072,9 +1179,11 @@ function _ShouldShowResource(node, displayType, docType){
         for(var i = 0; i < nonTEResources.length; i++){
            r = nonTEResources[i];
            if(nodeType == r.item){
+             if(r.show == null || r.show == undefined) return false;
              return r.show;
            }
         }
+
 
         throw new Error("Could not get item from dropdown");
     }
@@ -1114,19 +1223,8 @@ function AddStandarsNodes(depth, sCode){
 }
 
 
-function ShowCreditsPopup(){
-  $('#creditModal').modal('show');
-
-  //display the modal header
-/*  document.getElementById("dciPopup").innerText = "Disiplinary core ideas for " + input
-
-  //get a reference to the table in the DOM
-  var tableRef = document.getElementById("dciTable").getElementsByTagName('tbody')[0];*/
-
-}
-
 function GetStandardColors(node){
-  var highlightIndex = 2; //FIXME
+  var highlightIndex = 2;
   if(node.nodeType == "Standard"){
     node.color = PURPLE_COLOR[0];
     node.highlightColor = PURPLE_COLOR[highlightIndex];
@@ -1177,7 +1275,7 @@ function GetNetworkOptions(options){
   return options;
 }
 
-
+var foobar = 0;
 function BuildNetworkStandards(kkCoords){
   var i = 0;
   for(i = 0; i < graph.numVertices; i++){
@@ -1197,10 +1295,11 @@ function BuildNetworkStandards(kkCoords){
       sCode:graph.vertices[i].sCode,
       font: {color:'black', size:REGULAR_NODE_SIZE},
       highlightColor:graph.vertices[i].highlightColor,
-      nodeType:"Standard", //FIXME
-      x: kkCoords[i].x,
-      y:-kkCoords[i].y
+      nodeType:"Standard",
+      x:kkCoords[foobar].x,
+      y:kkCoords[foobar].y,
     });
+    foobar = foobar + 1;
   }
 }
 
@@ -1218,28 +1317,43 @@ function FormatHoverTextForAlignment(title, collection){
     return resultHTML;
 }
 
+function getAlignmentSymbolIndex(nodeType){
+  for(var i = 0; i < NGSSResourcesList.length; i++){
+    if(NGSSResourcesList[i] == nodeType){
+      return i;
+    }
+  }
+  return 0;
+}
+
 function BuildNetworkAlignments(kkCoords){
   //Build a vertex for every document in the graph object
-
+ //foof
   for(var j = 0; j < graph.numAlignments; j++){
+   var symbolId = getAlignmentSymbolIndex(graph.alignments[j].nodeType);
+   var size = DOC_NODE_SIZE;
+   if(graph.alignments[j].nodeType != "TeachEngineering"){
+     size += 5;
+   }
     nodes.add({
       id:graph.alignments[j].id,
       title:FormatHoverTextForAlignment(graph.alignments[j].title, graph.alignments[j].nodeType),
-      color: graph.alignments[j].color,
+      color: resourceSymbols[symbolId].color,
       regularColor:graph.alignments[j].color,
-      highlightColor:graph.alignments[j].highlightColor,
-      shape:'circle',
+      highlightColor:resourceSymbols[symbolId].highlightColor,
+      shape:resourceSymbols[symbolId].shape,
       width:.1,
       font:{size:DOC_NODE_SIZE},
-      labal:" ",
+      size:size,
       nodeType:graph.alignments[j].nodeType,
       doc:graph.alignments[j].document,
-      x:kkCoords[graph.numVertices + j].x,
-      y:-kkCoords[graph.numVertices + j].y,
-      hidden:false
+      x:kkCoords[foobar].x,
+      y:kkCoords[foobar].y,
+      hidden:false,
     });
+    foobar = foobar + 1;
   }
-
+  foobar = 0;
   return graph.numVertices + j;
 }
 
@@ -1253,6 +1367,20 @@ function BuildNetworkEdges(){
     });
   }
 }
+
+
+function BuildTestNetork(kkCoords){
+  {
+     for(var i = 0; i < kkCoords.length; i++){
+       nodes.add({
+           id:i,
+           x: kkCoords[i].x,
+           y:kkCoords[i].y
+       })
+     }
+  }
+}
+
 
 /*******************************************************************************************
 Description: This function is the entry point for drawing the vis.js network on the canvas.
@@ -1276,6 +1404,9 @@ Parameters:
 
      //Build edges between all connected nodes (standards and resources)
      BuildNetworkEdges()
+
+    //BuildTestNetork(kkCoords);
+
 
    //Build an edge for edge edge in the graph's edge list.
 
@@ -1340,7 +1471,6 @@ function NWClickActionResult(nw){
             var nodesList = nodes.get(nodes._data);
             var sCode = clickedNodes[0].sCode;
             UnhighlightPreviousNode();
-
             //unhighlight current selected doc if exists
             if(selectedDocNode != null)
             UnHighlightDocumentNode(selectedDocNode);
@@ -1360,11 +1490,10 @@ function NWClickActionResult(nw){
           }
         }
 
-      //clicked on aligned resource node
+      //clicked on aligned resource node foof
       else{
            //only clicking on an Alignment connected with the currently selected standard does anything
            if(IsAlignedToStandard(clickedNodes[0].id, clickedNodes[0].nodeType)){
-
              //highlight the node that was clicked on by making it bigger and giving it a lighter color
              HighlightDocumentNode(clickedNodes[0]);
 
@@ -1546,7 +1675,7 @@ function ShowHideAlignmentsBasedOnDropdown(){
    var dataString = "[";
    for(var i = 0; i < graph.numAlignments; i++){
       var hidden = "false"
-      if(graph.alignments[i].nodeType != "teachengineering" ) continue;
+      if(graph.alignments[i].nodeType != "TeachEngineering" ) continue;
      var curAlignment = graph.alignments[i];
      if(graph.alignments[i].docType == "activity" &&  !showActivities) hidden = "true";
      else if(graph.alignments[i].docType == "lesson" && !showLessons) hidden = "true";
@@ -1607,7 +1736,6 @@ prameters:
  1) docId: the id of the alignments. Also the id of the coorisponding table row.
 *******************************************************************************************/
 function IsAlignedToStandard(docId, docType){
-
   //get list of aligned resources for the current selected node by sCode
   var ids = [];
   for(var i = 0; i < graph.numVertices; i++){
@@ -1620,7 +1748,7 @@ function IsAlignedToStandard(docId, docType){
   for(var i = 0; i < ids.length; i++){
     if(docId == NGSSResources[ids[i]].id) {
       var resourceTypes = GetResourceTypeSelectionFromDropdown();
-      return _ShouldShowResource( NGSSResources[ids[i]], resourceTypes);
+      return _ShouldShowResource( NGSSResources[ids[i]], resourceTypes,  NGSSResources[ids[i]].nodeType);
     }
   }
   return false;
@@ -1655,18 +1783,19 @@ function GetAlignmentsForStandard(sCode){
   dataSet = NGSSResources;
   var als = [];
   var count = 0
-
+  var resourceTypes = GetResourceTypeSelectionFromDropdown();
+  //FIXME
   //For every resource aligned to that standard
   for(var i = 0; i < alignments.length; i++){
-
      //Filter out all doctypes not selected from the dropdown
-     if( _ShouldShowResource(dataSet[alignments[i]], resourceTypes)){
+     if( _ShouldShowResource(dataSet[alignments[i]]), resourceTypes, dataSet[alignments[i]].nodeType){
        als[count] = dataSet[alignments[i]].id;
        count++
      }
   }
 
   //return list of ids of aligned resources to build the table for
+
   return als;
 }
 
@@ -1706,17 +1835,21 @@ function _BuildAlignedDocumentsForCollection(nodeSet, sCode){
   myList = GetAlignmentsForStandard(sCode);
   //For every resource aligned to sCode, add a row to the table with its metadata and onclick event handler
   for(var i = 0; i < nodeSet.length; i++){
+    var symbolIndex = getAlignmentSymbolIndex(nodeSet[i].nodeType);
     var curNode = nodeSet[i];
     if(!ArrayContains(myList, nodeSet[i].id)) continue;
+
     if(!IsShowingResource(nodeSet[i])) continue;
     count++;
-    var curDocId = nodeSet[i].document;
-    var newRow = tableRef.insertRow(tableRef.rows.length);
-    newRow.id = curDocId;
-    newRow.style.background = nodeSet[i].color;
+    var curDocId = nodeSet[i].document.replace(/ /g,'');
 
-    var curColor = nodeSet[i].color;
-    var curHighlightColor = nodeSet[i].highlightColor;
+    var newRow = tableRef.insertRow(tableRef.rows.length);
+
+    newRow.id = curDocId;
+    newRow.style.background = resourceSymbols[symbolIndex].color;
+
+    var curColor = resourceSymbols[symbolIndex].color;
+    var curHighlightColor = resourceSymbols[symbolIndex].highlightColor;
 
     //add closure to on click callback for row click action
     newRow.onclick = (function(){
@@ -1756,7 +1889,6 @@ Parameters:
  1) sCode: the ASN identifier of the stadard for which we are will build the table.
 ********************************************************************************************/
 function BuildAlignedDocumentsTable(sCode){
-
     var alignmentsCount = 0;
 
     //Remove prevous stuff from the alignments table
@@ -1766,7 +1898,6 @@ function BuildAlignedDocumentsTable(sCode){
    graph.sortAlignments();
 
    alignmentsCount += _BuildAlignedDocumentsForCollection(graph.alignments, sCode);
-
 
    //Set the table row count in the table header
    document.getElementById("alignmentsTableHeader").innerText =  "Aligned resources" + " (" + alignmentsCount.toString() + ")";
@@ -1814,7 +1945,7 @@ and putting a border around it.
 Parameters:
  1) docId: the id of the table row in the DOM that will get highlighed.
 ************************************************************************************************/
-function HighlightDocsTableCell(docId, highlightColor){ //FIXME
+function HighlightDocsTableCell(docId, highlightColor){
    //unighlight table row if set
    if(document.getElementById(currentDocsTableRow)){
 
@@ -1836,14 +1967,15 @@ function HighlightDocsTableCell(docId, highlightColor){ //FIXME
    currentDocsTableRow = docId;
 }
 
-
+//foobar me
 function GetResourceColor(resourceId){
 
    //Search the global resource list for the resource with the given id
     var color = null;
     for(var i = 0;  i < NGSSResources.length; i++){
       if(NGSSResources[i].document == resourceId){
-
+        console.log(NGSSResources);
+        console.log(i)
          //get the color attribute of the resource
          color = NGSSResources[i].color;
          break;
@@ -1882,6 +2014,7 @@ Parameters:
   2) The document id which is the name of the document that gets displayed.
 *************************************************************************************************/
 function _TruncateDocDescription(des, id){
+
   if(!des)return "error"
   des = des.substring(0, des.length);
   if (des.length > 100){
@@ -1891,9 +2024,10 @@ function _TruncateDocDescription(des, id){
    des=des.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
    des=des.replace(/<(?:.|\s)*?>/g, "");
 
+   var newId = id.replace(/ /g,'')
       return "<span 'style= display:inline'> " + des.substring(0, 100) +
-      "<span style = 'display:inline' id = " + newId + '-elipsis' +">" +'...' +
-      "</span>" + "</span>" + "<span id = " + newId + '-doc' +" style = 'display:none'>" + des.substring(100, des.length) +
+      '<div style = "display:inline" id = '+newId+ '-elipsis' + '>' +'...' + '</div>' +
+      "</span>" + "<span id = " + newId + '-doc' +" style = 'display:none'>" + des.substring(100, des.length) +
       "<span style = 'color:blue; cursor: pointer'  id = " + newId + '-less' + ' onclick = _showLessDocDescription(\'' + newId + '\')>' +' less'+ "</span>" +
       "</span>" + '<span  onclick = "_ShowFullDocDescription(\'' + newId + '\')">  <span  style = "color:blue; cursor: pointer" id = \'' + newId + "-more" +'\' > more</span></span>';
   }
@@ -2274,10 +2408,10 @@ Parameters:
     R server function.
 *********************************************************************************************/
 function GetKamadaKawaiCoords(edgesRFormat){
-  var params = "edgeList=" + edgesRFormat;
 
+  var params = "edgeList=" + edgesRFormat;
   var uri = "getKKCoordsAPI.php";
-  var req = new XMLHttpRequest();
+  var req =new XMLHttpRequest();
   var kkCoords2D = null;
   req.open("POST", uri, true);
   req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -2288,12 +2422,14 @@ function GetKamadaKawaiCoords(edgesRFormat){
 
         kkCoords2D = FormatKamadaKawaiCoords(kkCoords);
         BuildNGSSNetwork(kkCoords2D);  //Build the vis.js nw using the graph object and the kk coords.
+
      }
      else{
        console.log(req.status)
        console.log("Failure Getting KK coordinates");
      }
   }
+
   req.send(params);
 }
 
@@ -2365,8 +2501,22 @@ function GetNetworkDataAJAX(){
            if(req.status == 200){
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
-               NGSSResources = result[1];
-               BuildResourcesDropdown();
+               NGSSResources = result[1]; //array of alignments
+               NGSSResourcesList = result[2]; //list of all resources in the collection
+               for(var i = 0; i < NGSSResources.length; i++){
+                var index =  getAlignmentSymbolIndex(NGSSResources[i].nodeType);
+                console.log(NGSSResources[i].nodeType)
+                  NGSSResources[i].color = resourceSymbols[index].color;
+                  NGSSResources[i].highlightColor = resourceSymbols[index].highlightColor;
+                    NGSSResources[i].shape = resourceSymbols[index].shape;
+                 if(NGSSResources[i].document[0] == "\""){
+                   NGSSResources[i].document = NGSSResources[i].document.substring(1,NGSSResources[i].document.length - 1 )
+                      NGSSResources[i].document =  NGSSResources[i].document.replace(/ /g,'');
+                 }
+               }
+
+               NGSSResourcesList[0] = "TE"
+               NGSSResourcesList.sort().reverse()
                setTimeout(function(){
                submit(DEFAULT_STANDARD);
              }, 200);
@@ -2380,23 +2530,114 @@ function GetNetworkDataAJAX(){
    req.send(null)
 }
 
+function _isInGraph(standard){
+
+    for(var i = 0; i < graph.numVertices; i++){
+
+      if(standard == graph.vertices[i].sCode){
+        return true;
+      }
+    }
+   return false;
+}
 
 
+//fooooo
+function getResourceCount(resource){
+  resourceList = {};
+  var resourceCount = 0
+  if(graph == null) return resourceCount;
 
+  for(var i = 0; i < graph.numVertices; i++){
+
+    var alignmentsToVertex = graph.vertices[i].alignedResources;
+    for(var j = 0; j < alignmentsToVertex.length; j++){
+      var index = alignmentsToVertex[j]
+      var alignment = NGSSResources[index]
+
+      if (resource == alignment.nodeType && !resourceList[alignment.document]){
+        resourceCount++;
+        resourceList[alignment.document] = alignment.document;
+      }
+    }
+  }
+/*  var resourceCount = 0;
+  for(var i = 0; i < NGSSGraph.length; i++){
+    if(_isInGraph(NGSSGraph[i].sCode)){
+      a = NGSSGraph[i].alignedResources;
+      for(var j = 0; j < a.length; j++){
+        if(NGSSResources[a[j]].nodeType == resource){
+          resourceCount++;
+        }
+      }
+    }
+  }*/
+
+  return resourceCount;
+}
+
+
+//update the styling and resource count for each item in the custom dropdown.
+function UpdateResourceDropdown(){
+    var resourceCount = 0;
+    for(var i = 0; i < NGSSResourcesList.length; i++){
+      var resourceCount = getResourceCount(NGSSResourcesList[i]);
+      var newItem = document.getElementById(NGSSResourcesList[i])
+
+     document.getElementById(i.toString() + "_count").innerText = " (" + resourceCount.toString() + ")";
+    var itemSymbol = document.getElementById(i.toString() + "_symbol");
+    if(resourceCount == 0 && document.getElementById(i.toString() + "_label").innerText != "TE"){
+       newItem.style.color = '#9F9F9F';
+       itemSymbol = document.getElementById(i.toString() + "_symbol");
+       itemSymbol.style.display = "none"
+    }
+    else{
+        itemSymbol.style.display = "inline-block"
+           newItem.style.color = 'black';
+    }
+ }
+}
 
 //Takes the post from the server and builds a dropdown to accomidate all the resource types
 function BuildResourcesDropdown(){
+  for(var i = 0; i < NGSSResourcesList.length; i++){
+     var symbolId = i.toString() + "_symbol";
+     var color = resourceSymbols[i].color;
+    if(resourceSymbols[i].shape == "circle" ){
+      var symbol =  '<span id = '+symbolId+' style="height:12px; width:12px; border-radius:50%; margin-left:5px; background-color:'+color+'; display:inline-block" id = '+i.toString()+"_symbol"+'>'+'</span>'
+    }
+    else if(resourceSymbols[i].shape == "triangle"){
+      var symbol = '<span id = '+symbolId+' style= "margin-left:5px;width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; cursor: pointer; vertical-align: middle; display:inline-block; border-bottom:9px solid '+color+'"></span>'
+    }
+    else if(resourceSymbols[i].shape == "triangleDown"){
+      var symbol = '<span id = '+symbolId+' style= "margin-left:5px;width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; cursor: pointer; vertical-align: middle; display:inline-block; border-top:9px solid '+color+'"></span>'
+    }
+    else if(resourceSymbols[i].shape == "diamond"){
+      var symbol =   "<span id="+symbolId+" style='margin-left:5px; width: 10px; transform:rotate(45deg); display:inline-block;     height: 10px;      background: "+color+"'></span>"
+    }
+    else if(resourceSymbols[i].shape == "square"){
+      var symbol =   "<span id="+symbolId+"  style='margin-left:5px; width: 10px; display:inline-block;     height: 10px;      background: "+color+"'></span>"
+    }
+    else if(resourceSymbols[i].shape == "star"){
+      var symbol = "<span id="+symbolId+"  style='color:"+color+"; font-size:150%'>&#x2605;</span>"
+    }
+    else if(resourceSymbols[i].shape == "ellipse"){
+       var symbol = '<span id='+symbolId+'  style="margin-left:5px;height:10px; padding:none ;width:20px; background-color:'+color+'; color:'+color+'; border-radius:50%; font-size:0pt; line-height:0px"></span>';
+    }
+    else var symbol = "error"
 
-  for(var i = 1; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
-    var newItem = document.createElement("div");
-    newItem.id = RESOURCE_TYPES_CHECKBOXES[i]
+    var resourceCount = getResourceCount(NGSSResourcesList[i]);
+    var newItem = document.createElement("span");
+    newItem.id = NGSSResourcesList[i]
     var newCheckbox = document.createElement("input")
     newCheckbox.type = "checkbox";
-    newCheckbox.id = RESOURCE_TYPES_NAMES[i]
-
+    newCheckbox.id = NGSSResourcesList[i] + "_Checkbox"
     var newLabel = document.createElement("Label");
     newLabel.setAttribute("for", newCheckbox);
-    newLabel.innerHTML = RESOURCE_TYPES_NAMES[i]
+    var countId = NGSSResourcesList[i]+"_count";
+    newLabel.innerHTML = '<span id = '+i.toString() + "_label" +'>' + NGSSResourcesList[i] + '</span>' +
+                          '<span id = '+i.toString()+"_count"+'>' +" ("+resourceCount+ ")" +'</span>' + symbol
+
 
     newItem.appendChild(newCheckbox);
     newItem.appendChild(newLabel)
@@ -2406,28 +2647,17 @@ function BuildResourcesDropdown(){
     newItem.style.display = "none";
     newCheckbox.setAttribute("class", "customDropdown")
     newLabel.setAttribute("class", "customDropdown")
+
     var dropdown = document.getElementById("item3");
     dropdown.parentNode.insertBefore(newItem, dropdown.nextSibling)
-
    //rebuild the graph when the check box is checked or unchecked
     newItem.addEventListener("change", function(){
         submit(document.getElementById("sCode").value);
     });
-
-/*    document.getElementById("item1Box").addEventListener("change", function(){
-        hashChange = false;
-        location.hash = SetHashFromPageState();
-    });
-    document.getElementById("item2Box").addEventListener("change", function(){
-      hashChange = false;
-      location.hash = SetHashFromPageState();
-    });
-    document.getElementById("item2Box").addEventListener("change", function(){
-      hashChange = false;
-      location.hash = SetHashFromPageState();
-    });*/
   }
 
+ //update to hide the symbols that have no corrisponding alignments
+  UpdateResourceDropdown()
 }
 
  //tracks if the alignments dropdown is open. Initialize to not showing.
@@ -2438,6 +2668,8 @@ Initializes the resourceType drowpdown, including all onclick event handlers and
 logic for how the dropdown handles items being selected.
 *************************************************************************************/
 function initDropdown(){
+
+
 
    //initialize all checkboxes to unchecked since some browsers will check them on page refresh
    for(var i = 0; i < docTypesForDropDown.length; i++){
@@ -2452,31 +2684,50 @@ function initDropdown(){
   var displayType = "";
     document.getElementById("alignments").addEventListener("click", function(){
 
+
+      var width = "150px";
       //if dropdown options  is not currently being displayed
       if(!isShowing){
+        width = "500px";
         //disable network when dropdown showing and set dropdown options to showing
         isShowing = true;
         document.getElementById("mynetwork").style.pointerEvents = "none"
         displayType = "block"
+        document.getElementById("dropdownToggle").style.height = "88vh";
+          document.getElementById("dropdownToggle").style.overflow = "auto";
+
       }
 
       //if dropdown options are being shown
       else{
+        document.getElementById("dropdownToggle").style.height = "22px";
+          document.getElementById("dropdownToggle").style.overflow = "hidden";
         //hide set dropdown options to not showing
          isShowing = false;
          displayType = "none"
          document.getElementById("mynetwork").pointerEvents = "auto"
       }
-
       //show or hide the items in the dropdown based on the previously set dropdown options.
-      for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
-        document.getElementById(RESOURCE_TYPES_CHECKBOXES[i]).style.display = displayType;
+      for(var i = 0; i < NGSSResourcesList.length; i++){
+        document.getElementById(NGSSResourcesList[i]).style.display = displayType;
+        document.getElementById("dropdownToggle").style.width = width;
+        document.getElementById(NGSSResourcesList[i]).style.lineHeight ="2px";
       }
     });
 
     //Onclick handler for when user clicks anywhere on the page outside of the dropdown.
     document.addEventListener("click", function(event){
       if(isShowing){
+
+        //make sure top of dropdown is showing when it closes
+        if(event.target.className != "customDropdown"){
+          document.getElementById("alignments").scrollIntoView()
+        }
+  /*      document.getElementById("dropdownToggle").style.height = "24px";
+          document.getElementById("dropdownToggle").style.overflow = "hidden";
+            document.getElementById("start").style.height = "10vh";*/
+
+        var width = "150px";
         if(event.target.id != null && event.target.className != "customDropdown"){
             document.getElementById("mynetwork").style.pointerEvents = "auto"
           displayType = "none";
@@ -2484,8 +2735,11 @@ function initDropdown(){
           for(var i = 0; i < docTypesForDropDown.length; i++){
             document.getElementById( docTypesForDropDown[i].labelId).style.display = displayType //enable network when dropdown not showing
           }
-          for(var i = 0; i < RESOURCE_TYPES_CHECKBOXES.length; i++){
-            document.getElementById(RESOURCE_TYPES_CHECKBOXES[i]).style.display = displayType;
+          for(var i = 0; i < NGSSResourcesList.length; i++){
+            document.getElementById(NGSSResourcesList[i]).style.display = displayType;
+            document.getElementById("dropdownToggle").style.width = width;
+            document.getElementById("dropdownToggle").style.overflow = "hidden";
+            document.getElementById("dropdownToggle").style.height = "21px";
           }
         }
       }
@@ -2524,7 +2778,7 @@ function initDropdown(){
 
 
   //onclick event for each item. If all is selected, all boxes are checked. If all is deselected, all boxes are also deselected.
-/*  for(var i = 0; i < docTypesForDropDown.length; i++){
+ for(var i = 0; i < docTypesForDropDown.length; i++){
     //Add closure to this loop.
     (function(i){
         document.getElementById(docTypesForDropDown[i].checkBoxId).addEventListener("click", function(){
@@ -2545,7 +2799,7 @@ function initDropdown(){
           }
        },true)
     })(i);
-  }*/
+  }
 }
 
 
@@ -2723,10 +2977,13 @@ Parameters:
  1) id: the identifier of the table row for which to show the full doc description
 **************************************************************************************************************/
 function _ShowFullDocDescription(id){
+ console.log(id)
   var doc = document.getElementById(id + "-doc");
+
   doc.style.display = "inline"
   var e = document.getElementById(id + "-elipsis");
   e.style.display = "none";
+  console.log("foooo")
   var e = document.getElementById(id + "-less");
   e.style.display = "inline";
   var m = document.getElementById(id + "-more");

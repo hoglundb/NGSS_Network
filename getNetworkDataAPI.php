@@ -55,9 +55,11 @@ function GetNetworkData(){
    //For each standard, build its aligned resource list. Do this for all resource types.
    AddALLAlignmentsToAdjList($standardsList, $resources, $standardsHashMap, $dbConnection);
 
+   //get list of curriculumn resources
+   $resourcesList = GetResourceTypeNames();
 
    $results = array();
-   array_push($results, $standardsList, $resources);
+   array_push($results, $standardsList, $resources, $resourcesList);
 
    return json_encode($results);
 }
@@ -82,9 +84,10 @@ function GetAllAlignedResources(& $standardsHashMap, $numStandards){
    $idIndex = $numStandards;
 
    //query to get list of alignments with metadata
-   $q = "SELECT r.doc_id, r.url, r.summary, r.title, r.doc_type, c.resource_name, c.resource_id FROM resource_data r
+   $q = "SELECT r.doc_id, r.url, r.summary, r.title, r.doc_type, c.resource_name, c.resource_id FROM resource_data_backup r
              INNER JOIN
-             resource_collections c on c.resource_id = r.resource_id";
+             resource_collections_backup c on c.resource_id = r.resource_id
+             ORDER BY c.resource_id";
 
   //for every row, create new Resource() object with its metadata
   if($res = mysqli_query(GetDBConnection(), $q)){
@@ -245,8 +248,8 @@ function getAlignmentMappings($dbConnection){
    $q = "SELECT p.id, p.doc_id FROM(
                      SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
                     (
-                      SELECT sCode, doc_id FROM resource_alignments ORDER BY sCode
-                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data)
+                      SELECT sCode, doc_id FROM resource_alignments_backup ORDER BY sCode
+                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data_backup)
                     ORDER BY p.id, p.doc_id";
 
     if($res = mysqli_query($dbConnection, $q)){
@@ -346,7 +349,7 @@ function GetIdsOfAlignedDocs($sCode, $dbConnection){
     $idsArray = array(); //array that will hold TE document ids.
 
     //Query list of doc_ids that are ligned to the sCode
-    $query = "SELECT doc_id  FROM teach_engr_alignments WHERE sCode ='".$sCode."';";
+    $query = "SELECT doc_id  FROM teach_engr_alignments WHERE sCode ='".$sCode."' ORDER BY doc_id;" ;
     if($res = mysqli_query($dbConnection, $query)){;
         while($row = $res->fetch_assoc()){
           array_push($idsArray, $row["doc_id"]);
@@ -836,6 +839,18 @@ function _Get3dStandardCategory($sCode, $dbConnection){
   else return "Error2";
 }
 
+
+function GetResourceTypeNames(){
+  $resources = array();
+  $query = "SELECT resource_name FROM resource_collections_backup ";
+  if($res = mysqli_query(GetDBConnection(), $query)){
+     while($row = $res->fetch_assoc()){
+         $resource = $row["resource_name"];
+         array_push($resources, $resource);
+     }
+  }
+  return $resources;
+}
 
 /***********************************************************************************
 * Parameters:

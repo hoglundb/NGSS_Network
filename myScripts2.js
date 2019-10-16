@@ -297,6 +297,7 @@ window.onload = function onLoad(){
     }
  });
 
+
  document.getElementById("TE").addEventListener("click", (e) =>{
    if(e.target.checked == undefined) return;  //return if not clicking right on check box
 
@@ -1619,7 +1620,7 @@ function scaleNw(e){
 
 var curNodeSize = 18;
 
-//alignes the legend based on the view height of the screen 
+//alignes the legend based on the view height of the screen
 function alignLegend(){
   var legend = document.getElementById("theLegend");
   if(legend){
@@ -2554,6 +2555,15 @@ function getResourceCount(resource){
 
 //update the styling and resource count for each item in the custom dropdown.
 function UpdateResourceDropdown(){
+  var teCount = GetTECount();
+  var teLabel = document.getElementById("TECount");
+  teLabel.innerText = "("+ teCount.docCount + ")";
+
+   document.getElementById("activityCount").innerText =  "("+ teCount.activityCount + ")";
+   document.getElementById("lessonCount").innerText =  "("+ teCount.lessonCount + ")";
+    document.getElementById("unitCount").innerText =  "("+ teCount.unitCount + ")";
+
+
     var resourceCount = 0;
     for(var i = 0; i < NGSSResourcesList.length; i++){
       var resourceCount = getResourceCount(NGSSResourcesList[i]);
@@ -2573,8 +2583,52 @@ function UpdateResourceDropdown(){
  }
 }
 
+/*NGSSGraph = result[0];
+NGSSResources = result[1]; //array of alignments
+
+NGSSResourcesList = result[2]; //*/
+
+function GetTECount(){
+  console.log(NGSSResources)
+  var teCount = 0;
+  var activityCount = 0;
+  var unitCount = 0;
+  var lessonCount = 0;
+  var teResources = {};
+  var result = {};
+  for(var i = 0; i < graph.numVertices; i++){
+    var aligned = graph.vertices[i].alignedResources;
+    for(var j = 0; j < aligned.length; j++){
+      var resource = NGSSResources[aligned[j]];
+      if(resource.nodeType == 'TeachEngineering' && !teResources[resource.document]){
+        teResources[resource.document] =   teResources[resource.document];
+        if(resource.docType == "curricularUnit"){
+          unitCount ++;
+        }
+        else if(resource.docType == "lesson"){
+          lessonCount++;
+        }
+        else if(resource.docType == "activity"){
+          activityCount++
+        }
+        teCount++;
+      }
+    }
+
+  }
+  result.docCount = teCount;
+  result.activityCount = activityCount;
+  result.lessonCount = lessonCount;
+  result.unitCount = unitCount;
+  return result;
+}
+
 //Takes the post from the server and builds a dropdown to accomidate all the resource types
 function BuildResourcesDropdown(){
+
+  var teLabel = document.getElementById("TECount");
+  teLabel.innerText = " (0)";
+
   for(var i = 0; i < NGSSResourcesList.length; i++){
      var symbolId = i.toString() + "_symbol";
      var color = resourceSymbols[i].color;

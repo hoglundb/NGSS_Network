@@ -84,7 +84,7 @@ function GetAllAlignedResources(& $standardsHashMap, $numStandards){
    $idIndex = $numStandards;
 
    //query to get list of alignments with metadata
-   $q = "SELECT r.doc_id, r.url, r.summary, r.title, r.doc_type, c.resource_name, c.resource_id FROM resource_data_backup r
+   $q = "SELECT r.doc_id, r.url, r.summary, r.title, r.doc_type, c.resource_name, c.resource_id FROM resource_data r
              INNER JOIN
              resource_collections_backup c on c.resource_id = r.resource_id
              ORDER BY c.resource_id";
@@ -248,8 +248,8 @@ function getAlignmentMappings($dbConnection){
    $q = "SELECT p.id, p.doc_id FROM(
                      SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
                     (
-                      SELECT sCode, doc_id FROM resource_alignments3 ORDER BY sCode
-                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data_backup)
+                      SELECT sCode, doc_id FROM resource_alignments ORDER BY sCode
+                    ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data)
                     ORDER BY p.id, p.doc_id";
 
     if($res = mysqli_query($dbConnection, $q)){

@@ -470,7 +470,6 @@ Function handles the logic of the resource type dropdown. Calls helper functions
 *******************************************************************************************************/
 function HandleResouceTypeDropdown(){
     //show or hide documents label in the graph legend
-    showHideDocsLabel();
 
     //the previous state of the ResorceTypes dropdown (prior to click event)
     var showingDocsPrev = IsShowingDocs();
@@ -1619,36 +1618,12 @@ function scaleNw(e){
 }
 
 var curNodeSize = 18;
-/**************************************************************************************************
-Function toggles the display of the alignments label in the legend depending on if documents are
-showing in the graph. Also adjusts the position of the legend accordinly.
-**************************************************************************************************/
-function showHideDocsLabel(){
-  var showActivities = document.getElementById(docTypesForDropDown[0].checkBoxId).checked;
-  var showLessons = document.getElementById(docTypesForDropDown[1].checkBoxId).checked;
-  var showCurricularUnits = document.getElementById(docTypesForDropDown[2].checkBoxId).checked;
 
-  var docsLabel = document.getElementById("alignedDocsLabel");
-  var legend = document.getElementById("theLegend");
-  if(showActivities || showLessons || showCurricularUnits){
-    if(legend){
-     legend.style.top = "74vh"
-    }
-    docsLabel.style.display = "inline";
-  }
-  else{
-    if(legend){
-     legend.style.top = "76vh"
-    }
-    docsLabel.style.display = "none";
-  }
-}
-
-
+//alignes the legend based on the view height of the screen 
 function alignLegend(){
   var legend = document.getElementById("theLegend");
   if(legend){
-   legend.style.top = "76vh"
+   legend.style.top = "78vh"
   }
 }
 
@@ -1974,8 +1949,8 @@ function GetResourceColor(resourceId){
     var color = null;
     for(var i = 0;  i < NGSSResources.length; i++){
       if(NGSSResources[i].document == resourceId){
-        console.log(NGSSResources);
-        console.log(i)
+
+
          //get the color attribute of the resource
          color = NGSSResources[i].color;
          break;
@@ -2502,15 +2477,17 @@ function GetNetworkDataAJAX(){
                var result = JSON.parse(req.responseText);
                NGSSGraph = result[0];
                NGSSResources = result[1]; //array of alignments
+
                NGSSResourcesList = result[2]; //list of all resources in the collection
                for(var i = 0; i < NGSSResources.length; i++){
                 var index =  getAlignmentSymbolIndex(NGSSResources[i].nodeType);
                   NGSSResources[i].color = resourceSymbols[index].color;
-                  console.log(NGSSResources[i])
                  if(NGSSResources[i].document[0] == "\""){
                    NGSSResources[i].document = NGSSResources[i].document.substring(1,NGSSResources[i].document.length - 1 )
-                      NGSSResources[i].document =  NGSSResources[i].document.replace(/ /g,'');
                  }
+                   NGSSResources[i].document =  NGSSResources[i].document.replace(/ /g,'');
+                   NGSSResources[i].document = NGSSResources[i].document.replace(" ","");
+                   NGSSResources[i].document = NGSSResources[i].document + "_" + i.toString() //ensure that documents are unique
                }
 
                NGSSResourcesList[0] = "TE"
@@ -2975,13 +2952,13 @@ Parameters:
  1) id: the identifier of the table row for which to show the full doc description
 **************************************************************************************************************/
 function _ShowFullDocDescription(id){
- console.log(id)
+
   var doc = document.getElementById(id + "-doc");
 
   doc.style.display = "inline"
   var e = document.getElementById(id + "-elipsis");
   e.style.display = "none";
-  console.log("foooo")
+
   var e = document.getElementById(id + "-less");
   e.style.display = "inline";
   var m = document.getElementById(id + "-more");

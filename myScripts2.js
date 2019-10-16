@@ -2505,10 +2505,8 @@ function GetNetworkDataAJAX(){
                NGSSResourcesList = result[2]; //list of all resources in the collection
                for(var i = 0; i < NGSSResources.length; i++){
                 var index =  getAlignmentSymbolIndex(NGSSResources[i].nodeType);
-                console.log(NGSSResources[i].nodeType)
                   NGSSResources[i].color = resourceSymbols[index].color;
-                  NGSSResources[i].highlightColor = resourceSymbols[index].highlightColor;
-                    NGSSResources[i].shape = resourceSymbols[index].shape;
+                  console.log(NGSSResources[i])
                  if(NGSSResources[i].document[0] == "\""){
                    NGSSResources[i].document = NGSSResources[i].document.substring(1,NGSSResources[i].document.length - 1 )
                       NGSSResources[i].document =  NGSSResources[i].document.replace(/ /g,'');

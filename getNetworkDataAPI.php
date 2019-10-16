@@ -248,7 +248,7 @@ function getAlignmentMappings($dbConnection){
    $q = "SELECT p.id, p.doc_id FROM(
                      SELECT t.doc_id, (SELECT id FROM ngss_network_nodes WHERE sCode = t.sCode) AS id FROM
                     (
-                      SELECT sCode, doc_id FROM resource_alignments_backup ORDER BY sCode
+                      SELECT sCode, doc_id FROM resource_alignments3 ORDER BY sCode
                     ) t) p WHERE p.id IS NOT NULL AND doc_id IN (SELECT doc_id FROM resource_data_backup)
                     ORDER BY p.id, p.doc_id";
 

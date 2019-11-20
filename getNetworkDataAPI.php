@@ -58,6 +58,7 @@ function GetNetworkData(){
    //get list of curriculumn resources
    $resourcesList = GetResourceTypeNames();
 
+
    $results = array();
    array_push($results, $standardsList, $resources, $resourcesList);
 

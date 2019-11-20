@@ -48,7 +48,7 @@
             <div class="modal-dialog" style= "background:green;">
               <div id="modalContent" class = "modal-content" style="overflow-y: auto; position:fixed; width:80%; bottom:100px;top:10px;">
                 <div class="modal-body" >
-                      <div>
+                   <div>
                         <table id = dciTable class="table table-bordered  table-hover" style="font-size:12px;">
                           <tbody id= 't1Body' style = "background:#FFE8C3">
                           <tr style="font-size:11pt;padding:0; background:#FF9900">
@@ -113,8 +113,8 @@
 
             <div class="col-lg-7" style="" >
               <div class='input-group' style='margin-top:15px; margin-left:3%; margin-bottom: 10px;width:100%'>
-              <input class="form-control" id = "sCode" type="text" style="min-width:100px;max-width: 110px;margin-right:5px; margin-top:3px; height:35px" aria-label="Search" >
-              <input type="button" id="submitButton" name="submitButton" class="btn btn-info" value="Generate" style="line-height:2px; margin-top:0.31%; margin-right:20px; height:35px; display:inline-flex; align-items:center" onclick = "submitBtn(); return false;"/>
+              <input class="form-control" id = "sCode" type="text" style="min-width:100px;max-width: 110px;margin-right:5px; border-radius:4px; margin-top:3px; height:23px" aria-label="Search" >
+              <input type="button" id="submitButton" name="submitButton" class="btn btn-info" value="Generate" style="line-height:2px; margin-top:0.31%; margin-right:20px; height:23px; display:inline-flex; align-items:center" onclick = "submitBtn(); return false;"/>
                   <div id = "start" style="margin-left:230px; position:fixed; z-index:10000; margin-top: 2px;">
                     <div id = "dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:150px; border-width:1px; font-size:10pt;">
                       <div id = "alignments" class="customDropdown" style="font-size:10.5pt; height: 18.4px; margin-left:5px">  --Provider--  <span id="dropdownSymbol" class="customDropdown" style="float:right; margin-top:3px; margin-right:5px; font-size:6pt">&#9660</span></div>
@@ -150,20 +150,31 @@
                    <option value = "3">6-8</option>
                    <option value = "4">9-12</option>
               </select>
+              <select id = "Category3D" style ='width:120px; border-radius:4px;font-size:10pt; margin-left:10px; height:20px; margin-top:3px'  >
+                   <option value = "None">NGSS</option>
+                   <option value = "CC">CC category</option>
+                   <option value = "DCI">DCI category</option>
+                   <option value = "SEP">SEP category</option>
+              </select>
+              <span id = "CategoryStandards">
+                <select id = "CategoryStandardsList" style ='width:120px; border-radius:4px;font-size:10pt; margin-left:10px; height:20px; margin-top:3px'  >
+                </select>
+              </span>
+
             </div>
             <div id = "foo">
           <div id="mynetwork" style="height:82vh; background:#F9F9F6">
               </div>
             </div>
                  <div id= "theLegend" style="top:75vh; position:absolute; margin-left:3.2%">
-                    <div id="label1" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:0px; position:absolute;; float:left;border-radius:3px ; padding-left:4px">Topics</div>
-                    <div id="label2" style = "font-size: 9pt;  margin-left:2%; width:190px; margin-top:20px; position:absolute; float:left;border-radius:3px; padding-left:4px">Performance Expectations</div>
-                    <div id="label3" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:40px; position:absolute; float:left;border-radius:3px; padding-left:4px">Science and Engr Practices</div>
-                    <div id="label4" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:60px; position:absolute; float:left;border-radius:3px; padding-left:4px">Disiplinary Core Ideas</div>
-                    <div id="label5" style = "font-size: 9pt; margin-left:2%; width:190px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts</div>
+                    <div id="label1" style = "font-size: 9pt; margin-left:2%; width:215px; margin-top:0px; position:absolute;; float:left;border-radius:3px ; padding-left:4px">Topics <select style="float:right" id = "TopicsToggle"><option value = "On">On</option><option value = "Off">Off</option></select></div>
+                    <div id="label2" style = "font-size: 9pt;  margin-left:2%; width:215px; margin-top:20px; position:absolute; float:left;border-radius:3px; padding-left:4px">Performance Expectations <select style="float:right" id = "PEToggle"><option value = "On">On</option><option value = "Off">Off</option></select></div>
+                    <div id="label3" style = "font-size: 9pt; margin-left:2%; width:215px; margin-top:40px; position:absolute; float:left;border-radius:3px; padding-left:4px">Science and Engr Practices<select style="float:right" id = "SEPToggle"><option value = "On">On</option><option value = "Off">Off</option></select></div>
+                    <div id="label4" style = "font-size: 9pt; margin-left:2%; width:215px; margin-top:60px; position:absolute; float:left;border-radius:3px; padding-left:4px">Disiplinary Core Ideas <select style="float:right" id = "DCIToggle"><option value = "On">On</option><option value = "Off">Off</option></select></div>
+                    <div id="label5" style = "font-size: 9pt; margin-left:2%; width:215px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts <select style="float:right" id = "CCToggle"><option value = "On">On</option><option value = "Off">Off</option></select></div>
                     <!--<div id = "alignedDocsLabel" style = "display:none; font-size: 9pt; background: #DFD4C8; margin-left:2%; width:190px; margin-top:100px; position:absolute; float:left;border-radius:3px; padding-left:4px">Aligned TE Documents</div>-->
                 </div>
-                <div style="position:absolute; margin-left:40px;" onclick = "ShowCreditsPopup()"><a href="javascript:undefined">credits</a></div>
+              <!--  <div style="position:absolute; margin-left:40px;" onclick = "ShowCreditsPopup()"><a href="javascript:undefined">credits</a></div>-->
             </div>
             <div class="stdTable" style=" margin-top:38px; margin-left:1.4% ;padding-right:0%; padding-left:0%;width:18%; " >
            <span id="standardsTableHeader" style ="font-size:10pt; font-weight:bold">Standards</span>

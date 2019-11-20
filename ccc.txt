@@ -1,0 +1,123 @@
+sCode	description	category
+S2468136	Simple tests can be designed to gather evidence to support or refute student ideas about causes.	Cause and Effect
+S2470526	Events have causes that generate observable patterns.	Cause and Effect
+S2470534	Patterns in the natural and human designed world can be observed and used as evidence.	Patterns
+S2470551	"Patterns in the natural world can be observed, used to describe phenomena, and used as evidence."	Patterns
+S2470552	Systems in the natural and designed world have parts that work together.	Systems and System Models
+S2470579	People encounter questions about the natural world every day.	"Interdependence of Science, Engineering, and Technology"
+S2470580	People depend on various technologies in their lives; human life would be very different without technology.	"Interdependence of Science, Engineering, and Technology"
+S2470626	The shape and stability of structures of natural and designed objects are related to their function(s).	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2470627	Every human-made product is designed by applying some knowledge of the  natural world and is built using materials  derived from the natural world.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2470656	Science assumes natural events happen today as they happened in the past.	Scientific Knowledge Assumes an Order and Consistency in Natural Systems
+S2470657	Many events are repeated.	Scientific Knowledge Assumes an Order and Consistency in Natural Systems
+S2470685	Patterns in the natural and human designed world can be observed.	Patterns
+S2470688	"Objects may break into smaller pieces and be put together into larger pieces, or change shapes."	Energy and Matter
+S2470726	Things may change slowly or rapidly.	Stability and Change
+S2470753	Developing and using technology has impacts on the natural world.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2470754	Scientists study the natural and material world.	Science Addresses Questions About the Natural and Material World
+S2470751	Patterns in the natural world can be observed.	Petterns
+S2470803	Cause and effect relationships are routinely identified.	Cause and Effect
+S2470802	Patterns of change can be used to make predictions.	Patterns
+S2470804	"Cause and effect relationships are routinely identified, tested, and used to explain change."	Cause and Effect
+S2470805	"Scientific discoveries about the natural world can often lead to new and improved technologies, which are developed through the engineering design process."	
+S2470845	Similarities and differences in patterns can be used to sort and classify natural phenomena.	"Interdependence of Science, Engineering, and Technology"
+S2470846	Cause and effect relationships are routinely identified and used to explain change.	Cause and Effect
+S2470877	Observable phenomena exist from very short to very long time periods.	"Scale, Proportion, and Quantity"
+S2470880	Science assumes consistent patterns in natural systems.	"Interdependence of Science, Engineering, and Technology"
+S2470879	Knowledge of relevant scientific concepts and research findings is important in engineering.	"Interdependence of Science, Engineering, and Technology"
+S2470878	A system can be described in terms of its components and their interactions.	Systems and System Models
+S2470907	"Engineers improve existing technologies or develop new ones to increase their benefits (e.g., better artificial limbs), decrease known risks (e.g., seatbelts in cars), and meet societal demands (e.g., cell phones)."	
+S2470908	Science affects everyday life.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2470938	Energy can be transferred in various ways and between objects.	Science is a Human Endeavor 
+S2470939	Engineers improve existing technologies or develop new ones.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2470940	Most scientists and engineers work in teams.	Science is a Human Endeavor 
+S2470967	Similarities and differences in patterns can be used to sort and classify designed products.	Patterns
+S2470995	Patterns can be used as evidence to support an explanation.	Patterns
+S2471037	"Over time, people's needs and wants change, as do their demands for new and improved technologies."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471038	"Engineers improve existing technologies or develop new ones to increase their benefits, to decrease known risks, and to meet societal demands."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471063	Natural objects exist from the very small to the immensely large.	"Scale, Proportion, and Quantity"
+S2471064	"Standard units are used to measure and describe physical quantities such as weight, time, temperature, and volume."	"Scale, Proportion, and Quantity"
+S2471097	"Matter is transported into, out of, and within systems."	Energy and Matter
+S2471127	"Similarities and differences in patterns can be used to sort, classify, communicate and analyze simple rates of change for natural phenomena."	Patterns
+S2471144	Standard units are used to measure and describe physical quantities such as weight and volume.	"Scale, Proportion, and Quantity"
+S2471157	Science findings are limited to questions that can be answered with empirical evidence.	Science Addresses Questions About the Natural and Material World
+S2471179	"People's needs and wants change over time, as do their demands for new and improved technologies."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471229	"Time, space, and energy phenomena can be observed at various scales using models to study systems that are too large or too small."	"Scale, Proportion, and Quantity"
+S2471227	Macroscopic patterns are related to the nature of microscopic and atomic-level structure.	Patterns
+S2471232	"Structures can be designed to serve particular functions by taking into account properties of different materials, and how materials can be shaped and used."	Structure and Function
+S2471233	"Engineering advances have led to important discoveries in virtually every field of science, and scientific discoveries have led to the development of entire industries and engineered systems."	"Interdependence of Science, Engineering, and Technology"
+S2471234	"The uses of technologies and any limitations on their use are driven by individual or societal needs, desires, and values; by the findings of scientific research; and by differences in such factors as climate, natural resources, and economic conditions. Thus technology use varies from region to region and over time."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471228	Cause and effect relationships may be used to predict phenomena in natural or designed systems.	Cause and Effect
+S2471230	Matter is conserved because atoms are conserved in physical and chemical processes.	Energy and Matter
+S2471231	The transfer of energy can be tracked as energy flows through a designed or natural system.	Energy and Matter
+S2471266	"Models can be used to represent systems and their interactions—such as inputs, processes and outputs—and energy and matter flows within systems."	Systems and System Models
+S2471268	"The uses of technologies and any limitations on their use are driven by individual or societal needs, desires, and values; by the findings of scientific research; and by differences in such factors as climate, natural resources, and economic conditions."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471267	Explanations of stability and change in natural or designed systems can be constructed by examining the changes over time and forces at different scales.	Stability and Change
+S2471306	Proportional relationships (e.g. speed as the ratio of distance traveled to time taken) among different types of quantities provide information about the magnitude of properties and processes.	"Scale, Proportion, and Quantity"
+S2471308	"Energy may take different forms (e.g. energy in fields, thermal energy, energy of motion)."	Energy and Matter
+S2471338	Graphs and charts can be used to identify patterns in data.	Patterns
+S2471340	Structures can be designed to serve particular functions.	Structure and Function
+S2471341	"Technologies extend the measurement, exploration, modeling, and computational capacity of scientific investigations."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471342	Advances in technology influence the progress of science and science has influenced advances in technology.	Science is a Human Endeavor 
+S2471388	Phenomena that can be observed at one scale may not be observable at another scale.	"Scale, Proportion, and Quantity"
+S2471392	"Complex and microscopic structures and systems can be visualized, modeled, and used to describe how their function depends on the relationships among its parts, therefore complex natural structures/systems can be analyzed to determine how they function."	Structure and Function
+S2471389	Systems may interact with other systems; they may have sub-systems and be a part of larger complex systems.	Systems and System Models
+S2471396	"Scientists and engineers are guided by habits of mind such as intellectual honesty, tolerance of ambiguity, skepticism, and openness to new ideas."	Science is a Human Endeavor 
+S2471387	"Phenomena may have more than one cause, and some cause and effect relationships in systems can only be described using probability."	Cause and Effect
+S2471391	"Within a natural system, the transfer of energy drives the motion and/or cycling of matter."	Energy and Matter
+S2471386	Cause and effect relationships may be used to predict phenomena in natural systems.	Cause and Effect
+S2471410	Patterns can be used to identify cause and effect relationships.	Patterns
+S2471438	The transfer of energy can be tracked as energy flows through a natural system.	Energy and Matter
+S2471498	Science assumes that objects and events in natural systems occur in consistent patterns that are understandable through measurement and observation.	Scientific Knowledge Assumes an Order and Consistency in Natural Systems
+S2471439	Small changes in one part of a system might cause large changes in another part.	Stability and Change
+S2471442	Scientific knowledge can describe the consequences of actions but does not necessarily prescribe the decisions that society takes.	Science Addresses Questions About the Natural and Material World
+S2471460	"Complex and microscopic structures and systems can be visualized, modeled, and used to describe how their function depends on the shapes, composition, and relationships among its parts, therefore complex natural structures/systems can be analyzed to determine how they function."	Structure and Function
+S2471495	"Graphs, charts, and images can be used to identify patterns in data."	Patterns
+S2471528	Models can be used to represent systems and their interactions.	Systems and System Models
+S2471577	"Explanations of stability and change in natural or designed systems can be constructed by examining the changes over time and processes at different scales, including the atomic scale."	Stability and Change
+S2471572	Patterns in rates of change and other numerical relationships can provide information about natural systems.	Patterns
+S2471576	"Within a natural or designed system, the transfer of energy drives the motion and/or cycling of matter."	Energy and Matter
+S2471575	"Models can be used to represent systems and their interactions—such as inputs, processes and outputs— and energy, matter, and information flows within systems."	Systems and System Models
+S2471612	"All human activity draws on natural resources and has both short and long-term consequences, positive as well as negative, for the health of people and the natural environment."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471609	"Relationships can be classified as causal or correlational, and correlation does not necessarily imply causation."	Cause and Effect
+S2471611	Stability might be disturbed either by sudden events or gradual changes that accumulate over time.	Stability and Change
+S2471678	Different patterns may be observed at each of the scales at which a system is studied and can provide evidence for causality in explanations of phenomena.	Patterns
+S2471681	"Changes of energy and matter in a system can be described in terms of energy and matter flows into, out of, and within that system."	Energy and Matter
+S2471682	Much of science deals with constructing explanations of how things change and how they remain stable.	Stability and Change
+S2471680	The total amount of energy and matter in closed systems is conserved.	Energy and Matter
+S2471683	Science assumes the universe is a vast single system in which basic laws are consistent.	Scientific Knowledge Assumes an Order and Consistency in Natural Systems
+S2471679	"In nuclear processes, atoms are not conserved, but the total number of protons plus neutrons is conserved."	Energy and Matter
+S2471724	Empirical evidence is required to differentiate between cause and correlation and make claims about specific causes and effects.	Cause and Effect
+S2471726	"When investigating or describing a system, the boundaries and initial conditions of the system need to be defined."	Systems and System Models
+S2471725	Systems can be designed to cause a desired effect.	Cause and Effect
+S2471727	"Investigating or designing new systems or structures requires a detailed examination of the properties of different materials, the structures of different components, and connections of components to reveal its function and/or solve a problem."	Structure and Function
+S2471766	"Models can be used to predict the behavior of a system, but these predictions have limited precision and reliability due to the assumptions and approximations inherent in models."	Systems and System Models
+S2471848	"Energy cannot be created or destroyed—it only moves between one place and another place, between objects and/or fields, or between systems."	Energy and Matter
+S2471769	Modern civilization depends on major technological systems. Engineers continuously modify these technological systems by applying scientific knowledge and engineering design practices to increase benefits while decreasing costs and risks.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471765	"When investigating or describing a system, the boundaries and initial conditions of the system need to be defined and their inputs and outputs analyzed and described using models."	Systems and System Models
+S2471764	Cause and effect relationships can be suggested and predicted for complex natural and human designed systems by examining what is known about smaller scale mechanisms within the system.	Cause and Effect
+S2471810	Systems can be designed for greater or lesser stability.	Stability and Change
+S2471812	Modern civilization depends on major technological systems.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471813	Engineers continuously modify these technological systems by applying scientific knowledge and engineering design practices to increase benefits while decreasing costs and risks.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2471809	"Models (e.g., physical, mathematical, computer models) can be used to simulate systems and interactions—including energy, matter, and information flows—within and between systems at different scales."	Systems and System Models
+S2471811	Science and engineering complement each other in the cycle known as research and development (R&amp;D).	"Interdependence of Science, Engineering, and Technology"
+S2471850	Feedback (negative or positive) can stabilize or destabilize a system.	Stability and Change
+S2471897	"The significance of a phenomenon is dependent on the scale, proportion, and quantity at which it occurs."	"Scale, Proportion, and Quantity"
+S2471898	Using the concept of orders of magnitude allows one to understand how a model at one scale relates to a model at another scale.	"Scale, Proportion, and Quantity"
+S2471901	Energy drives the cycling of matter within and between systems.	Energy and Matter
+S2471926	"Algebraic thinking is used to examine scientific data and predict the effect of a change in one variable on another (e.g., linear growth vs. exponential growth)."	"Scale, Proportion, and Quantity"
+S2471927	Technological advances have influenced the progress of science and science has influenced advances in technology.	Science is a Human Endeavor 
+S2471928	Science and engineering are influenced by society and society is influenced by science and engineering.	Science is a Human Endeavor 
+S2471970	Scientific knowledge is based on the assumption that natural laws operate today as they did in the past and they will continue to do so in the future.	Scientific Knowledge Assumes an Order and Consistency in Natural Systems
+S2472023	"Science and engineering complement each other in the cycle known as research and development (R&amp;D). Many R&amp;D projects may involve scientists, engineers, and others with wide ranges of expertise."	"Interdependence of Science, Engineering, and Technology"
+S2472017	Empirical evidence is needed to identify patterns.	Patterns
+S2472077	Change and rates of change can be quantified and modeled over very short or very long periods of time. Some system changes are irreversible.	Stability and Change
+S2472080	"New technologies can have deep impacts on society and the environment, including some that were not anticipated. Analysis of costs and benefits is a critical aspect of decisions about technology."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2472075	"The functions and properties of natural and designed objects and systems can be inferred from their overall structure, the way their components are shaped and used, and the molecular substructures of its various materials."	Structure and Function
+S2472131	Analysis of costs and benefits is a critical aspect of decisions about technology.	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2472133	"Science and technology may raise ethical issues for which science, by itself, does not provide answers and solutions."	Science Addresses Questions About the Natural and Material World
+S2472134	"Science knowledge indicates what can happen in natural systems—not what should happen. The latter involves ethics, values, and human decisions about the use of knowledge."	Science Addresses Questions About the Natural and Material World
+S2472135	"Many decisions are not made using science alone, but rely on social and cultural contexts to resolve issues."	Science Addresses Questions About the Natural and Material World
+S2472130	"New technologies can have deep impacts on society and the environment, including some that were not anticipated."	"Influence of Engineering, Technology, and Science on Society and the Natural World"
+S2472132	"Science is a result of human endeavors, imagination, and creativity."	Science is a Human Endeavor 
+S2472125	Empirical evidence is required to differentiate between cause and correlation and make claims about specific causes and effects.	Cause and Effect

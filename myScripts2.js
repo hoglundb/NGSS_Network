@@ -44,13 +44,15 @@ resourceColors[8] = {color:"#C0C0C0", highlightColor:"#DEDEDE"} //orange
 
 
 var resourceShapes = ["circle", "diamond", "square","triangle", "triangleDown", "star"];
+var RESOURCE_SHAPE_SIZE = 15;
+var RESOURCE_SHAPE_HIGHLIGHT_SIZE = 20;
 
 var resourceSymbols = [];
 
 var count = 0;
 for(var i = 0; i < resourceColors.length; i++){
   for(var j = 0; j < resourceShapes.length; j++){
-     resourceSymbols[count] = {color:resourceColors[i].color, highlightColor:resourceColors[i].highlightColor, shape:resourceShapes[j]}
+     resourceSymbols[count] = {color:resourceColors[i].color, highlightColor:resourceColors[i].highlightColor, shape:resourceShapes[j], size:RESOURCE_SHAPE_SIZE}
      count++;
   }
 }
@@ -75,7 +77,7 @@ var currentDocsTableRowType = null;  //tracks the type of document selected in t
 var selectedDocNode = null;
 var edgesToPrint = null;
 var FirstLoad = true;
-
+var CurNetworkDepth = 2;
 var hashChange = false;
 
 //The options for viewing the network. Either we are viewing the ASN or the NGSS
@@ -83,6 +85,14 @@ var ModeEnum = {
   NGSS: 1,
   ASN:2
 };
+
+var NetworkModes = {
+   GRADEBAND: 1,
+   CATEGORY: 2
+};
+
+var CurrentNetworkMode = NetworkModes.GRADEBAND;
+
 
 //The options for the types of alignments
 var ResourceTypes = {
@@ -102,12 +112,7 @@ function LoadPageStateToLocalMemory(index){
     var curScode = (currentSelectedNode == null) ? DEFAULT_STANDARD : currentSelectedNode;
 
     var providerDropdownState = GetResourceTypeSelectionFromDropdown();
-/*    console.log(index)
-    console.log(curNetworkDepth)
-    console.log(curDisplayType)
-    console.log(curGradeband)
-    console.log(curScode)
-    console.log("\n\n")*/
+
 
     localStorage.setItem(index + "networkDepth", curNetworkDepth);
     localStorage.setItem(index + "displayType", curDisplayType);
@@ -122,6 +127,10 @@ function LoadPageStateToLocalMemory(index){
     for(var i = 0; i < providerDropdownState.otherResources.length; i++){
         localStorage.setItem(index + providerDropdownState.otherResources[i].item, providerDropdownState.otherResources[i].show);
     }
+
+    localStorage.setItem(index + "networkMode", CurrentNetworkMode);
+    localStorage.setItem(index+"Category3D", document.getElementById("Category3D").value);
+    localStorage.setItem(index + "CategoryStandardsList", document.getElementById("CategoryStandardsList").value);
 }
 
 
@@ -130,6 +139,9 @@ function LoadPageFromLocalMemoryState(){
     index = index.substring(1, index.length);
     index = parseInt(index, 10);
     index += "_";
+
+    var node = localStorage.getItem(index + "networkMode");
+    var category = localStorage.getItem(index + "Category3D");
 
     var networkDepth = localStorage.getItem(index + "networkDepth");
     var displayType = localStorage.getItem(index + "displayType");
@@ -183,7 +195,14 @@ function LoadPageFromLocalMemoryState(){
     else{
         document.getElementById("TECheckBox").checked = false;
     }
-   submit(sCode, false);
+
+    //set the category type dropdown based on the memory state
+    document.getElementById("Category3D").value = localStorage.getItem(index + "Category3D")
+    CurrentNetworkMode = localStorage.getItem(index + "networkMode");
+    Category = localStorage.getItem(index + "CategoryStandardsList");
+    Build3DCategoryDropdown(Category)
+    document.getElementById("CategoryStandardsList").value = localStorage.getItem(index + "CategoryStandardsList");
+    submit(sCode, false);
 }
 
 //increment hash without calling submit(). This will distinguish between manual hash change and browser back/forward buttons
@@ -301,7 +320,7 @@ function _ParseHash(hashStr){
 }
 
 
-function ShowCreditsPopup(){
+/*function ShowCreditsPopup(){
   new Noty({
     type: 'success',
     layout: 'top',
@@ -311,10 +330,15 @@ function ShowCreditsPopup(){
     killer:true
   }).show();
 
-}
+}*/
 
 //Initization function
 window.onload = function onLoad(){
+     localStorage = null;
+    //load the data for the 3d category option
+    GetCategoryList("ccc.php", 1, true);
+    GetCategoryList("dci.php", 2, false);
+    GetCategoryList("sep.php", 3, false);
 
 
    ShowLoadingScreen();
@@ -342,6 +366,8 @@ window.onload = function onLoad(){
   //Bind the "resouce type" dropdown to its action functions
   initDropdown();
 
+  InitLegend();
+
   //event listender for the type of resources dropdown.
   document.getElementById("dropdownToggle").addEventListener("click", function(e){
 
@@ -350,26 +376,42 @@ window.onload = function onLoad(){
           return;
         }
         HandleResouceTypeDropdown();
-
-        /*location.hash = SetHashFromPageState();*/
-
-        //update hash state if user checkes or unchecks a provider checkbox from the dropdown
-
-
   });
+
+
+   document.getElementById("Category3D").addEventListener("change", function (e){
+        //set the global network mode based on the dropdown change state
+        if(e.target.value == "None"){
+          CurrentNetworkMode = NetworkModes.GRADEBAND;
+        }
+        else{
+          CurrentNetworkMode = NetworkModes.CATEGORY;
+        }
+         Build3DCategoryDropdown(e.target.value);
+
+/*
+         IncrementHash();*/
+   });
 
   //event listener for the display type dropdown
   document.getElementById("displayType").addEventListener("change", function(){
     //options 0 and 1 are ASN
     if(this.value == 0 || this.value == 1){
-      DisplayType = ModeEnum.ASN;
+      NodeDisplayType = ModeEnum.ASN;
     }
     //option 2 is NGSS
     else{
-      DisplayType = ModeEnum.NGSS
+      NodeDisplayType = ModeEnum.NGSS
     }
-     ToggleNetworkLables();
 
+     //toggle network label depending on if network mode is gradeband or 3d
+     if(CurrentNetworkMode == NetworkModes.GRADEBAND){
+            ToggleNetworkLables();
+     }
+
+     else {
+       ToggleNetworkLables3D();
+     }
      IncrementHash();
 
      //update the hash but don't submit
@@ -380,17 +422,19 @@ window.onload = function onLoad(){
   });
 
   //event listener for the network depth dropdown
-  document.getElementById("networkDepth").addEventListener("change", function(){
+  document.getElementById("networkDepth").addEventListener("change", function(e){
     if(graph != null && currentSelectedNode != null){
       document.getElementById("gradeBand").value = 0;
+      CurNetworkDepth = e.target.value;
 
-      //update the hash without submitting
-      /*hashChange = false;
-      location.hash = SetHashFromPageState();*/
-
-      //udpate hash when network depth is changed in the dropdown
-
-      submit(currentSelectedNode, true);
+      //submit depending on the nw type showing
+      if(document.getElementById("Category3D").value == "None"){
+          submit(currentSelectedNode, true);
+      }
+      else{
+        console.log("about to load the data 1")
+        LoadNetworkData()
+      }
     }
   });
 
@@ -449,6 +493,89 @@ window.onload = function onLoad(){
 }
 
 
+//resets each dropdown in the legend toggle to on
+function ResetLegendToggle(){
+  document.getElementById("TopicsToggle").value = "On"
+  document.getElementById("PEToggle").value = "On"
+  document.getElementById("SEPToggle").value = "On"
+  document.getElementById("DCIToggle").value = "On"
+  document.getElementById("CCToggle").value = "On"
+}
+
+
+
+//initialize the legend toggle buttons that call the function to hide nodes of that type
+function InitLegend(){
+
+   //reset incase the browser gets any funny ideas
+    ResetLegendToggle();
+
+     document.getElementById("TopicsToggle").addEventListener("change", (e) =>{
+          ShowHideNodesInNetwork("topic", e.target.value);
+     });
+
+     document.getElementById("PEToggle").addEventListener("change", (e) =>{
+             ShowHideNodesInNetwork("PE", e.target.value);
+     });
+
+     document.getElementById("SEPToggle").addEventListener("change", (e) =>{
+            ShowHideNodesInNetwork("SEP", e.target.value);
+     });
+
+     document.getElementById("DCIToggle").addEventListener("change", (e) =>{
+          ShowHideNodesInNetwork("DCI", e.target.value);
+     });
+
+     document.getElementById("CCToggle").addEventListener("change", (e) =>{
+           ShowHideNodesInNetwork("CC", e.target.value);
+     });
+}
+
+
+//Shows or hides nodes of the given type based on the option
+function  ShowHideNodesInNetwork(stdType, option){
+    //build out the json structure to update the network
+    var nwJson = [];
+    var count = 0;
+    var hidden = true;
+    if(option == "On"){
+      hidden = false;
+    }
+
+    if(CurrentNetworkMode == NetworkModes.GRADEBAND){
+      var c = 0;
+      for(var i = 0; i < graph.numVertices; i++){
+        var vert = graph.vertices[i];
+        if(
+            (vert.nodeType == "Science and Engineering Practices" && stdType == "SEP") ||
+            (vert.nodeType == "Crosscutting Concepts" && stdType == "CC") ||
+            (vert.nodeType == "Disciplinary Core Ideas" && stdType == "DCI") ||
+            (vert.nodeType == "Performance Expectation" && stdType == "PE") ||
+            (vert.nodeType == "Standard" && stdType == "topic")
+          )
+        {
+          var item = {id:vert.id, hidden:hidden}
+          nwJson[c++] = item;
+        }
+      }
+      nodes.update(nwJson);
+      return;
+    }
+
+    else if(CurrentNetworkMode == NetworkModes.CATEGORY){
+      for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+         var node = GraphDataStructure.nodesList[i];
+            if(node.type == stdType){
+               var item = {id:node.id, hidden:hidden}
+               nwJson[count] = item;
+               count++;
+            }
+      }
+      v_Nodes.update(nwJson);
+    }
+}
+
+
 function SetHashFromPageState(sCode){
 
   var hash = "";
@@ -502,7 +629,34 @@ function SetHashFromPageState(sCode){
    return hash;
 }
 
+function ToggleNetworkLables3D(){
+  var nodesJson = [];
+  var nodeInfo = {};
+  var curLabel = null;
+  var curNode = null;
+  var count = 0;
+  for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+     curNode = GraphDataStructure.nodesList[i];
+     if(curNode.type == "Bundle") continue;
 
+     if(NodeDisplayType == ModeEnum.ASN){
+       curLabel = curNode.metadata.sCode;
+     }
+     else{
+       if(curNode.type == "SEP" || curNode.type == "CC"){
+         curLabel = BLANK_NODE_LABEL;
+       }
+       else{
+          curLabel = curNode.metadata.pCode;
+       }
+     }
+     nodesJson[count] = {id:curNode.id, label:curLabel}
+     count++;
+
+
+  }
+     v_Nodes.update(nodesJson);
+}
 
 /***************************************************************************************************************
 Function changes back and forth from NGSS labels to ASN labels. It uses the global var DisplayType to determine
@@ -516,7 +670,7 @@ function ToggleNetworkLables(){
   for(var i = 0; i < graph.numVertices; i++){
     var curVertex = graph.vertices[i];
     var curLabel = curVertex.sCode;
-    if(DisplayType == ModeEnum.NGSS){
+    if(NodeDisplayType == ModeEnum.NGSS){
       if(curVertex.nodeType == "Standard" || curVertex.nodeType == "Performance Expectation" || curVertex.nodeType == "Disciplinary Core Ideas"){
           curLabel = curVertex.pCode;
       }
@@ -742,6 +896,16 @@ function SubmitTableClick(sCode){
 }
 
 
+function GetPCodeFromSCode(sCode){
+   for(var i = 0; i < NGSSGraph.length; i++){
+     if(NGSSGraph[i].sCode == sCode){
+       return NGSSGraph[i].pCode;
+     }
+   }
+   return "error";
+}
+
+
 /*******************************************************************************************************
 Searches the global NGSSGraph object for a sCode with the given pCode and returns that sCode.
 
@@ -759,16 +923,10 @@ function GetSCodeFromPCode(pCode){
 }
 
 
+function submitGradeband(code, fromBrowserBackButton){
 
-/*************************************************************************************
-  This function will get the imput values from the form elements and than call BuildNetwork()
-  to genereate the network.
+  Reset3DDropdowns();
 
-  Parameters:
-    1) sCode: The sCode of the root node from which we build the graph.
-**************************************************************************************/
-function submit(code, fromBrowserBackButton){
-  curNodeSize = 18
   var sCode = null;
   //Set the display type based of if parameter is a pCode or an sCode
   if(code != null && code.substring(0,1) == "S"){
@@ -810,8 +968,6 @@ function submit(code, fromBrowserBackButton){
   //Get the gradeband from the dropdown. Will override all other selections and show the entire gradeband.
   var gradeBand = document.getElementById("gradeBand").value;
 
-
-
   //Get the checkbox values that determine what type of alignments will be displayed.
   var showActivities = document.getElementById("item1Box").checked;
   var showLessons = document.getElementById("item2Box").checked;
@@ -826,16 +982,11 @@ function submit(code, fromBrowserBackButton){
      nodeLabel.value = 1;
   }
 
-
   //show the loading bar if showing an entire network with documents (exept for k-2 since it loads fast)
   var selectedGradeBand = document.getElementById("gradeBand").value;
   if( (showActivities || showLessons || showCurricularUnits) && selectedGradeBand > 1 ){
     ShowLoadingScreen();
   }
-
-//  var resourceTypeSelection = GetResourceTypeSelectionFromDropdown();
-
-
 
   //if grade band is set, we will automatically iterate up to the max depth to get every standard in that grade band
 
@@ -848,12 +999,36 @@ function submit(code, fromBrowserBackButton){
       IncrementHash();
    }
      FirstLoad = false;
-
-
-
   //Entry point for building the network and the alignments and standards tables.
   BuildNetwork(sCode, depth, displayType, gradeBand);
 
+}
+
+
+function Submit3D(fromBrowserBackButton){
+/*  if(!FirstLoad && fromBrowserBackButton){
+     IncrementHash();
+  }
+    FirstLoad = false;*/
+console.log("about to load the data2")
+  LoadNetworkData();
+}
+
+
+/*************************************************************************************
+  This function will get the imput values from the form elements and than call BuildNetwork()
+  to genereate the network.
+
+  Parameters:
+    1) sCode: The sCode of the root node from which we build the graph.
+**************************************************************************************/
+function submit(code, fromBrowserBackButton){
+ if(CurrentNetworkMode == NetworkModes.GRADEBAND){
+    submitGradeband(code, fromBrowserBackButton);
+  }
+  else{
+    Submit3D(true);
+  }
 }
 
 
@@ -990,6 +1165,7 @@ function GetEdgesInRFormat(){
    //edges = JSON.parse(JSON.stringify(graph.edges));
 
    var rString = GetGMLData();
+
    return rString;
 }
 
@@ -1044,6 +1220,7 @@ function BuildNetworkNSteps(sCode, depth, displayType){
   else{
     UpdateResourceDropdown();
   }
+
   BuildAlignedDocumentsTable(sCode)
   GetKamadaKawaiCoords(edgesRFormat); //gets the kk layout via an AJAX post. Begins the chain of events for drawing the netork
 
@@ -1072,7 +1249,7 @@ function GetGMLData(){
 
   var gmlString = "graph[\n";
   var padding = "\t\t";
-  var label = "NGSS k-2";
+  var label = "NGSS K-2";
   gmlString += "\t"+  "label " + "\"" + label + "\"" + "\n";
   for(var i = 0; i < graph.numVertices; i++){
     var lab = graph.vertices[i].sCode;
@@ -1380,7 +1557,7 @@ Addes every standard from NGSSGraph[] that is in the current gradeband to the gl
 **************************************************************************************************/
 function AddAllStandards(){
   var gradeBand = document.getElementById("gradeBand").value;
-  if(gradeBand == 1) gradeBand = "k-2"
+  if(gradeBand == 1) gradeBand = "K-2"
   else if(gradeBand == 2) gradeBand = "3-5";
   else if(gradeBand == 3) gradeBand = "6-8";
   else if(gradeBand == 4) gradeBand = "9-12";
@@ -1424,9 +1601,31 @@ function BuildNetworkStandards(kkCoords){
       nodeType:"Standard",
       x:kkCoords[foobar].x,
       y:kkCoords[foobar].y,
+      hidden:GetLegendToggleStatus(graph.vertices[i].nodeType ),
     });
     foobar = foobar + 1;
   }
+}
+
+
+function GetLegendToggleStatus(type){
+
+  if((type == "topic" || type == "Standard") && document.getElementById("TopicsToggle").value == "Off"){
+    return true;
+  }
+  if((type == "PE" || type == "Performance Expectation") && document.getElementById("PEToggle").value == "Off"){
+    return true;
+  }
+  if((type == "Disciplinary Core Ideas" || type == "DCI") && document.getElementById("DCIToggle").value == "Off"){
+    return true;
+  }
+  if((type == "Science and Engineering Practices" || type == "SEP") && document.getElementById("SEPToggle").value == "Off"){
+    return true;
+  }
+  if((type == "Crosscutting Concepts" || type == "CC") && document.getElementById("CCToggle").value == "Off"){
+    return true;
+  }
+  return false;
 }
 
 
@@ -1486,24 +1685,12 @@ function BuildNetworkAlignments(kkCoords){
 
 
 function BuildNetworkEdges(){
+
   for(i = 0; i < graph.numEdges; i++){
    edges.add({
       from:graph.edges[i].from,
       to:graph.edges[i].to
     });
-  }
-}
-
-
-function BuildTestNetork(kkCoords){
-  {
-     for(var i = 0; i < kkCoords.length; i++){
-       nodes.add({
-           id:i,
-           x: kkCoords[i].x,
-           y:kkCoords[i].y
-       })
-     }
   }
 }
 
@@ -1529,12 +1716,7 @@ Parameters:
      BuildNetworkAlignments(kkCoords)
 
      //Build edges between all connected nodes (standards and resources)
-     BuildNetworkEdges()
-
-    //BuildTestNetork(kkCoords);
-
-
-   //Build an edge for edge edge in the graph's edge list.
+     BuildNetworkEdges();
 
    //The graph data for vis.js
     var data = {
@@ -1696,9 +1878,8 @@ function ImproveNetworkLayout(nw){
     }
 
   }
-  nodes.update(resultArr)
 
-   //document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].Index);
+  nodes.update(resultArr)
 }
 
 
@@ -1759,8 +1940,10 @@ function alignLegend(){
 Functions handles the display of alignments in the nw based on items selected from the dropwown.
 A json string is build and then passed to vis.js to update the nw to show/hide alignments.
 ******************************************************************************************/
-function ShowHideAlignmentsBasedOnDropdown(){ //fixme
+function ShowHideAlignmentsBasedOnDropdown(){
+
    //don't to anything if the graph has not been drawn yet
+  if(CurrentNetworkMode == NetworkModes.GRADEBAND){
    if(graph == null) return;
 
    //Get the selections from the docTypes dropdown checkboxes
@@ -1809,6 +1992,33 @@ function ShowHideAlignmentsBasedOnDropdown(){ //fixme
     nodes.update(
       networkJson
     );
+  }
+
+  else{
+      if(GraphDataStructure == null) return;
+      var nodesToUpdate = [];
+      var count = 0;
+      for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+
+        var node = GraphDataStructure.nodesList[i];
+        if(node.type != "resource") continue;
+        if(node.metadata.provider != "TeachEngineering") continue;
+        var hidden = true;
+        if(node.metadata.docType == "activity" &&  document.getElementById("item1Box").checked) hidden = false;
+        else if(node.metadata.docType == "lesson" && document.getElementById("item2Box").checked) hidden = false;
+        else if(node.metadata.docType == "curricularUnit" && document.getElementById("item3Box").checked) hidden = false;
+            var  nodeToHide = GraphDataStructure.GetResourceNodeFromName(node.metadata.resource);
+            var updateData = {id:nodeToHide.id, hidden:hidden};
+            nodesToUpdate[count] = updateData;
+            count++;
+      }
+
+      if(nodesToUpdate.length > 0){
+         v_Nodes.update(nodesToUpdate);
+      }
+
+ }
+
 }
 
 
@@ -1886,7 +2096,7 @@ function GetAlignmentsForStandard(sCode){
   var als = [];
   var count = 0
   var resourceTypes = GetResourceTypeSelectionFromDropdown();
-  //FIXME
+
   //For every resource aligned to that standard
   for(var i = 0; i < alignments.length; i++){
      //Filter out all doctypes not selected from the dropdown
@@ -1973,7 +2183,6 @@ function _BuildAlignedDocumentsForCollection(nodeSet, sCode){
      if(docType == "curricularUnit") docType = "curricular unit";
      docType  = " (" + docType + ")";
    }
-  //fixme
     newRow.innerHTML =
     '<span style ="color:blue; cursor: pointer; letterSpacing:20px" onclick = GoToTEPage(\'' + nodeSet[i].url + '\')>' + nodeSet[i].title + '</span>' + '<span>' + docType + '</span>'  + '<br>'
     + '<span>' + _TruncateDocDescription(nodeSet[i].summary, nodeSet[i].document) + '</span>'
@@ -1981,6 +2190,72 @@ function _BuildAlignedDocumentsForCollection(nodeSet, sCode){
   }
   return count;
 }
+
+
+//FIXME
+function BuildAlignedDocumentsTable3D(standard){
+
+   ClearTable(document.getElementById('t2'));
+
+  //get all the aligned resource nodes and sort them alphabetically
+  let alignedResources = GraphDataStructure.GetAlignedResources(standard.id);
+  alignedResources.sort((a, b) => a.metadata.provider.localeCompare(b.metadata.provider));
+  document.getElementById("alignmentsTableHeader").innerText = "Aligned Resources (" + alignedResources.length.toString() + ")";
+
+  //build a row in the alignments table for each alignment
+  var tableRef = document.getElementById('t2');
+  for(var i = 0; i < alignedResources.length; i++){
+    var newRow = tableRef.insertRow(tableRef.rows.length);
+    newRow.id = alignedResources[i].id;
+    newRow.style.background = alignedResources[i].color;
+    newRow.metadata = {color:alignedResources[i].color, highlightColor:alignedResources[i].highlightColor}
+    newRow.innerHTML =
+    "<span style ='color:blue; cursor: pointer; letterSpacing:20px' onclick = GoToTEPage(\'" + alignedResources[i].metadata.url + "\') > "+ alignedResources[i].metadata.title+"</span>" + "<br>" +
+    "<span>" + _TruncateDocDescription(alignedResources[i].metadata.summary, alignedResources[i].metadata.title) + "</span>" +
+    '<hr style= margin:3px>'
+
+    //onclick event to highlight clicked table row and coorisponding resource node in the newtork
+    newRow.onclick = (function(){
+         var clickedRow = newRow;
+         return function(){
+           HighlightDocsTableCell3D(clickedRow);
+           HighlightResourceNodeFromTableClick(clickedRow);
+         }
+    })();
+  }
+}
+
+function HighlightResourceNodeFromTableClick(row){
+
+   //unhighlight all other resource nodes
+   var updateInfo = [];
+   var count = 0;
+   if(CurrentSelectedResourceRow != null){
+     v_Nodes.update({id:CurrentSelectedResourceRow.id, color:CurrentSelectedResourceRow.metadata.color, size:RESOURCE_SHAPE_SIZE});
+   }
+   if(CurrentSelectedResourceNode3D != null){
+     v_Nodes.update({id:CurrentSelectedResourceNode3D.id, color:CurrentSelectedResourceNode3D.color, size:RESOURCE_SHAPE_SIZE});
+   }
+   CurrentSelectedResourceRow = row;
+   //highlight the node coorisponding to the selected row
+   v_Nodes.update({id:row.id, color:row.metadata.highlightColor, size:RESOURCE_SHAPE_HIGHLIGHT_SIZE});
+}
+
+
+function HighlightDocsTableCell3D(row){
+  //first unhighlight all other rows
+  for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+    if(GraphDataStructure.nodesList[i].type == "resource" && document.getElementById(GraphDataStructure.nodesList[i].id)){
+      document.getElementById(GraphDataStructure.nodesList[i].id).style.border = "none";
+      document.getElementById(GraphDataStructure.nodesList[i].id).style.background = GraphDataStructure.nodesList[i].color
+    }
+  }
+  //make a border around the table cell to highlight it
+  document.getElementById(row.id).style.border = "4px solid grey";
+  document.getElementById(row.id).style.background = row.metadata.highlightColor;
+}
+
+
 
 /*********************************************************************************************
 This function is responsible for building the alignments table on the fly. Takes an standard and
@@ -2646,39 +2921,56 @@ function _isInGraph(standard){
 function getResourceCount(resource){
   resourceList = {};
   var resourceCount = 0
-  if(graph == null) return resourceCount;
 
-  for(var i = 0; i < graph.numVertices; i++){
+  //build resource count for Gradeband network mode
+  if(CurrentNetworkMode == NetworkModes.GRADEBAND){
+    if(graph == null) return resourceCount;
 
-    var alignmentsToVertex = graph.vertices[i].alignedResources;
-    for(var j = 0; j < alignmentsToVertex.length; j++){
-      var index = alignmentsToVertex[j]
-      var alignment = NGSSResources[index]
+    for(var i = 0; i < graph.numVertices; i++){
 
-      if (resource == alignment.nodeType && !resourceList[alignment.document]){
-        resourceCount++;
-        resourceList[alignment.document] = alignment.document;
-      }
-    }
-  }
-/*  var resourceCount = 0;
-  for(var i = 0; i < NGSSGraph.length; i++){
-    if(_isInGraph(NGSSGraph[i].sCode)){
-      a = NGSSGraph[i].alignedResources;
-      for(var j = 0; j < a.length; j++){
-        if(NGSSResources[a[j]].nodeType == resource){
+      var alignmentsToVertex = graph.vertices[i].alignedResources;
+      for(var j = 0; j < alignmentsToVertex.length; j++){
+        var index = alignmentsToVertex[j]
+        var alignment = NGSSResources[index]
+
+        if (resource == alignment.nodeType && !resourceList[alignment.document]){
           resourceCount++;
+          resourceList[alignment.document] = alignment.document;
         }
       }
     }
-  }*/
 
+    return resourceCount;
+  }
+
+  //build resource count for Category network mode
+  else{
+
+    if(GraphDataStructure == null || GraphDataStructure == undefined) return resourceCount;
+
+    var resourceHash = {};
+    for(var i = 0; i < NGSSGraph.length; i++){
+       var node = NGSSGraph[i];
+       if(GraphDataStructure.containsStandardNode(node.sCode) == false) continue;
+
+       var resourceIndexList = node.alignedResources;
+       if(resourceIndexList.count == 0) continue;
+       for(var j = 0; j < resourceIndexList.length; j++){
+         var resourceNode = NGSSResources[resourceIndexList[j]];
+         if(resourceNode.nodeType != "TeachEngineering" && resourceNode.nodeType == resource && !resourceHash[resourceNode.document]){
+           resourceHash[resourceNode.document] = resourceNode.document;
+           resourceCount++;
+         }
+       }
+    }
+  }
   return resourceCount;
 }
 
 
-//update the styling and resource count for each item in the custom dropdown.
+//update the styling and resource count for each item in the custom dropdown. /FIXME
 function UpdateResourceDropdown(){
+  var count = 1;
   var teCount = GetTECount();
   var teLabel = document.getElementById("TECount");
   teLabel.innerText = "("+ teCount.docCount + ")";
@@ -2719,25 +3011,48 @@ function GetTECount(){
   var lessonCount = 0;
   var teResources = {};
   var result = {};
-  for(var i = 0; i < graph.numVertices; i++){
-    var aligned = graph.vertices[i].alignedResources;
-    for(var j = 0; j < aligned.length; j++){
-      var resource = NGSSResources[aligned[j]];
-      if(resource.nodeType == 'TeachEngineering' && !teResources[resource.document]){
-        teResources[resource.document] =   teResources[resource.document];
-        if(resource.docType == "curricularUnit"){
-          unitCount ++;
-        }
-        else if(resource.docType == "lesson"){
-          lessonCount++;
-        }
-        else if(resource.docType == "activity"){
-          activityCount++
-        }
-        teCount++;
-      }
-    }
 
+  if(CurrentNetworkMode == NetworkModes.GRADEBAND){
+    for(var i = 0; i < graph.numVertices; i++){
+      var aligned = graph.vertices[i].alignedResources;
+      for(var j = 0; j < aligned.length; j++){
+        var resource = NGSSResources[aligned[j]];
+        if(resource.nodeType == 'TeachEngineering' && !teResources[resource.document]){
+          teResources[resource.document] = resource.document;
+
+          if(resource.docType == "curricularUnit"){
+            unitCount ++;
+          }
+          else if(resource.docType == "lesson"){
+            lessonCount++;
+          }
+          else if(resource.docType == "activity"){
+            activityCount++
+          }
+          teCount++;
+        }
+      }
+
+    }
+  }
+
+  else {
+     var resourceHash = {};
+     for(var i = 0; i < NGSSGraph.length; i++){
+       var node = NGSSGraph[i];
+       if(GraphDataStructure.containsStandardNode(node.sCode) == false) continue;
+       var resourceIndexList = node.alignedResources;
+       for(var j = 0; j < resourceIndexList.length; j++){
+         var teNode = NGSSResources[resourceIndexList[j]];
+         if(teNode.nodeType == "TeachEngineering" && !resourceHash[teNode.document]){
+           resourceHash[teNode.document] = teNode.document;
+           teCount++;
+           if(teNode.docType == "activity") activityCount++;
+           else if(teNode.docType == "lesson") lessonCount++;
+           else if(teNode.docType == "curricularUnit") unitCount++;
+         }
+       }
+     }
   }
   result.docCount = teCount;
   result.activityCount = activityCount;
@@ -2933,7 +3248,7 @@ function initDropdown(){
           }
           else{
             if(areAllSelected()){
-                 console.log("doosdo")
+
                 document.getElementById(docTypesForDropDown[docTypesForDropDown.length - 1].checkBoxId).checked = true
                 document.getElementById("TECheckBox").checked = true;
             }
@@ -3301,4 +3616,1148 @@ class GraphObject{
       this.vertices[j + 1] = value
     }
   }
+}
+
+
+
+
+/****************************************** 3d section ***************************************************************/
+//global variables for the newtork data
+var NetworkData = null;
+var Category = null;
+var Category3DType = null;
+var GraphDataStructure = null;
+var KKCoords3D = null;
+var DCIList = null;
+var SEPList = null;
+var CCList = null;
+var CurList = null;
+var CurTableRowId = null;
+var CategoryDepth = null;
+var CurrentSelectedStandard3D = null;  //the selected standard or table row
+var CurrentSelectedStandardNode3D = null; //The standard selected in the graph by being clicked on
+var REGULAR_NODE_SIZE_3D = 18;
+var LARGE_NODE_SIZE_3D = 30;
+var BUNDLE_NODE_SIZE_3D = 30;
+var HighlightedStandards3D = null;
+var CurrentSelectedResourceRow = null;
+var CurrentSelectedResourceNode3D = null;
+var Gradeband3DTypes = {
+  KToTwo:1,
+  ThreeToFive:2,
+  SixToEight:3,
+  NineToTwelve:4,
+  AllGrades:5
+};
+
+var CurrentGradebands3D = Gradeband3DTypes.AllGrades;
+//global variables for the vis.js network
+var v_Edges = null;
+var v_Nodes = null;
+var v_Data = null;
+var v_NW = null;
+var v_Options = null;
+
+//Global constants
+var GET_COMPRIZING = true;
+var PrevCategory = null;
+function Build3DCategoryDropdown(value){
+   if(value == "CC"){
+     Category3DType = 1;
+     CurList = CCList;
+   }
+   else if(value == "DCI"){
+     Category3DType = 2;
+     CurList = DCIList;
+   }
+   else if(value == "SEP"){
+     Category3DType = 3;
+     CurList = SEPList;
+   }
+   else {
+     Category3DType = 1;
+     CurList = CCList;
+   }
+
+   //remove the current values in the dropdown list
+   var select = document.getElementById('CategoryStandardsList');
+   while (select.firstChild) {
+       select.removeChild(select.firstChild);
+   }
+   var dropdown = document.getElementById('CategoryStandardsList');
+   var op1 = new Option();
+   op1.value = "--Category--";
+   op1.text = "--Category--"
+   dropdown.options.add(op1)
+   for(var i = 0; i < CurList.length; i++){
+     var op = new Option();
+     op.value = CurList[i];
+     op.text = CurList[i];
+     dropdown.options.add(op)
+   }
+
+   //add click event to dropdown list we just made
+   dropdown.addEventListener("change", function(e){
+      Category = e.target.value;
+
+     //for some reason this is sometimes called twice for one change, so make sure LoadNetworkData is only called if value differs from previous
+      if(PrevCategory == null || Category != PrevCategory ){
+             PrevCategory = Category;
+              IncrementHash();
+              LoadNetworkData();
+      }
+   });
+}
+
+
+function Reset3DDropdowns(){
+  var select = document.getElementById('CategoryStandardsList');
+  while (select.firstChild) {
+      select.removeChild(select.firstChild);
+  }
+  document.getElementById("Category3D").value = "None";
+}
+
+
+
+function LoadNetworkData(){
+  if(Category3DType == null) Category3DType = 1
+  if(Category == null) Category = "Cause and Effect";
+  console.log(Category)
+  var uri = "getGradebandDataApi2.php";
+  var req = new XMLHttpRequest();
+  var params = "category=" + Category + "&3dType=" + Category3DType.toString();
+  req.open("POST", uri, true);
+  req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  req.onload = async () => {
+    if(req.status == 200){
+          NetworkData = await JSON.parse(req.responseText);
+          console.log("here is the network data ")
+          console.log(NetworkData)
+          BuildGraphDataStructure3D();
+         var gmlString = GetGMLDataString()
+          GetKamadaKawaiCoords3D(gmlString);
+    }
+    else{
+      throw new Error("Bad request to GetCCCNetworkApi.php");
+    }
+  }
+  req.send(params);
+}
+
+function GetKamadaKawaiCoords3D(dataString){
+    var params = "edgeList=" + dataString;
+    var uri = "getKKCoordsAPI.php";
+    var req =new XMLHttpRequest();
+    var kkCoords2D = null;
+    req.open("POST", uri, true);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.onload = function(){
+       if(req.status == 200){
+          KKCoords3D = FormatKKCoords(JSON.parse(req.responseText));
+          Draw3DNetwork();
+          BuildStandardsTable3D(0);
+       }
+       else{
+         console.log(req.status)
+         console.log("Failure Getting KK coordinates");
+       }
+
+    }
+
+    req.send(params);
+}
+
+
+//FIXME
+function InsertRow3D(node){
+    var domRef = document.getElementById('t1');
+    var newRow = domRef.insertRow(domRef.rows.length);
+    var highGrade = node.metadata.highGrade.toString();
+    if(highGrade == '0') highGrade = 'K';
+    var lowGrade = node.metadata.lowGrade.toString();
+    if(lowGrade == '0') lowGrade = 'K';
+    var gradeBand = highGrade + "-" + lowGrade;
+    newRow.id = node.metadata.sCode;
+    newRow.style.backgroundColor = node.color;
+    newRow.innerHTML = '<div id = label_'+ node.metadata.sCode+'> <b id = bold_'+ node.metadata.sCode+'> '+node.metadata.sCode+' </b> </div>';
+    newRow.innerHTML += '<span id = area_'+ node.metadata.sCode+'> ' + FormatStdDescription(node.metadata.description, node.metadata.sCode, gradeBand)  + '</span>';
+    newRow.innerHTML += '<span style ="display:none" id = color_'+node.metadata.sCode+'>' + node.color + '</span>';
+    newRow.innerHTML += '<span style = "display:none" id = highlightColor_' + node.metadata.sCode+'>' + node.highlightColor + '</span>';
+    newRow.style.borderBottom = "1px solid #A0A0A0";
+    newRow.metadata = {color:node.color, highlightColor:node.highlightColor};
+
+    newRow.onclick = function(e){
+
+
+       //get the sCode of the row that was clicked on
+       var idString = e.target.id;
+       if(idString.includes("_")){
+         idString = idString.split("_")[1];
+       }
+
+       if(CurrentSelectedResourceNode3D != null){
+         v_Nodes.update({id:CurrentSelectedResourceNode3D.id, color:CurrentSelectedResourceNode3D.color, size:RESOURCE_SHAPE_SIZE})
+       }
+
+       if(CurrentSelectedStandard3D != null){
+         var oldRow = document.getElementById(CurrentSelectedStandard3D);
+         oldRow.style.border = "none";
+         oldRow.style.borderBottom = "1px solid #A0A0A0";
+         oldRow.style.background = document.getElementById("color_" + CurrentSelectedStandard3D).innerText;
+         if(GraphDataStructure.containsStandardNode(CurrentSelectedStandard3D)){
+           var node = GraphDataStructure.GetNodeFromSCode(CurrentSelectedStandard3D);
+           v_Nodes.update({id:node.id, color:node.color, size:REGULAR_NODE_SIZE_3D});
+         }
+       }
+
+       CurrentSelectedStandard3D = idString;
+       var ref = document.getElementById(idString);
+       ref.style.border = "4px solid grey"
+       ref.style.background=  document.getElementById("highlightColor_" + CurrentSelectedStandard3D).innerText;
+       var node = null;
+       if(GraphDataStructure.containsStandardNode(idString)){
+          node = GraphDataStructure.GetNodeFromSCode(idString);
+         v_Nodes.update({id:node.id, color:node.highlightColor, size:LARGE_NODE_SIZE_3D});
+       }
+
+      //rebuild the aligned resources table for the new node that was clicked
+     BuildAlignedDocumentsTable3D(node) //fooooo
+
+
+    }
+}
+
+
+function UnhighlightAllResources3D(){
+  var updateResult= [];
+  let count = 0;
+  for(var i = 0; i  < GraphDataStructure.nodeCount; i++){
+
+    let updateNode = GraphDataStructure.nodesList[i];
+    if(updateNode.type == "resource"){
+
+      var set = {id:updateNode.id, color:"red"}
+       updateResult[count] = set;
+       count++;
+    }
+  }
+
+  if(count > 0)
+  v_Nodes.update({updateResult});
+}
+
+
+var CurGradeBand3D = 0;
+
+function BuildStandardsTable3D(gradeIndex){
+//remove the old Standards table
+  ClearTable(document.getElementById("t1"))
+
+  var domRef = document.getElementById("standardsTableHeader");
+  domRef.innerHTML = '<span>' + 'Standards (' + (GraphDataStructure.nodeCount - 4).toString() + ')    ' + '</span>'
+                   + '<span><select id = "Gradeband3DFilter" onchange = RebuildTable3D()>'
+                   + '<option value = "0">' + 'All Grades' + '</option>'
+                   + '<option value = "1">' + 'K-2' + '</option>'
+                   + '<option value = "2">' + '3-5' + '</option>'
+                   + '<option value = "3">' + '6-8' + '</option>'
+                   + '<option value = "3">' + '9-12' + '</option>'
+                   + '</select></span>';
+
+  document.getElementById("Gradeband3DFilter").value = CurGradeBand3D;
+
+  //build the standards table for the 3D network
+  for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+    var node = GraphDataStructure.nodesList[i];
+    if(node.type != "Bundle" && node.type != "resource"){
+        if(gradeIndex == 0){
+            InsertRow3D(node);
+        }
+
+        else if(gradeIndex == 1){
+            if(node.metadata.highGrade <= 2){
+              InsertRow3D(node);
+            }
+        }
+
+        else if(gradeIndex == 2){
+           if(node.metadata.lowGrade >= 3 && node.metadata.highGrade <= 5){
+             InsertRow3D(node);
+           }
+        }
+
+        else if(gradeIndex == 3){
+           if(node.metadata.lowGrade >= 6 && node.metadata.highGrade <= 8){
+             InsertRow3D(node);
+           }
+        }
+
+        else if(gradeIndex == 4){
+          if(node.metadata.lowGrade >= 9){
+            InsertRow3D(node);
+          }
+        }
+
+    }
+  }
+
+}
+
+function RebuildTable3D(){
+  var index = document.getElementById("Gradeband3DFilter").value;
+  CurGradeBand3D = index;
+  BuildStandardsTable3D(index);
+}
+
+function Draw3DNetwork(){
+
+  var count = 0;
+
+  //init the global variables for the vis.js network
+  v_Nodes = new vis.DataSet({});
+  v_Edges = new vis.DataSet({});
+  v_Data = {
+    nodes:v_Nodes,
+    edges:v_Edges
+  };
+
+  v_Options = {
+    physics:false,  //don't want wibly wobbley stuff to happen
+    layout:{improvedLayout:false}  //we let R compute the layout for us
+  }
+
+  //for each node, draw the node according to its type
+  for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+     var node = GraphDataStructure.nodesList[i];
+     var nodeAtt = GetNodeAttributes(node);
+     var x = KKCoords3D[i].x;
+     var y = KKCoords3D[i].y;
+      v_Nodes.add({
+      id:node.id,
+      label:nodeAtt.label,
+      title: FormatNodeDescriptionForPopup(nodeAtt.title),
+      color:node.color,
+      highlightColor:node.highlightColor,
+      font:{size:nodeAtt.size},
+      type:nodeAtt.type,
+      shape:nodeAtt.shape,
+      size:nodeAtt.size,
+      highlightSize:nodeAtt.highlightSize,
+      x:x,
+      y:y
+    });
+    count++;
+  }
+  //draw all the edges
+  for(var i = 0; i < GraphDataStructure.edgeCount; i++){
+    var edge = GraphDataStructure.edgesList[i];
+    v_Edges.add({
+      to: edge.source,
+      from: edge.target
+    });
+  }
+
+   var container = document.getElementById("mynetwork");
+   v_NW = new vis.Network(container, v_Data, v_Options);
+   v_NW.on("click", function(properties){
+       if(properties.nodes.length > 0){
+            ResetNodeSizes3D();
+            var ids = properties.nodes;
+            var clickedNode = v_Nodes.get(ids)[0];
+
+            //handle click event for all standards
+            if(clickedNode.id  <= 4){
+              var nodeId = clickedNode.id;
+              var CCCNode = GraphDataStructure.GetNodeFromID(nodeId);
+              var nodesList = CCCNode.metadata.CCCList;
+              HighlightNodes(nodesList)
+            }
+
+            //onclick events for standards
+            else if(clickedNode.type != "resource" && clickedNode.type != "Bundle"){
+              if(clickedNode.label != CurrentSelectedStandard3D){
+                var myDataUpdate = [];
+                var myDataCount = 0;
+                for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+                  var theNode = GraphDataStructure.nodesList[i];
+                  if(theNode.type != "resource") continue;
+                  var myData = {id:theNode.id, color:theNode.color, size: RESOURCE_SHAPE_SIZE};
+                  myDataUpdate[myDataCount] = myData;
+                  myDataCount++;
+
+                }
+                v_Nodes.update(myDataUpdate)
+              }
+              BuildAlignedDocumentsTable3D(clickedNode);
+              if(CurrentSelectedStandard3D != null && GraphDataStructure.containsStandardNode(CurrentSelectedStandard3D)){
+                var node = GraphDataStructure.GetNodeFromSCode(CurrentSelectedStandard3D)
+                v_Nodes.update({id:node.id, color:node.color, size:REGULAR_NODE_SIZE_3D});
+                if(document.getElementById(CurrentSelectedStandard3D)){
+                  document.getElementById(node.metadata.sCode).style.background = document.getElementById("color_" + CurrentSelectedStandard3D).innerText;
+                  document.getElementById(node.metadata.sCode).style.border = "none"
+                }
+              }
+              CurrentSelectedStandard3D = clickedNode.label;
+              v_Nodes.update({id:clickedNode.id, color:clickedNode.highlightColor, size:LARGE_NODE_SIZE_3D});
+              if(document.getElementById(clickedNode.label)){
+                document.getElementById(clickedNode.label).style.background = clickedNode.highlightColor;
+                document.getElementById(clickedNode.label).style.border = "4px solid grey";
+                document.getElementById(CurrentSelectedStandard3D).scrollIntoView();
+              }
+            }
+
+
+            //unhighlight the resource node no matter what type of node was clicked
+            if(CurrentSelectedResourceNode3D != null){
+              v_Nodes.update({id:CurrentSelectedResourceNode3D.id, color:CurrentSelectedResourceNode3D.color, size:RESOURCE_SHAPE_SIZE});
+            }
+            //onclick event for resource node. If node is in current graph, highlight it and the coorisponding table cell
+           if(clickedNode.type == "resource"){
+
+
+                //current node is updated to be the one just clicked
+                CurrentSelectedResourceNode3D = clickedNode;
+
+                //highlight the clicked resource node in the graph
+                if(document.getElementById(clickedNode.id)){
+                    v_Nodes.update({id: clickedNode.id, color:clickedNode.highlightColor, size:RESOURCE_SHAPE_HIGHLIGHT_SIZE});
+                }
+
+                //unhighlight all rows in the resources table
+                for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+                  if(GraphDataStructure.nodesList[i].type == "resource" && document.getElementById(GraphDataStructure.nodesList[i].id)){
+                    document.getElementById(GraphDataStructure.nodesList[i].id).style.border = "4px solid #A0A0A0";;
+                    document.getElementById(GraphDataStructure.nodesList[i].id).style.background = GraphDataStructure.nodesList[i].color
+                  }
+                }
+
+                //highlight the coorisponding row in the resource table
+                if(document.getElementById(clickedNode.id)){
+                  document.getElementById(clickedNode.id).style.background = clickedNode.highlightColor;
+                  document.getElementById(clickedNode.id).style.border = "4px solid grey";
+                }
+            }
+
+       }
+
+   });
+   ImproveNetworkLayout3D();
+   ShowHideAlignmentsBasedOnDropdown();
+  //double click event handling for the categories 3D network
+   v_NW.on("doubleClick", function(properties){
+     var ids = properties.nodes;
+     var clicked = v_Nodes.get(ids)[0];
+     if(clicked.type != "Bundle"){
+        document.getElementById("Category3D").value = "None";
+        document.getElementById("CategoryStandardsList").value="Category";
+
+        document.getElementById("sCode").value = clicked.label;
+        CurrentNetworkMode = NetworkModes.GRADEBAND
+        submit(clicked.label, false);
+        return;
+     }
+     //set the global enum that tracks which gradband bundle is showing. All show by default
+     else if(clicked.id == 1){
+       CurrentGradebands3D = Gradeband3DTypes.KToTwo;
+     }
+     else if(clicked.id == 2){
+       CurrentGradebands3D = Gradeband3DTypes.ThreeToFive;
+     }
+     else if(clicked.id == 3){
+       CurrentGradebands3D = Gradeband3DTypes.SixToEight;
+     }
+     else if(clicked.id == 4){
+       CurrentGradebands3D = Gradeband3DTypes.NineToTwelve;
+     }
+     else {
+        CurrentGradebands3D = Gradeband3DTypes.AllGrades;
+     }
+     GraphDataStructure = null;
+     BuildGraphDataStructure3D();
+     var gmlString = GetGMLDataString()
+
+      GetKamadaKawaiCoords3D(gmlString);
+   });
+
+
+}
+
+
+function ResetNodeSizes3D(){
+   if(HighlightedStandards3D != null){
+     for(var i = 0; i < HighlightedStandards3D.length; i++){
+       if(GraphDataStructure.containsStandardNode(HighlightedStandards3D[i].sCode)){
+         v_Nodes.update({
+            id: GraphDataStructure.GetNodeFromSCode(HighlightedStandards3D[i].sCode).id,
+            font:{size: REGULAR_NODE_SIZE_3D}
+         });
+       }
+     }
+   }
+}
+
+
+//highlights any of the nodes in the list if they are in the graph
+function HighlightNodes(nodesList){
+
+ResetNodeSizes3D();
+HighlightedStandards3D = nodesList;
+ for(var i = 0; i < nodesList.length; i++){
+   var id = nodesList[i].id;
+   if(GraphDataStructure.containsStandardNode(nodesList[i].sCode)){
+     v_Nodes.update({
+        id: GraphDataStructure.GetNodeFromSCode(nodesList[i].sCode).id,
+        font:{size: LARGE_NODE_SIZE_3D}
+     })
+   }
+ }
+}
+
+
+function ImproveNetworkLayout3D(){
+  //Pull all PEs towards the center to give the graph a nice curved shape
+  var moveX = 35;
+  var moveY = 15;
+  var resultArr = [];
+  var count = 0;
+  for(var i = 0; i< GraphDataStructure.nodeCount; i++){
+    if(GraphDataStructure.nodesList[i].type == "Bundle"){
+        var oldX = v_NW.body.nodes[ GraphDataStructure.nodesList[i].id].x;
+        var oldY = v_NW.body.nodes[ GraphDataStructure.nodesList[i].id].y;
+        if(oldX > 0) oldX = oldX - moveX
+        else oldX = oldX +  moveX
+        if(oldY > 0) oldY = oldY - moveY
+        else oldY = oldY + moveY
+        var row = {id: GraphDataStructure.nodesList[i].id, x:oldX, y:oldY }
+        resultArr[count] = row;
+        count++
+    }
+  }
+  v_Nodes.update(resultArr)
+}
+
+function GetNodeAttributes(node){
+   var attribs = {};
+   attribs.type = node.type;
+   if(node.type == "topic" || node.type == "PE" || node.type == "CC" || node.type == "DCI" || node.type == "SEP"){
+     attribs.label = node.metadata.sCode;
+     attribs.shape = null;
+     //give pCode arrib if not a CC or SEP node
+     var pCode = GetPCodeFromSCode(node.metadata.sCode);
+     if(node.type != "CC" && node.type != "SEP"){
+          attribs.pCode = pCode;
+     }
+
+     //set the label to pCode, sCode, or " " based on the display type and the node type
+     if(NodeDisplayType == ModeEnum.NGSS){
+         if(node.type != "CC" && node.type != "SEP"){
+           attribs.label = pCode;
+         }
+         else{
+           attribs.label = BLANK_NODE_LABEL;
+         }
+     }
+
+
+     if(node.type != "CC" && node.type != "SEP"){
+       attribs.pCode = GetPCodeFromSCode(node.metadata.sCode);
+       if(document.getElementById("displayType").value == "2"){
+         attribs.label = attribs.pCode;
+       }
+     }
+
+     attribs.pCode = pCode;
+     attribs.title = node.metadata.description;
+     attribs.size = REGULAR_NODE_SIZE_3D;
+     attribs.highlightSize = LARGE_NODE_SIZE_3D;
+
+   }
+
+   //get the node display info for resource nodes
+   else if(node.type == "resource"){
+
+     attribs.label = "";
+     attribs.title = node.metadata.title;
+     var symbolId = getAlignmentSymbolIndex(node.metadata.provider);
+     attribs.size = RESOURCE_SHAPE_SIZE;
+     attribs.highlightSize = RESOURCE_SHAPE_HIGHLIGHT_SIZE;
+     var nodeShape = resourceSymbols[symbolId].shape;
+     attribs.shape = nodeShape;
+   }
+
+   else if(node.type == "Bundle"){
+     attribs.shape = null;
+     attribs.title = "Category" //FIXME  hover description
+     attribs.size = BUNDLE_NODE_SIZE_3D;
+     attribs.highlightSize = BUNDLE_NODE_SIZE_3D;
+     if(node.id == 1){
+       attribs.label = "K-2"
+     }
+     else  if(node.id == 2) {
+       attribs.label = "3-5"
+     }
+     else  if(node.id == 3){
+       attribs.label = "6-8"
+     }
+     else  if(node.id == 4) {
+       attribs.label = "9-12"
+     }
+   }
+   return attribs;
+}
+
+
+
+
+function FormatKKCoords(coords){
+
+    var coordsObj = [];
+    var mid = coords.length/2;
+    for(var i = 0; i < mid; i++){
+          var x = coords[i];
+          var y = coords[mid + i];
+          var coord = {x:x, y:y};
+          coordsObj[i] = coord;
+    }
+
+    return coordsObj;
+}
+
+
+function GetResourceNodesAndEdges3D(nodeIdStart){
+   //Add all resource nodes in graph that are selected in the Provider dropdown
+   let myId  = nodeIdStart
+   //Get a list of the providers whose resources will be added to the graph
+   var providersHash = {};
+   if(document.getElementById("TECheckBox").checked){
+       providersHash["TeachEngineering"]  = "TeachEngineering";
+   }
+   for(var i = 0; i < NGSSResourcesList.length; i++){
+     if(document.getElementById(NGSSResourcesList[i] + "_Checkbox").checked){
+        providersHash[NGSSResourcesList[i]] = NGSSResourcesList[i]
+     }
+   }
+
+   //For every standard in the graph, get its aligned resources. For each resource, if showing, create new resource node and add to the graph
+  var resourcesHash = {};
+
+  //For every standard in NGSSGraph, get that standard if in the current graph data structure
+  for(var i = 0; i < NGSSGraph.length; i++){
+    var node = NGSSGraph[i];
+    if(!GraphDataStructure.containsStandardNode(node.sCode)) continue;
+
+    //get all the aligned resource to that node that are in the list of selected providers //nodeType == provider name
+    var nodeAlignmentIds = node.alignedResources;
+    for(var j = 0; j < nodeAlignmentIds.length; j++){
+      var resourceNode = NGSSResources[nodeAlignmentIds[j]];
+      if(!providersHash[resourceNode.nodeType]) continue; //skip if provider not selected from dropdown list
+
+      //A new node to add to the graph data structure. If node already in graph, don't add to graph. Then add the edge from the current standard to the new resource node
+      var newResourceNode = new Node();
+
+      //get all the metadata for the new resource Node
+      var m = {};
+      if(resourceNode.nodeType == "TeachEngineering"){
+           m.docType = resourceNode.docType;
+      }
+      newResourceNode.type = "resource";
+      newResourceNode.order = 6;
+      newResourceNode.id = nodeIdStart;
+      m.resource = resourceNode.document;
+      m.provider = resourceNode.nodeType;
+      m.summary = resourceNode.summary;
+      m.title = resourceNode.title;
+      m.url = resourceNode.url;
+      var symbolId = getAlignmentSymbolIndex(m.provider);
+      newResourceNode.color =  resourceSymbols[symbolId].color;
+      newResourceNode.highlightColor = resourceSymbols[symbolId].highlightColor
+      newResourceNode.metadata = m;
+
+      var theNode = null;
+
+      //add the node the the graph if not already in the graph
+      if(!GraphDataStructure.containsResourceNode(resourceNode.document)) {
+         newResourceNode.id = myId;
+         GraphDataStructure.addNode(newResourceNode);
+         myId++;
+
+         //The edge we add is to the new node just created
+         theNode = newResourceNode;
+      }
+
+      //the edge node is one that is already in the graph object, so we find it
+      else{
+        theNode = GraphDataStructure.GetResourceNodeFromName(resourceNode.document)
+      }
+
+     //if no edge exists between standard and resource, add the edge
+     if(!GraphDataStructure.hasEdge(theNode.id, GraphDataStructure.GetNodeFromSCode(node.sCode).id)){
+
+         GraphDataStructure.addEdge(theNode.id, GraphDataStructure.GetNodeFromSCode(node.sCode).id);
+     }
+     newResourceNode = null;
+    }
+  }
+}
+
+function BuildGraphDataStructure3D(){
+
+  //add the standard nodes
+  var nextId  = GetNetworkNodes3D();
+
+  //add the nodes and edges for resource alignments
+  GetResourceNodesAndEdges3D(nextId);
+
+  //add the edges between connected standards
+  GetNetworkEdges3D();
+
+  if(CurrentSelectedResourceRow != null){
+    v_Nodes.update({id:CurrentSelectedResourceRow.id, color:CurrentSelectedResourceRow.color, size:RESOURCE_SHAPE_SIZE});
+    CurrentSelectedResourceRow = null;
+  }
+  if(CurrentSelectedResourceNode3D != null){
+    v_Nodes.update({id:CurrentSelectedResourceNode3D.id, color:CurrentSelectedResourceNode3D.color, size:RESOURCE_SHAPE_SIZE});
+    CurrentSelectedResourceNode3D = null;
+  }
+
+  UpdateResourceDropdown();
+  ClearTable(document.getElementById('t2'));
+}
+
+
+
+function GetGMLDataString(){
+
+  var dataString = "GetKKCoords('graph[\n	 label \"NGSS K-2\"\n";
+
+  //get the nodes in gml format
+  for(var i = 0; i < GraphDataStructure.nodeCount; i++){
+    var nodeId = GraphDataStructure.nodesList[i].id;
+    dataString += "     node[\n        id " + (nodeId).toString() + "\n     ]\n"
+  }
+
+  //add the egdes to the gml data string
+  for(var i = 0; i < GraphDataStructure.edgeCount; i++){
+    var target = GraphDataStructure.edgesList[i].target;
+    var source = GraphDataStructure.edgesList[i].source;
+    dataString += "     edge[\n            source "+ source + " \n            target " + target + "\n     ]\n";
+  }
+  dataString += "]')"
+  return dataString
+}
+
+
+function GetNetworkNodes3D(){
+
+  if(NetworkData == null){
+    console.log("NetworkData has not been initailized");
+    return;
+  }
+  var comprizorsHash = {};
+  GraphDataStructure = new NGSSGraph3D();
+  var nodeIdStart = 5;
+
+  //Add a node for each gradband bundle of 3d standards for the current category
+  for(var i = 0; i < NetworkData.length; i++){
+
+     //don't add bundles not selected
+     if(CurrentGradebands3D != Gradeband3DTypes.AllGrades){
+       if(i == 0 && CurrentGradebands3D != Gradeband3DTypes.KToTwo) continue;
+       if(i == 1 && CurrentGradebands3D != Gradeband3DTypes.ThreeToFive) continue;
+       if(i == 2 && CurrentGradebands3D != Gradeband3DTypes.SixToEight) continue;
+       if(i == 3 && CurrentGradebands3D != Gradeband3DTypes.NineToTwelve) continue;
+     }
+     //create the bundle node obect
+     var node = new Node();
+     node.id = (i + 1);
+     node.type = "Bundle"
+     node.order = 7;
+     if(Category3DType == 1){
+       node.color = GREEN_COLOR[0];
+       node.highlightColor = GREEN_COLOR[0];
+     }
+     else if(Category3DType == 2){
+       node.color = ORANGE_COLOR[0];
+       node.highlightColor = ORANGE_COLOR[0];
+     }
+     else if(Category3DType == 3){
+       node.highlightColor = BLUE_COLOR[0];
+     }
+     var cccList = NetworkData[i].CCCList
+     var m = {};
+     m.CCCList = cccList;
+     node.metadata = m;
+
+     GraphDataStructure.addNode(node);
+     nodeIdStart++;
+  }
+
+
+  //Add PEs and comprizing standards to the network for each gradeband
+  for(var i = 0; i < NetworkData.length; i++){  //for each gradeband
+       for(var j = 0; j < NetworkData[i].PEList.length; j++){ //for each pe in that gradeband
+
+         //add that pe
+         var pe = NetworkData[i].PEList[j];
+         if(CurrentGradebands3D != Gradeband3DTypes.AllGrades){
+            if(pe.highGrade <= 2 && CurrentGradebands3D != Gradeband3DTypes.KToTwo) continue;
+            if(pe.highGrade <= 5 && pe.lowGrade >= 3 && CurrentGradebands3D != Gradeband3DTypes.ThreeToFive) continue;
+            if(pe.highGrade <= 8 && pe.lowGrade >= 6 && CurrentGradebands3D != Gradeband3DTypes.SixToEight) continue;
+            if(pe.highGrade <= 12 && pe.lowGrade >= 9 && CurrentGradebands3D != Gradeband3DTypes.NineToTwelve) continue;
+         }
+         var peNode = new Node();
+          peNode.id =  nodeIdStart;
+          peNode.type = "PE";
+          peNode.color = GREY_COLOR[0];
+          peNode.highlightColor = GREY_COLOR[2];
+          peNode.order = 2;
+          var metadata = {};
+          metadata.description = pe.description;
+          metadata.lowGrade = pe.lowGrade;
+          metadata.highGrade = pe.highGrade;
+          metadata.sCode = pe.sCode;
+          metadata.pCode = GetPCodeFromSCode(pe.sCode);
+          if(comprizorsHash[pe.sCode]){  //skip ones already added
+            continue;
+          }
+          comprizorsHash[pe.sCode] = pe.sCode
+          peNode.metadata = metadata;
+          GraphDataStructure.addNode(peNode);
+          nodeIdStart++;
+
+          //add all the 3d standards to the graph.
+          if(CurNetworkDepth != 1){
+            //make sure duplicate 3d standards are not added
+            for(var k = 0; k < pe.ComprizingStandards.length; k++){
+               var compId = pe.ComprizingStandards[k];
+               var comp = NetworkData[i].ComprizingStandardsList[compId]
+               if(CurrentGradebands3D != Gradeband3DTypes.AllGrades){
+                  if(comp.highGrade <= 2 && CurrentGradebands3D != Gradeband3DTypes.KToTwo) continue;
+                  if(comp.highGrade <= 5 && comp.lowGrade >= 3 && CurrentGradebands3D != Gradeband3DTypes.ThreeToFive) continue;
+                  if(comp.highGrade <= 8 && comp.lowGrade >= 6 && CurrentGradebands3D != Gradeband3DTypes.SixToEight) continue;
+                  if(comp.highGrade <= 12 && comp.lowGrade >= 9 && CurrentGradebands3D != Gradeband3DTypes.NineToTwelve) continue;
+               }
+               if(comprizorsHash[comp.sCode]){  //skip ones already added
+                 continue;
+               }
+
+                m = {};
+               comprizorsHash[comp.sCode] = comp.sCode;
+               var node3D = new Node();
+               node3D.id = nodeIdStart;
+               node3D.type  = comp.category;
+               if(comp.category == "CC"){
+                 node3D.color = GREEN_COLOR[0];
+                 node3D.highlightColor = GREEN_COLOR[2];
+                 node3D.order = 3;
+               }
+               else if(comp.category == "DCI"){
+                 node3D.color = ORANGE_COLOR[0];
+                 node3D.highlightColor = ORANGE_COLOR[2];
+                 m.pCode = GetPCodeFromSCode(comp.sCode);
+                 node3D.order = 4;
+               }
+               else if(comp.category == "SEP"){
+                 node3D.color = BLUE_COLOR[0];
+                 node3D.highlightColor = BLUE_COLOR[2];
+                 node3D.order = 5;
+               }
+               m.sCode = comp.sCode;
+               m.description = comp.description;
+               m.lowGrade = comp.lowGrade;
+               m.highGrade = comp.highGrade;
+               node3D.metadata = m;
+
+               comprizorsHash[m.sCode] = m.sCode;
+               GraphDataStructure.addNode(node3D);
+               nodeIdStart++;
+            }
+          }
+       }
+  }
+
+  if(CurNetworkDepth != 1){
+  for(var i = 0; i <  NetworkData.length; i++){
+    var topics = NetworkData[i].TopicsList;
+    for(var j = 0; j < topics.length; j++){
+      if(CurrentGradebands3D != Gradeband3DTypes.AllGrades){
+         if(topics[j].highGrade <= 2 && CurrentGradebands3D != Gradeband3DTypes.KToTwo) continue;
+         if(topics[j].highGrade <= 5 && topics[j].lowGrade >= 3 && CurrentGradebands3D != Gradeband3DTypes.ThreeToFive) continue;
+         if(topics[j].highGrade <= 8 && topics[j].lowGrade >= 6 && CurrentGradebands3D != Gradeband3DTypes.SixToEight) continue;
+         if(topics[j].highGrade <= 12 && topics[j].lowGrade >= 9 && CurrentGradebands3D != Gradeband3DTypes.NineToTwelve) continue;
+      }
+      comprizorsHash[topics[j].sCode] = topics[j].sCode
+      var n = new Node();
+      var m = {};
+      n.id = nodeIdStart;
+      m.sCode = topics[j].sCode;
+      m.description = topics[j].description;
+      m.lowGrade = topics[j].lowGrade;
+      m.highGrade = topics[j].highGrade;
+      m.pCode =  GetPCodeFromSCode(topics[j].sCode);
+      n.metadata = m;
+      n.type = "topic";
+      n.order = 1;
+      n.color = PURPLE_COLOR[0];
+      n.highlightColor = PURPLE_COLOR[2];
+      GraphDataStructure.addNode(n);
+      nodeIdStart++;
+    }
+  }
+  }
+  GraphDataStructure.SortStandards();
+  return nodeIdStart; //so we know what id to start with when building any aligned resources
+}
+
+
+function GetNetworkEdges3D(){
+
+     //add edges connecting the gradeband categories
+     if(CurrentGradebands3D == Gradeband3DTypes.AllGrades){
+      for(var i = 1; i < 4; i++){
+        GraphDataStructure.addEdge(i, i + 1);
+      }
+    }
+      //add connections from gradband categories to PE's
+      for(var i = 0; i < 4; i++){
+           var categoryId = (i + 1);
+           var category = NetworkData[i];
+
+           //add every PE connected to that category in the gradeband
+           for(var j = 0; j < category.PEList.length; j++){
+             var pe = GraphDataStructure.GetNodeFromSCode(category.PEList[j].sCode);
+             if(!pe) continue;
+             if(!GraphDataStructure.hasEdge(categoryId, pe.id))
+             GraphDataStructure.addEdge(categoryId, pe.id);
+           }
+      }
+
+      //add connections from PEs to comprizing standards
+        if(CurNetworkDepth != 1){
+        for(var i = 0; i < 4; i++){
+          for(var j = 0; j < NetworkData[i].PEList.length; j++){
+            var pe = NetworkData[i].PEList[j];
+            for(var k = 0; k < pe.ComprizingStandards.length; k++){
+              var connected3DStandardIndex = pe.ComprizingStandards[k];
+              var connected3DStandard = NetworkData[i].ComprizingStandardsList[connected3DStandardIndex];
+              var peInGraph = GraphDataStructure.GetNodeFromSCode(pe.sCode);
+              if(peInGraph == null) continue;
+              var connected3DStandard = GraphDataStructure.GetNodeFromSCode(connected3DStandard.sCode);
+              if(connected3DStandard == null) continue;
+              if(!GraphDataStructure.hasEdge(peInGraph.id, connected3DStandard.id)){
+                  GraphDataStructure.addEdge(peInGraph.id, connected3DStandard.id);
+              }
+            }
+          }
+        }
+      }
+
+      //add connections from topics to PE's
+    if(CurNetworkDepth != 1){
+      for(var i = 0; i < 4; i++){
+        for(var j = 0; j < NetworkData[i].PEList.length; j++){
+            var pe = NetworkData[i].PEList[j];
+            var topicId = pe.topicIndex;
+            var topic = NetworkData[i].TopicsList[topicId];
+            var  topicInGraph = GraphDataStructure.GetNodeFromSCode(topic.sCode);
+            var peInGraph = GraphDataStructure.GetNodeFromSCode(pe.sCode);
+            if(topicInGraph == null || peInGraph == null) continue;
+
+           if(!GraphDataStructure.hasEdge(peInGraph.id, topicInGraph.id)){
+                GraphDataStructure.addEdge(peInGraph.id, topicInGraph.id)
+           }
+        }
+      }
+    }
+}
+
+function GetCategoryList(categoryFile, index, shouldLoadTable){
+    var uri =  categoryFile;
+    var req = new XMLHttpRequest();
+    req.open("POST", uri, true);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.onload = () => {
+      if(req.status == 200){
+           if(index == 1) CCList = JSON.parse(req.responseText);
+           else if(index == 2) DCIList = JSON.parse(req.responseText);
+           else if(index == 3 ) SEPList = JSON.parse(req.responseText);
+           if(shouldLoadTable){
+
+           }
+      }
+      else{
+        throw new Error("Bad request to ccc.php");
+      }
+    }
+    req.send(null);
+}
+
+
+
+
+class Node{
+
+  constructor(){
+    this.id = null;
+    this.type = null;
+    this.color = null;
+    this.highlightColor = null;
+    this.order = null;
+    this.metadata = [];
+  }
+}
+
+class NGSSGraph3D{
+  constructor(){
+    this.nodesList = [];
+    this.edgesList = [];
+    this.nodeCount = 0;
+    this.edgeCount = 0;
+
+    //private members for data integrity checking
+    this.StandardsHashMap = {};
+    this.resourcesHashMap = {};
+    this.nodesHashMap = {};
+    this.EdgesHashMap = {};
+  }
+
+
+  //Add a node object to the graph. Throw exeption if node already in the graph.
+  addNode(newNode){
+
+    //If new node is a standard, check that node with this sCode is not already in the graph object
+      if(newNode.type == "PE" || newNode.type == "CC" || newNode.type == "SEP" || newNode.type == "DCI" || newNode.type == "topic"){
+        if(this.StandardsHashMap[newNode.sCode]){
+          throw new Error("A PE with sCode = " + newNode.sCode + " already exists");
+        }
+        this.StandardsHashMap[newNode.metadata.sCode] = newNode.metadata.sCode;
+      }
+
+      //if node being added is a resource, check that a resource node with that name not already in the graph
+      if(newNode.type == "resource"){
+        if(this.resourcesHashMap[newNode.metadata.resource]){
+          throw new Error("The resource " + newNode.metadata.resource + " already exists");
+        }
+        this.resourcesHashMap[newNode.metadata.resource] = newNode.metadata.resource;
+      }
+      this.nodesList[this.nodeCount] = newNode;
+      this.nodeCount +=1;
+
+      //check that no node with this id is already in network
+      if(this.nodesHashMap[newNode.id]){
+          throw new Error("A node with id = " + newNode.sCode + " already exists");
+      }
+      this.nodesHashMap[newNode.id] = newNode.id;
+  }
+
+  containsStandardNode(sCode){
+      if(this.StandardsHashMap[sCode]){
+        return true;
+      }
+      return false;
+  }
+
+  containsResourceNode(resourceName){
+    if(this.resourcesHashMap[resourceName]){
+      return true;
+    }
+    return false;
+  }
+
+  addEdge(id1, id2){
+      var edge = {};
+      if(this.EdgesHashMap[id1.toString() + "," +  id2.toString()] || this.EdgesHashMap[id2.toString() + "," +  id1.toString()]){
+        throw new Error("Edge from " + id1.toString()  + " to " + id2.toString() + " Already Exist.");
+      }
+      this.EdgesHashMap[id1.toString() + "," +  id2.toString()] = id1.toString() + "," +  id2.toString();
+      edge.source = id1;
+      edge.target = id2;
+      this.edgesList[this.edgeCount] = edge;
+      this.edgeCount++;
+  }
+
+  hasEdge(id1, id2){
+    var edge = {};
+    if(this.EdgesHashMap[id1.toString() + "," +  id2.toString()] || this.EdgesHashMap[id2.toString() + "," +  id1.toString()]){
+      return true;
+    }
+    else return false;
+  }
+
+  SortStandards(){
+    for(var i = 1; i < this.nodeCount; i++){
+      var tmp = this.nodesList[i];
+      var j = i - 1;
+      while(j >= 0 && this.nodesList[j].order > tmp.order){
+        this.nodesList[j + 1] = this.nodesList[j];
+        j--;
+      }
+      this.nodesList[j + 1] = tmp;
+    }
+  }
+
+ //returns an array of resource nodes that are aligned to the standard with the given id
+ GetAlignedResources(id){
+    //get list of node ids that have an edge to id
+    var ids = [];
+    var index = 0;
+    for(var i = 0; i < this.edgesList.length; i++){
+       if(this.edgesList[i].target == id){
+          ids[index] = this.edgesList[i].source;
+          index++;
+       }
+       else if(this.edgesList[i].source == id){
+         ids[index] = this.edgesList[i].target;
+         index++;
+       }
+    }
+
+    var resourcesList = [];
+    index = 0;
+    for(var i = 0; i < ids.length; i++){
+       var node = this.GetNodeFromID(ids[i]);
+       if(node.type == "resource"){
+         resourcesList[index] = node;
+         index++;
+       }
+    }
+    return resourcesList;
+ }
+
+
+  //takes the name/title of the resource, and returns the coorisponding resource
+  GetResourceNodeFromName(resourceName){
+    for(var i = 0; i < this.nodeCount; i++){
+      if(this.nodesList[i].type == "resource"){
+        if(this.nodesList[i].metadata.resource == resourceName){
+          return this.nodesList[i];
+        }
+      }
+    }
+    return null;
+  }
+
+
+ //Takes the sCode of a standard and returns the coorisponding node
+  GetNodeFromSCode(sCode){
+    for(var i = 0; i < this.nodeCount; i++){
+      if(this.nodesList[i].type != "Bundle"){
+        if(this.nodesList[i].metadata.sCode == sCode) {
+          return this.nodesList[i];
+        }
+      }
+    }
+    return null;  //lets us know that node with that sCode was not in the graph
+  }
+
+  GetNodeFromID(id){
+    for(var i = 0; i < this.nodeCount; i++){
+        if(this.nodesList[i].id == id) {
+          return this.nodesList[i];
+        }
+    }
+    return "not found";  //lets us know that node with that sCode was not in the graph
+  }
+
+
 }

@@ -1,0 +1,163 @@
+sCode	category
+S2467522	Planning and Carrying Out Investigations
+S2468134	Analyzing and Interpreting Data
+S2470518	Planning and Carrying Out Investigations
+S2470520	Constructing Explanations and Designing Solutions
+S2470528	Analyzing and Interpreting Data
+S2470673	Engaging in Argument from Evidence
+S2470559	Developing and Using Models
+S2470557	Asking Questions and Defining Problems
+S2470561	"Obtaining, Evaluating, and Communicating Information"
+S2470562	"Obtaining, Evaluating, and Communicating Information"
+S2470588	Planning and Carrying Out Investigations
+S2470590	Constructing Explanations and Designing Solutions
+S2470591	Constructing Explanations and Designing Solutions
+S2470612	Constructing Explanations and Designing Solutions
+S2470614	"Obtaining, Evaluating, and Communicating Information"
+S2470667	Planning and Carrying Out Investigations
+S2470696	Developing and Using Models
+S2470713	Planning and Carrying Out Investigations
+S2470722	Constructing Explanations and Designing Solutions
+S2470736	Constructing Explanations and Designing Solutions
+S2470734	Developing and Using Models
+S2470738	"Obtaining, Evaluating, and Communicating Information"
+S2470761	Asking Questions and Defining Problems
+S2470762	Asking Questions and Defining Problems
+S2470789	Planning and Carrying Out Investigations
+S2470790	Planning and Carrying Out Investigations
+S2470786	Asking Questions and Defining Problems
+S2470787	Asking Questions and Defining Problems
+S2470811	Developing and Using Models
+S2470823	Engaging in Argument from Evidence
+S2470834	Constructing Explanations and Designing Solutions
+S2470836	Constructing Explanations and Designing Solutions
+S2470857	Constructing Explanations and Designing Solutions
+S2470858	Engaging in Argument from Evidence
+S2470859	Engaging in Argument from Evidence
+S2470887	Analyzing and Interpreting Data
+S2470889	"Obtaining, Evaluating, and Communicating Information"
+S2470920	Constructing Explanations and Designing Solutions
+S2470918	Planning and Carrying Out Investigations
+S2470916	Asking Questions and Defining Problems
+S2470921	Constructing Explanations and Designing Solutions
+S2470949	Developing and Using Models
+S2470952	Constructing Explanations and Designing Solutions
+S2470976	Developing and Using Models
+S2470990	Constructing Explanations and Designing Solutions
+S2471003	Planning and Carrying Out Investigations
+S2471046	Developing and Using Models
+S2471051	Using Mathematics and Computational Thinking
+S2471049	Planning and Carrying Out Investigations
+S2471048	Planning and Carrying Out Investigations
+S2471071	Engaging in Argument from Evidence
+S2471081	Developing and Using Models
+S2471118	Analyzing and Interpreting Data
+S2471135	Developing and Using Models
+S2471137	Using Mathematics and Computational Thinking
+S2471151	"Obtaining, Evaluating, and Communicating Information"
+S2471165	Asking Questions and Defining Problems 
+S2471169	Constructing Explanations and Designing Solutions
+S2471190	Developing and Using Models
+S2471193	Analyzing and Interpreting Data
+S2471197	"Obtaining, Evaluating, and Communicating Information"
+S2471191	Developing and Using Models
+S2471195	Constructing Explanations and Designing Solutions
+S2471249	Constructing Explanations and Designing Solutions
+S2471246	Planning and Carrying Out Investigations
+S2471244	Asking Questions and Defining Problems
+S2471251	Engaging in Argument from Evidence
+S2471247	Planning and Carrying Out Investigations
+S2471283	Analyzing and Interpreting Data
+S2471285	Constructing Explanations and Designing Solutions
+S2471287	Engaging in Argument from Evidence
+S2471320	Using Mathematics and Computational Thinking
+S2471318	Developing and Using Models
+S2471322	"Obtaining, Evaluating, and Communicating Information"
+S2471356	Planning and Carrying Out Investigations
+S2471360	Engaging in Argument from Evidence
+S2471361	Engaging in Argument from Evidence
+S2471511	Constructing Explanations and Designing Solutions
+S2471411	Analyzing and Interpreting Data
+S2471414	Constructing Explanations and Designing Solutions
+S2471403	Developing and Using Models
+S2471417	Engaging in Argument from Evidence
+S2471418	Engaging in Argument from Evidence
+S2471475	Constructing Explanations and Designing Solutions
+S2471470	Analyzing and Interpreting Data
+S2471476	Constructing Explanations and Designing Solutions
+S2471473	Using Mathematics and Computational Thinking
+S2471543	Planning and Carrying Out Investigations
+S2471591	Constructing Explanations and Designing Solutions
+S2471586	Asking Questions and Defining Problems
+S2471623	Asking Questions and Defining Problems
+S2471625	Developing and Using Models
+S2471652	Developing and Using Models
+S2471659	Constructing Explanations and Designing Solutions
+S2471654	Planning and Carrying Out Investigations
+S2471651	Developing and Using Models
+S2471658	Constructing Explanations and Designing Solutions
+S2471660	Constructing Explanations and Designing Solutions
+S2471656	Using Mathematics and Computational Thinking
+S2471696	Using Mathematics and Computational Thinking
+S2471698	Using Mathematics and Computational Thinking
+S2471700	Constructing Explanations and Designing Solutions
+S2471702	"Obtaining, Evaluating, and Communicating Information"
+S2471740	Using Mathematics and Computational Thinking
+S2471736	Developing and Using Models
+S2471742	Constructing Explanations and Designing Solutions
+S2471782	Using Mathematics and Computational Thinking
+S2471780	Asking Questions and Defining Problems
+S2471784	Engaging in Argument from Evidence
+S2471786	"Obtaining, Evaluating, and Communicating Information"
+S2471787	"Obtaining, Evaluating, and Communicating Information"
+S2471827	Constructing Explanations and Designing Solutions
+S2471823	Developing and Using Models
+S2471862	Using Mathematics and Computational Thinking
+S2471863	Using Mathematics and Computational Thinking
+S2471864	Using Mathematics and Computational Thinking
+S2471867	Constructing Explanations and Designing Solutions
+S2471870	Engaging in Argument from Evidence
+S2471910	Asking Questions and Defining Problems
+S2471914	Engaging in Argument from Evidence
+S2471912	Analyzing and Interpreting Data
+S2471947	"Obtaining, Evaluating, and Communicating Information"
+S2471945	Engaging in Argument from Evidence
+S2471941	Using Mathematics and Computational Thinking
+S2471990	"Obtaining, Evaluating, and Communicating Information"
+S2471982	Using Mathematical and Computational Thinking
+S2471985	Constructing Explanations and Designing Solutions
+S2472036	Developing and Using Models
+S2472042	Engaging in Argument from Evidence
+S2472099	Engaging in Argument from Evidence
+S2472097	Constructing Explanations and Designing Solutions
+S2472091	Analyzing and Interpreting Data
+S2472094	Using Mathematics and Computational Thinking
+S2472143	Asking Questions and Defining Problems
+S2472147	Constructing Explanations and Designing Solutions
+S2472148	Constructing Explanations and Designing Solutions
+S2472145	Using Mathematics and Computational Thinking
+S2468147	Scientific Investigations Use a Variety of Methods
+S2470530	Scientific Knowledge is Based on Empirical Evidence
+S2470592	Scientific Investigations Use a Variety of Methods
+S2470674	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2470792	Scientific Investigations Use a Variety of Methods
+S2470791	Science Knowledge is Based on Empirical Evidence
+S2471105	Scientific Knowledge is Based on Empirical Evidence
+S2471198	Scientific Knowledge is Based on Empirical Evidence
+S2471200	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2471364	Scientific Knowledge is Based on Empirica Evidence
+S2471420	Scientific Knowledge is Based on Empirical Evidence
+S2471548	Scientific Knowledge is Open to Revision in Light of New Evidence
+S2471703	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2471704	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2471788	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2471829	Scientific Investigations Use a Variety of Methods
+S2471871	Scientific Knowledge is Open to Revision in Light of New Evidence
+S2471872	Scientific Knowledge is Open to Revision in Light of New Evidence
+S2471992	"Science Models, Laws, Mechanisms, and Theories Explain Natural Phenomena"
+S2472043	Scientific Knowledge is Based on Empirical Evidence
+S2472044	Scientific Knowledge is Based on Empirical Evidence
+S2472045	Scientific Knowledge is Based on Empirical Evidence
+S2472046	Scientific Knowledge is Based on Empirical Evidence
+S2472100	Scientific Investigations Use a Variety of Methods
+S2472101	Scientific Investigations Use a Variety of Methods

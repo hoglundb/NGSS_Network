@@ -1,54 +1,14 @@
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
-Found Id
+Provider	Average Degree Centralilty	Standard Deviation	Resource Count
+TeachEngineering	4.5133410672854	3.9512917402284	1724
+Concord Consortium	9.4109589041096	7.3140572728106	73
+University of Colorado Boulder	10.342465753425	7.312886605321	73
+Outdoor Schools	8.7857142857143	5.4583876611334	70
+Science Buddies	5.5483870967742	3.0924414428098	62
+Generation Genius	0.35185185185185	2.5855725062711	54
+South Metro-Salem STEM Partnership	13.925	6.5959875137883	40
+International Astronomical Union	7.551724137931	4.9032511582808	29
+Lane County STEM Hub	8.45	5.062504061077	20
+National Science Teachers Association NSTA	4	1.3743685418726	19
+NASA	5	2.4748737341529	17
+Healthy Planet USA	5.3333333333333	2.4102953780655	15
+UCAR Staff	16	9.790104894543	14

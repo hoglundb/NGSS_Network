@@ -1,0 +1,846 @@
+id,std_type,description,lowgrade,highgrade,sCode
+1,parent,Motion and Stability: Forces and Interactions,0,0,S2454349
+2,child,Plan and conduct an investigation to compare the effects of different strengths or different directions of pushes and pulls on the motion of an object.,0,0,S2454351
+3,3d,"With guidance, plan and conduct an investigation in collaboration with peers.",0,0,S2467522
+7,3d,"When objects touch or collide, they push on one another and can change motion.",0,0,S2468141
+8,3d,A bigger push or pull makes things speed up or slow down more quickly.,0,0,S2468143
+10,child,Analyze data to determine if a design solution works as intended to change the speed or direction of an object with a push or a pull.,0,0,S2454352
+12,3d,Pushes and pulls can have different strengths and directions.,0,0,S2468138
+13,3d,Pushing or pulling on an object can change the speed or direction of its motion and can start or stop it.,0,0,S2468139
+14,3d,A situation that people want to change or create can be approached as a problem to be solved through engineering. Such problems may have many acceptable solutions.,0,0,S2468145
+16,parent,Energy,0,0,S2454353
+17,child,Make observations to determine the effect of sunlight on Earth's surface.,0,0,S2454387
+22,child,Use tools and materials to design and build a structure that will reduce the warming effect of sunlight on an area.,0,0,S2454388
+23,3d,Use tools and materials provided to design and build a device that solves a specific problem or a solution to a specific problem.,0,0,S2470520
+24,3d,Sunlight warms Earth's surface.,0,0,S2470524
+26,parent,From Molecules to Organisms: Structures and Processes,0,0,S2454354
+27,child,Use observations to describe patterns of what plants and animals (including humans) need to survive.,0,0,S2454380
+30,3d,All animals need food in order to live and grow. They obtain their food from plants or from other animals. Plants need water and light to live and grow.,0,0,S2470532
+31,3d,Patterns in the natural and human designed world can be observed and used as evidence.,0,0,S2470534
+32,parent,Earth's Systems,0,0,S2454355
+33,child,Use and share observations of local weather conditions to describe patterns over time.,0,0,S2454385
+36,3d,"Weather is the combination of sunlight, wind, snow or rain, and temperature in a particular region at a particular time. People measure these conditions to describe and record the weather and to notice patterns over time.",0,0,S2470544
+38,child,Construct an argument supported by evidence for how plants and animals (including humans) can change the environment to meet their needs.,0,0,S2454381
+40,3d,Plants and animals can change their environment.,0,0,S2470547
+43,parent,Earth and Human Activity,0,0,S2454356
+44,child,Use a model to represent the relationship between the needs of different plants or animals (including humans) and the places they live.,0,0,S2454382
+45,3d,Use a model to represent relationships in the natural world.,0,0,S2470559
+46,3d,"Living things need water, air, and resources from the land, and they live in places that have the things they need. Humans use natural resources for everything they do.",0,0,S2470568
+47,3d,Systems in the natural and designed world have parts that work together.,0,0,S2470552
+48,child,"Ask questions to obtain information about the purpose of weather forecasting to prepare for, and respond to, severe weather.",0,0,S2454386
+49,3d,Ask questions based on observations to find more information about the designed world.,0,0,S2470557
+50,3d,Read grade-appropriate texts and/or use media to obtain scientific information to describe patterns in the natural world.,0,0,S2470561
+51,3d,Some kinds of severe weather are more likely than others in a given region. Weather scientists forecast severe weather so that the communities can prepare for and respond to these events.,0,0,S2470569
+54,3d,People encounter questions about the natural world every day.,0,0,S2470579
+56,child,"Communicate solutions that will reduce the impact of humans on the land, water, air, and/or other living things in the local environment.",0,0,S2454383
+57,3d,Communicate solutions with others in oral and/or written forms using models and/or drawings that provide detail about scientific ideas.,0,0,S2470562
+58,3d,"Things that people do to live comfortably can affect the world around them. But they can make choices that reduce their impacts on the land, water, air, and other living things.",0,0,S2470548
+61,parent,Waves and their Applications in Technologies for Information Transfer,1,1,S2454357
+62,child,Plan and conduct investigations to provide evidence that vibrating materials can make sound and that sound can make materials vibrate.,1,1,S2454390
+64,3d,Science investigations begin with a question.,1,1,S2470592
+65,3d,Scientists use different ways to study the world.,0,1,S2468147
+66,3d,"Sound can make matter vibrate, and vibrating matter can make sound.",1,1,S2470597
+68,child,Make observations to construct an evidence-based account that objects can be seen only when illuminated.,1,1,S2454391
+70,3d,Objects can be seen if light is available to illuminate them or if they give off their own light.,1,1,S2470598
+72,child,Plan and conduct an investigation to determine the effect of placing objects made with different materials in the path of a beam of light.,1,1,S2454392
+73,3d,Plan and conduct investigations collaboratively to produce data to serve as the basis for evidence to answer a question.,1,1,S2470588
+74,3d,"Some materials allow light to pass through them, others allow only some light through and others block all the light and create a dark shadow on any surface beyond them, where the light cannot reach. Mirrors can be used to redirect a light beam. (Boundary: The idea that light travels from place to place is developed through experiences with light sources, mirrors, and shadows, but no attempt is made to discuss the speed of light.)",1,1,S2470599
+76,child,Use tools and materials to design and build a device that uses light or sound to solve the problem of communicating over a distance.,1,1,S2454393
+77,3d,Use tools and materials provided to design a device that solves a specific problem.,1,1,S2470591
+78,3d,People also use a variety of devices to communicate (send and receive information) over long distances.,1,1,S2470600
+79,3d,People depend on various technologies in their lives; human life would be very different without technology.,0,1,S2470580
+80,parent,From Molecules to Organisms: Structures and Processes,1,1,S2454358
+81,child,"Use materials to design a solution to a human problem by mimicking how plants and/or animals use their external parts to help them survive, grow, and meet their needs.",1,1,S2454395
+82,3d,Use materials to design a device that solves a specific problem or a solution to a specific problem.,1,1,S2470612
+83,3d,"All organisms have external parts. Different animals use their body parts in different ways to see, hear, grasp objects, protect themselves, move from place to place, and seek, find, and take in food, water and air. Plants also have different parts (roots, stems, leaves, flowers, fruits) that help them survive and grow.",1,1,S2470619
+84,3d,Animals have body parts that capture and convey different kinds of information needed for growth and survival. Animals respond to these inputs with behaviors that help them survive. Plants also respond to some external inputs.,1,1,S2470621
+87,child,Read texts and use media to determine patterns in behavior of parents and offspring that help offspring survive.,1,1,S2454396
+88,3d,Read grade-appropriate texts and use media to obtain scientific information to determine patterns in the natural world.,1,1,S2470614
+90,3d,"Adult plants and animals can have young. In many kinds of animals, parents and the offspring themselves engage in behaviors that help the offspring to survive.",1,1,S2470620
+92,parent,Heredity: Inheritance and Variation of Traits,1,1,S2454359
+93,child,"Make observations to construct an evidence-based account that young plants and animals are like, but not exactly like, their parents.",1,1,S2454397
+95,3d,"Young animals are very much, but not exactly like, their parents. Plants also are very much, but not exactly, like their parents.",1,1,S2470636
+96,3d,Individuals of the same kind of plant or animal are recognizable as similar but can also vary in many ways.,1,1,S2470637
+98,parent,Earth's Place in the Universe,1,1,S2454360
+99,child,"Use observations of the sun, moon, and stars to describe patterns that can be predicted.",1,1,S2454399
+100,3d,Use observations (firsthand or from media) to describe patterns in the natural world in order to answer scientific questions.,0,1,S2470528
+101,3d,"Patterns of the motion of the sun, moon, and stars in the sky can be observed, described, and predicted.",1,1,S2470651
+103,3d,Science assumes natural events happen today as they happened in the past.,1,1,S2470656
+104,3d,Many events are repeated.,1,1,S2470657
+105,child,Make observations at different times of year to relate the amount of daylight to the time of year.,1,1,S2454400
+106,3d,Make observations (firsthand or from media) to collect data that can be used to make comparisons.,0,1,S2470518
+107,3d,"Seasonal patterns of sunrise and sunset can be observed, described, and predicted.",1,1,S2470652
+108,3d,"Patterns in the natural world can be observed, used to describe phenomena, and used as evidence.",0,1,S2470551
+109,parent,Matter and its Interactions,2,2,S2454361
+110,child,Plan and conduct an investigation to describe and classify different kinds of materials by their observable properties.,2,2,S2454402
+112,3d,"Different kinds of matter exist and many of them can be either solid or liquid, depending on temperature. Matter can be described and classified by its observable properties.",2,2,S2470677
+113,3d,Patterns in the natural and human designed world can be observed.,2,2,S2470685
+114,child,Analyze data obtained from testing different materials to determine which materials have the properties that are best suited for an intended purpose.,2,2,S2454403
+117,3d,Simple tests can be designed to gather evidence to support or refute student ideas about causes.,0,2,S2468136
+118,3d,Every human-made product is designed by applying some knowledge of the  natural world and is built using materials  derived from the natural world.,1,2,S2470627
+119,child,Make observations to construct an evidence-based account of how an object made of a small set of pieces can be disassembled and made into a new object.,2,2,S2454404
+120,3d,Make observations (firsthand or from media) to construct an evidence-based account for natural phenomena.,1,2,S2470590
+121,3d,Different properties are suited to different purposes.,2,2,S2470678
+122,3d,A great variety of objects can be built up from a small set of pieces.,2,2,S2470679
+123,3d,"Objects may break into smaller pieces and be put together into larger pieces, or change shapes.",2,2,S2470688
+124,child,Construct an argument with evidence that some changes caused by heating or cooling can be reversed and some cannot.,2,2,S2454405
+125,3d,Construct an argument with evidence to support a claim.,2,2,S2470673
+126,3d,Scientists search for cause and effect relationships to explain natural events.,2,2,S2470674
+127,3d,"Heating or cooling a substance may cause changes that can be observed. Sometimes these changes are reversible, and sometimes they are not.",2,2,S2470680
+129,parent,"Ecosystems: Interactions, Energy, and Dynamics",2,2,S2454362
+130,child,Plan and conduct an investigation to determine if plants need sunlight and water to grow.,2,2,S2454407
+131,3d,Plan and conduct an investigation collaboratively to produce data to serve as the basis for evidence to answer a question.,2,2,S2470667
+132,3d,Plants depend on water and light to grow.,2,2,S2470701
+133,3d,Events have causes that generate observable patterns.,0,2,S2470526
+134,child,Develop a simple model that mimics the function of an animal in dispersing seeds or pollinating plants.,2,2,S2454408
+136,3d,Plants depend on animals for pollination or to move their seeds around.,2,2,S2470702
+139,parent,Biological Evolution: Unity and Diversity,2,2,S2454363
+140,child,Make observations of plants and animals to compare the diversity of life in different habitats.,2,2,S2454409
+141,3d,Make observations (firsthand or from media) to collect data which can be used to make comparisons.,2,2,S2470713
+142,3d,Scientists look for patterns and order when making observations about the world.,0,2,S2470530
+143,3d,"There are many different kinds of living things in any area, and they exist in different places on land and in water.",2,2,S2470716
+144,parent,Earth's Place in the Universe,2,2,S2454364
+145,child,Use information from several sources to provide evidence that Earth events can occur quickly or slowly.,2,2,S2454411
+146,3d,Make observations from several sources to construct an evidence-based account for natural phenomena.,2,2,S2470722
+147,3d,"Some events happen very quickly; others occur very slowly, over a time period much longer than one can observe.",2,2,S2470724
+149,parent,Earth's Systems,2,2,S2454365
+150,child,Compare multiple solutions designed to slow or prevent wind or water from changing the shape of the land.,2,2,S2454412
+151,3d,Compare multiple solutions to a problem.,2,2,S2470736
+152,3d,Wind and water can change the shape of the land.,2,2,S2470743
+154,3d,Things may change slowly or rapidly.,2,2,S2470726
+155,3d,Developing and using technology has impacts on the natural world.,2,2,S2470753
+156,3d,Scientists study the natural and material world.,2,2,S2470754
+157,child,Develop a model to represent the shapes and kinds of land and bodies of water in an area.,2,2,S2454413
+158,3d,Develop a model to represent patterns in the natural world.,2,2,S2470734
+159,3d,Maps show where things are located. One can map the shapes and kinds of land and water in any area.,2,2,S2470744
+161,child,Obtain information to identify where water is found on Earth and that it can be solid or liquid.,2,2,S2454414
+162,3d,"Obtain information using various texts, text features (e.g., headings, tables of contents, glossaries, electronic menus, icons), and other media that will be useful in answering a scientific question.",2,2,S2470738
+163,3d,"Water is found in the ocean, rivers, lakes, and ponds. Water exists as solid ice and in liquid form.",2,2,S2470745
+164,3d,Patterns in the natural world can be observed.,2,2,S2470751
+165,parent,Engineering Design,0,2,S2454366
+166,child,"Ask questions, make observations, and gather information about a situation people want to change to define a simple problem that can be solved through the development of a new or improved object or tool.",0,2,S2454416
+167,3d,Ask questions based on observations to find more information about the natural and/or designed world(s).,0,2,S2470761
+168,3d,Define a simple problem that can be solved through the development of a new or improved object or tool.,0,2,S2470762
+169,3d,A situation that people want to change or create can be approached as a problem to be solved through engineering.,0,2,S2470771
+170,3d,"Asking questions, making observations, and gathering information are helpful in thinking about problems.",0,2,S2470571
+171,3d,"Before beginning to design a solution, it is important to clearly understand the problem.",0,2,S2470773
+172,child,"Develop a simple sketch, drawing, or physical model to illustrate how the shape of an object helps it function as needed to solve a given problem.",0,2,S2454417
+173,3d,Develop a simple model based on evidence to represent a proposed object or tool.,2,2,S2470696
+174,3d,"Designs can be conveyed through sketches, drawings, or physical models. These representations are useful in communicating ideas for a problem's solutions to other people.",0,0,S2470572
+175,3d,The shape and stability of structures of natural and designed objects are related to their function(s).,0,2,S2470626
+176,child,Analyze data from tests of two objects designed to solve the same problem to compare the strengths and weaknesses of how each performs.,0,2,S2454418
+177,3d,Analyze data from tests of an object or tool to determine if it works as intended.,0,2,S2468134
+178,3d,"Because there is always more than one possible solution to a problem, it is useful to compare and test designs.",0,2,S2470746
+179,parent,Motion and Stability: Forces and Interactions,3,3,S2454367
+180,child,Plan and conduct an investigation to provide evidence of the effects of balanced and unbalanced forces on the motion of an object.,3,3,S2454420
+182,3d,"Science investigations use a variety of methods, tools, and techniques.",3,3,S2470792
+183,3d,"Each force acts on one particular object and has both strength and a direction. An object at rest typically has multiple forces acting on it, but they add to give zero net force on the object. Forces that do not sum to zero can cause changes in the object's speed or direction of motion. (Boundary: Qualitative and conceptual, but not quantitative addition of forces are used at this level.)",3,3,S2470795
+184,3d,Objects in contact exert forces on each other.,3,3,S2470797
+186,child,Make observations and/or measurements of an object's motion to provide evidence that a pattern can be used to predict future motion.,3,3,S2454421
+187,3d,Make observations and/or measurements to produce data to serve as the basis for evidence for an explanation of a phenomenon or test a design solution.,3,3,S2470790
+189,3d,"The patterns of an object's motion in various situations can be observed and measured; when that past motion exhibits a regular pattern, future motion can be predicted from it. (Boundary: Technical terms, such as magnitude, velocity, momentum, and vector quantity, are not introduced at this level, but the concept that some quantities need both size and direction to be described is developed.)",3,3,S2470796
+191,child,Ask questions to determine cause and effect relationships of electric or magnetic interactions between two objects not in contact with each other.,3,3,S2454422
+192,3d,Ask questions that can be investigated based on patterns such as cause and effect relationships.,3,3,S2470786
+195,child,Define a simple design problem that can be solved by applying scientific ideas about magnets.,3,3,S2454423
+196,3d,Define a simple problem that can be solved through the development of a new or improved object or tool.,3,3,S2470787
+197,3d,"Electric, and magnetic forces between a pair of objects do not require that the objects be in contact. The sizes of the forces in each situation depend on the properties of the objects and their distances apart and, for forces between two magnets, on their orientation relative to each other.",3,3,S2470798
+198,3d,"Scientific discoveries about the natural world can often lead to new and improved technologies, which are developed through the engineering design process.",3,3,S2470805
+199,parent,From Molecules to Organisms: Structures and Processes,3,3,S2454368
+200,child,"Develop models to describe that organisms have unique and diverse life cycles but all have in common birth, growth, reproduction, and death.",3,3,S2454428
+203,3d,Reproduction is essential to the continued existence of every kind of organism. Plants and animals have unique and diverse life cycles.,3,3,S2470815
+205,parent,"Ecosystems: Interactions, Energy, and Dynamics",3,3,S2454369
+206,child,Construct an argument that some animals form groups that help members survive.,3,3,S2454424
+208,3d,"Being part of a group helps animals obtain food, defend themselves, and cope with changes. Groups may serve different functions and vary dramatically in size (Note: Moved from K-2).",3,3,S2470825
+210,parent,Heredity: Inheritance and Variation of Traits,3,3,S2454370
+211,child,Analyze and interpret data to provide evidence that plants and animals have traits inherited from parents and that variation of these traits exists in a group of similar organisms.,3,3,S2454430
+213,3d,Many characteristics of organisms are inherited from their parents.,3,3,S2470839
+214,3d,Different organisms vary in how they look and function because they have different inherited information.,3,3,S2470841
+216,child,Use evidence to support the explanation that traits can be influenced by the environment.,3,3,S2454431
+217,3d,"Use evidence (e.g., observations, patterns) to support an explanation.",3,3,S2470836
+218,3d,"Other characteristics result from individuals' interactions with the environment, which can range from diet to learning. Many characteristics involve both inheritance and environment.",3,3,S2470840
+219,3d,The environment also affects the traits that an organism develops.,3,3,S2470842
+221,parent,Biological Evolution: Unity and Diversity,3,3,S2454371
+222,child,Analyze and interpret data from fossils to provide evidence of the organisms and the environments in which they lived long ago.,3,3,S2454425
+224,3d,Some kinds of plants and animals that once lived on Earth are no longer found anywhere.,3,3,S2470866
+225,3d,Fossils provide evidence about the types of organisms that lived long ago and also about the nature of their environments.,3,3,S2470867
+226,3d,Observable phenomena exist from very short to very long time periods.,3,3,S2470877
+228,child,"Use evidence to construct an explanation for how the variations in characteristics among individuals of the same species may provide advantages in surviving, finding mates, and reproducing.",3,3,S2454432
+229,3d,"Use evidence (e.g., observations, patterns) to construct an explanation.",3,3,S2470857
+230,3d,"Sometimes the differences in characteristics between individuals of the same species provide advantages in surviving, finding mates, and reproducing.",3,3,S2470868
+232,child,"Construct an argument with evidence that in a particular habitat some organisms can survive well, some survive less well, and some cannot survive at all.",3,3,S2454426
+233,3d,Construct an argument with evidence.,3,3,S2470858
+234,3d,"For any particular environment, some kinds of organisms survive well, some survive less well, and some cannot survive at all.",3,3,S2470869
+237,child,Make a claim about the merit of a solution to a problem caused when the environment changes and the types of plants and animals that live there may change.,3,3,S2454427
+239,3d,"When the environment changes in ways that affect a place's physical characteristics, temperature, or availability of resources, some organisms survive and reproduce, others move to new locations, yet others move into the transformed environment, and some die.",3,3,S2470865
+240,3d,"Populations live in a variety of habitats, and change in those habitats affects the organisms living there.",3,3,S2470870
+242,parent,Earth's Systems,3,3,S2454372
+243,child,Represent data in tables and graphical displays to describe typical weather conditions expected during a particular season.,3,3,S2454433
+244,3d,Represent data in tables and various graphical displays (bar graphs and pictographs) to reveal patterns that indicate relationships.,3,3,S2470887
+245,3d,Scientists record patterns of the weather across different times and areas so that they can make predictions about what kind of weather might happen next.,3,3,S2470891
+247,child,Obtain and combine information to describe climates in different regions of the world.,3,3,S2454434
+249,3d,Climate describes a range of an area's typical weather conditions and the extent to which those conditions vary over years.,3,3,S2470892
+250,3d,Patterns of change can be used to make predictions.,3,3,S2470802
+251,parent,Earth and Human Activity,3,3,S2454373
+252,child,Make a claim about the merit of a design solution that reduces the impacts of a weather-related hazard.,3,3,S2454435
+253,3d,Make a claim about the merit of a solution to a problem by citing relevant evidence about how it meets the criteria and constraints of the problem.,3,3,S2470859
+254,3d,A variety of natural hazards result from natural processes. Humans cannot eliminate natural hazards but can take steps to reduce their impacts.,3,3,S2470902
+256,3d,"Engineers improve existing technologies or develop new ones to increase their benefits (e.g., better artificial limbs), decrease known risks (e.g., seatbelts in cars), and meet societal demands (e.g., cell phones).",3,3,S2470907
+258,parent,Energy,4,4,S2454374
+259,child,Use evidence to construct an explanation relating the speed of an object to the energy of that object.,4,4,S2454437
+260,3d,"Use evidence (e.g., measurements, observations, patterns) to construct an explanation.",4,4,S2470920
+261,3d,"The faster a given object is moving, the more energy it possesses.",4,4,S2470927
+263,child,"Make observations to provide evidence that energy can be transferred from place to place by sound, light, heat, and electric currents.",4,4,S2454438
+264,3d,Make observations to produce data to serve as the basis for evidence for an explanation of a phenomenon or test a design solution.,4,4,S2470918
+267,3d,Light also transfers energy from place to place.,4,4,S2470930
+270,child,Ask questions and predict outcomes about the changes in energy that occur when objects collide.,4,4,S2454439
+271,3d,Ask questions that can be investigated and predict reasonable outcomes based on patterns such as cause and effect relationships.,4,4,S2470916
+272,3d,"Energy can be moved from place to place by moving objects or through sound, light, or electric currents.",4,4,S2470928
+273,3d,"Energy is present whenever there are moving objects, sound, light, or heat. When objects collide, energy can be transferred from one object to another, thereby changing their motion. In such collisions, some energy is typically also transferred to the surrounding air; as a result, the air gets heated and sound is produced.",4,4,S2470929
+274,3d,"When objects collide, the contact forces transfer energy so as to change the objects' motions.",4,4,S2470932
+276,child,"Apply scientific ideas to design, test, and refine a device that converts energy from one form to another.",4,4,S2454440
+277,3d,Apply scientific ideas to solve design problems.,4,4,S2470921
+278,3d,"Energy can also be transferred from place to place by electric currents, which can then be used locally to produce motion, sound, heat, or light. The currents may have been produced to begin with by transforming the energy of motion into electrical energy.",4,4,S2470931
+279,3d,The expression \‘produce energy\’; typically refers to the conversion of stored energy into a desired form for practical use.,4,4,S2470933
+280,3d,Possible solutions to a problem are limited by available materials and resources (constraints). The success of a designed solution is determined by considering the desired features of a solution (criteria). Different proposals for solutions can be compared on the basis of how well each one meets the specified criteria for success or how well each takes the constraints into account.,4,4,S2470934
+282,3d,Engineers improve existing technologies or develop new ones.,4,4,S2470939
+283,3d,Most scientists and engineers work in teams.,4,4,S2470940
+284,3d,Science affects everyday life.,3,4,S2470908
+285,parent,Waves and their Applications in Technologies for Information Transfer,4,4,S2454375
+286,child,Develop a model of waves to describe patterns in terms of amplitude and wavelength and that waves can cause objects to move.,4,4,S2454443
+287,3d,"Develop a model using an analogy, example, or abstract representation to describe a scientific principle.",4,4,S2470949
+288,3d,Science findings are based on recognizing patterns.,3,4,S2470791
+289,3d,"Waves, which are regular patterns of motion, can be made in water by disturbing the surface. When waves move across the surface of deep water, the water goes up and down in place; there is no net motion in the direction of the wave except when the water meets a beach. (Note: This grade band endpoint was moved from K-2.)",4,4,S2470958
+290,3d,Waves of the same type can differ in amplitude (height of the wave) and wavelength (spacing between wave peaks).,4,4,S2470959
+291,3d,Similarities and differences in patterns can be used to sort and classify natural phenomena.,3,4,S2470845
+292,child,Develop a model to describe that light reflecting from objects and entering the eye allows objects to be seen.,4,4,S2454445
+293,3d,Develop models to describe phenomena.,3,4,S2470811
+294,3d,An object can be seen when light reflected from its surface enters the eyes.,4,4,S2470960
+295,3d,Cause and effect relationships are routinely identified.,3,4,S2470803
+296,child,Generate and compare multiple solutions that use patterns to transfer information.,4,4,S2454444
+298,3d,"Digitized information can be transmitted over long distances without significant degradation. High-tech devices, such as computers or cell phones, can receive and decode information, convert it from digitized form to voice, and vice versa.",4,4,S2470961
+300,3d,Similarities and differences in patterns can be used to sort and classify designed products.,4,4,S2470967
+302,parent,From Molecules to Organisms: Structures and Processes,4,4,S2454376
+303,child,"Construct an argument that plants and animals have internal and external structures that function to support survival, growth, behavior, and reproduction.",4,4,S2454446
+304,3d,"Construct an argument with evidence, data, and/or a model.",3,4,S2470823
+305,3d,"Plants and animals have both internal and external structures that serve various functions in growth, survival, behavior, and reproduction.",4,4,S2470981
+307,child,"Use a model to describe that animals' receive different types of information through their senses, process the information in their brain, and respond to the information in different ways.",4,4,S2454447
+308,3d,Use a model to test interactions concerning the functioning of a natural system.,4,4,S2470976
+309,3d,"Different sense receptors are specialized for particular kinds of information, which may be then processed by the animal's brain. Animals are able to use their perceptions and memories to guide their actions.",4,4,S2470982
+311,parent,Earth's Place in the Universe,4,4,S2454377
+312,child,Identify evidence from patterns in rock formations and fossils in rock layers to support an explanation for changes in a landscape over time.,4,4,S2454448
+313,3d,Identify the evidence that supports particular points in an explanation.,4,4,S2470990
+314,3d,"Local, regional, and global patterns of rock formations reveal changes over time due to earth forces, such as earthquakes. The presence and location of certain fossil types indicate the order in which rock layers were formed.",4,4,S2470992
+317,parent,Earth's Systems,4,4,S2454378
+318,child,"Make observations and/or measurements to provide evidence of the effects of weathering or the rate of erosion by water, ice, wind, or vegetation.",4,4,S2454449
+319,3d,Make observations and/or measurements to produce data to serve as the basis for evidence for an explanation of a phenomenon.,4,4,S2471003
+320,3d,"Rainfall helps to shape the land and affects the types of living things found in a region. Water, ice, wind, living organisms, and gravity break rocks, soils, and sediments into smaller particles and move them around.",4,4,S2471009
+321,3d,Living things affect the physical characteristics of their regions.,4,4,S2471011
+323,child,Analyze and interpret data from maps to describe patterns of Earth's features.,4,4,S2454450
+324,3d,Analyze and interpret data to make sense of phenomena using logical reasoning.,3,4,S2470834
+325,3d,"The locations of mountain ranges, deep ocean trenches, ocean floor structures, earthquakes, and volcanoes occur in patterns. Most earthquakes and volcanoes occur in bands that are often along the boundaries between continents and oceans. Major mountain chains form inside continents or near their edges. Maps can help locate the different land and water features areas of Earth.",4,4,S2471010
+326,3d,Patterns can be used as evidence to support an explanation.,4,4,S2470995
+327,parent,Earth and Human Activity,4,4,S2467835
+328,child,Obtain and combine information to describe that energy and fuels are derived from natural resources and their uses affect the environment.,4,4,S2454441
+329,3d,Obtain and combine information from books and other reliable media to explain phenomena.,3,4,S2470889
+330,3d,"Energy and fuels that humans use are derived from natural sources, and their use affects the environment in multiple ways. Some resources are renewable over time, and others are not.",4,4,S2471028
+332,3d,Knowledge of relevant scientific concepts and research findings is important in engineering.,3,4,S2470879
+333,3d,"Over time, people's needs and wants change, as do their demands for new and improved technologies.",4,4,S2471037
+334,child,Generate and compare multiple solutions to reduce the impacts of natural Earth processes on humans.,4,4,S2454451
+335,3d,Generate and compare multiple solutions to a problem based on how well they meet the criteria and constraints of the design solution.,3,5,S2470952
+336,3d,"A variety of hazards result from natural processes (e.g., earthquakes, tsunamis, volcanic eruptions). Humans cannot eliminate the hazards but can take steps to reduce their impacts.",4,4,S2471029
+337,3d,Testing a solution involves investigating how well it performs under a range of likely conditions.,4,4,S2471030
+340,parent,Matter and Its Interactions,5,5,S2467837
+341,child,Develop a model to describe that matter is made of particles too small to be seen.,5,5,S2454452
+343,3d,"Matter of any type can be subdivided into particles that are too small to see, but even then the matter still exists and can be detected by other means. A model showing that gases are made from matter particles that are too small to see and are moving freely around in space can explain many observations, including the inflation and shape of a balloon and the effects of air on larger particles or objects.",5,5,S2471054
+345,child,"Measure and graph quantities to provide evidence that regardless of the type of change that occurs when heating, cooling, or mixing substances, the total weight of matter is conserved.",5,5,S2454453
+346,3d,Measure and graph quantities such as weight to address scientific and engineering questions and problems.,5,5,S2471051
+347,3d,"The amount (weight) of matter is conserved when it changes form, even in transitions in which it seems to vanish.",5,5,S2471055
+348,3d,"No matter what reaction or change in properties occurs, the total weight of the substances does not change. (Boundary: Mass and weight are not distinguished at this grade level.)",5,5,S2471058
+350,3d,Science assumes consistent patterns in natural systems.,3,5,S2470880
+351,child,Make observations and measurements to identify materials based on their properties.,5,5,S2454454
+352,3d,Make observations and measurements to produce data to serve as the basis for evidence for an explanation of a phenomenon.,5,5,S2471049
+353,3d,"Measurements of a variety of properties can be used to identify materials. (Boundary: At this grade level, mass and weight are not distinguished, and no attempt is made to define the unseen particles or explain the atomic-scale mechanism of evaporation and condensation.)",5,5,S2471056
+354,3d,"Standard units are used to measure and describe physical quantities such as weight, time, temperature, and volume.",5,5,S2471064
+355,child,Conduct an investigation to determine whether the mixing of two or more substances results in new substances.,5,5,S2454455
+356,3d,"Conduct an investigation collaboratively to produce data to serve as the basis for evidence, using fair tests in which variables are controlled and the number of trials considered.",5,5,S2471048
+357,3d,"When two or more different substances are mixed, a new substance with different properties may be formed.",5,5,S2471057
+358,3d,"Cause and effect relationships are routinely identified, tested, and used to explain change.",3,5,S2470804
+359,parent,Motion and Stability: Forces and Interactions,5,5,S2467839
+360,child,Support an argument that the gravitational force exerted by Earth on objects is directed down.,5,5,S2454465
+362,3d,The gravitational force of Earth acting on an object near Earth's surface pulls that object toward the planet's center.,5,5,S2471073
+363,3d,Cause and effect relationships are routinely identified and used to explain change.,3,5,S2470846
+364,parent,Energy,5,5,S2467840
+365,child,"Use models to describe that energy in animals' food (used for body repair, growth, motion, and to maintain body warmth) was once energy from the sun.",5,5,S2454457
+366,3d,Use models to describe phenomena.,5,5,S2471081
+367,3d,The energy released [from] food was once energy from the sun that was captured by plants in the chemical process that forms plant matter (from air and water).,5,5,S2471084
+368,3d,Food provides animals with the materials they need for body repair and growth and the energy they need to maintain body warmth and for motion.,5,5,S2471085
+369,3d,Energy can be transferred in various ways and between objects.,4,5,S2470938
+370,parent,From Molecules to Organisms: Structures and Processes,5,5,S2467841
+371,child,Support an argument that plants get the materials they need for growth chiefly from air and water.,5,5,S2454458
+373,3d,Plants acquire their material for growth chiefly from air and water.,5,5,S2471095
+374,3d,"Matter is transported into, out of, and within systems.",5,5,S2471097
+375,parent,"Ecosystems: Interactions, Energy, and Dynamics",5,5,S2467842
+376,child,"Develop a model to describe the movement of matter among plants, animals, decomposers, and the environment.",5,5,S2454459
+377,3d,Develop a model to describe phenomena.,4,5,S2471046
+378,3d,Science explanations describe the mechanisms for natural events.,5,5,S2471105
+379,3d,"The food of almost any kind of animal can be traced back to plants. Organisms are related in food webs in which some animals eat plants for food and other animals eat the animals that eat plants. Some organisms, such as fungi and bacteria, break down dead organisms (both plants or plants parts and animals) and therefore operate as decomposers. Decomposition eventually restores (recycles) some materials back to the soil. Organisms can survive only in environments in which their particular needs are met. A healthy ecosystem is one in which multiple species of different types are each able to meet their needs in a relatively stable web of life. Newly introduced species can damage the balance of an ecosystem.",5,5,S2471108
+380,3d,"Matter cycles between the air and soil and among plants, animals, and microbes as these organisms live and die. Organisms obtain gases, and water, from the environment, and release waste matter (gas, liquid, or solid) back into the environment.",5,5,S2471109
+382,parent,Earth's Place in the Universe,5,5,S2467844
+383,child,Support an argument that the apparent brightness of the sun and stars is due to their relative distances from Earth.,5,5,S2454466
+384,3d,"Support an argument with evidence, data, or a model.",5,5,S2471071
+385,3d,The sun is a star that appears larger and brighter than other stars because it is closer. Stars range greatly in their distance from Earth.,5,5,S2471123
+386,3d,Natural objects exist from the very small to the immensely large.,5,5,S2471063
+387,child,"Represent data in graphical displays to reveal patterns of daily changes in length and direction of shadows, day and night, and the seasonal appearance of some stars in the night sky.",5,5,S2454467
+388,3d,"Represent data in graphical displays (bar graphs, pictographs and/or pie charts) to reveal patterns that indicate relationships.",5,5,S2471118
+389,3d,"The orbits of Earth around the sun and of the moon around Earth, together with the rotation of Earth about an axis between its North and South poles, cause observable patterns. These include day and night; daily changes in the length and direction of shadows; and different positions of the sun, moon, and stars at different times of the day, month, and year.",5,5,S2471124
+390,3d,"Similarities and differences in patterns can be used to sort, classify, communicate and analyze simple rates of change for natural phenomena.",5,5,S2471127
+391,parent,Earth's Systems,5,5,S2467845
+392,child,"Develop a model using an example to describe ways the geosphere, biosphere, hydrosphere, and/or atmosphere interact.",5,5,S2454461
+393,3d,Develop a model using an example to describe a scientific principle.,5,5,S2471135
+394,3d,"Earth's major systems are the geosphere (solid and molten rock, soil, and sediments), the hydrosphere (water and ice), the atmosphere (air), and the biosphere (living things, including humans). These systems interact in multiple ways to affect Earth's surface materials and processes. The ocean supports a variety of ecosystems and organisms, shapes landforms, and influences climate. Winds and clouds in the atmosphere interact with the landforms to determine patterns of weather.",5,5,S2471140
+396,child,Describe and graph the amounts and percentages of water and fresh water in various reservoirs to provide evidence about the distribution of water on Earth.,5,5,S2454462
+397,3d,Describe and graph quantities such as area and volume to address scientific questions.,5,5,S2471137
+398,3d,"Nearly all of Earth's available water is in the ocean. Most fresh water is in glaciers or underground; only a tiny fraction is in streams, lakes, wetlands, and the atmosphere.",5,5,S2471141
+399,3d,Standard units are used to measure and describe physical quantities such as weight and volume.,5,5,S2471144
+400,parent,Earth and Human Activity,5,5,S2467846
+401,child,Obtain and combine information about ways individual communities use science ideas to protect the Earth's resources and environment.,5,5,S2454463
+402,3d,Obtain and combine information from books and/or other reliable media to explain phenomena or solutions to a design problem.,5,5,S2471151
+403,3d,"Human activities in agriculture, industry, and everyday life have had major effects on the land, vegetation, streams, ocean, air, and even outer space. But individuals and communities are doing things to help protect Earth's resources and environments.",5,5,S2471153
+404,3d,A system can be described in terms of its components and their interactions.,3,5,S2470878
+405,3d,Science findings are limited to questions that can be answered with empirical evidence.,5,5,S2471157
+406,parent,Engineering Design,3,5,S2467848
+407,child,"Define a simple design problem reflecting a need or a want that includes specified criteria for success and constraints on materials, time, or cost.",3,5,S2454468
+408,3d,"Define a simple design problem that can be solved through the development of an object, tool, process, or system and includes several criteria for success and constraints on materials, time, or cost.",3,5,S2471165
+409,3d,Possible solutions to a problem are limited by available materials and resources (constraints). The success of a designed solution is determined by considering the desired features of a solution (criteria). Different proposals for solutions can be compared on the basis of how well each one meets the specified criteria for success or how well each takes the constraints into account.,3,5,S2471173
+410,3d,"People's needs and wants change over time, as do their demands for new and improved technologies.",3,5,S2471179
+411,child,Generate and compare multiple possible solutions to a problem based on how well each is likely to meet the criteria and constraints of the problem.,3,5,S2454469
+412,3d,Generate and compare multiple solutions to a problem based on how well they meet the criteria and constraints of the design problem.,3,5,S2471169
+413,3d,Research on a problem should be carried out before beginning to design a solution. Testing a solution involves investigating how well it performs under a range of likely conditions.,3,5,S2471174
+414,3d,"At whatever stage, communicating with peers about proposed solutions is an important part of the design process, and shared ideas can lead to improved designs.",3,5,S2471175
+415,3d,"Engineers improve existing technologies or develop new ones to increase their benefits, to decrease known risks, and to meet societal demands.",3,5,S2471038
+416,child,Plan and carry out fair tests in which variables are controlled and failure points are considered to identify aspects of a model or prototype that can be improved.,3,5,S2454470
+417,3d,"Plan and conduct an investigation collaboratively to produce data to serve as the basis for evidence, using fair tests in which variables are controlled and the number of trials considered.",3,5,S2470789
+418,3d,"Tests are often designed to identify failure points or difficulties, which suggest the elements of the design that need to be improved.",3,5,S2471176
+419,3d,"Different solutions need to be tested in order to determine which of them best solves the problem, given the criteria and the constraints.",3,5,S2470962
+420,parent,Matter and Its Interactions,6,8,S2467870
+421,child,Develop models to describe the atomic composition of simple molecules and extended structures.,6,8,S2454471
+423,3d,"Substances are made from different types of atoms, which combine with one another in various ways. Atoms form molecules that range in size from two to thousands of atoms.",6,8,S2471206
+424,3d,"Solids may be formed from molecules, or they may be extended structures with repeating subunits",6,8,S2471210
+426,child,Analyze and interpret data on the properties of substances before and after the substances interact to determine if a chemical reaction has occurred.,6,8,S2454475
+431,3d,Macroscopic patterns are related to the nature of microscopic and atomic-level structure.,6,8,S2471227
+432,child,Gather and make sense of information to describe that synthetic materials come from natural resources and impact society.,6,8,S2454472
+434,3d,Each pure substance has characteristic physical and chemical properties (for any bulk quantity under given conditions) that can be used to identify it.,6,8,S2471207
+439,child,"Develop a model that predicts and describes changes in particle motion, temperature, and state of a pure substance when thermal energy is added or removed.",6,8,S2454473
+440,3d,Develop a model to predict and/or describe phenomena.,6,8,S2471190
+441,3d,Gases and liquids are made of molecules or inert atoms that are moving about relative to each other.,6,8,S2471208
+442,3d,"In a liquid, the molecules are constantly in contact with others; in a gas, they are widely spaced except when they happen to collide. In a solid, atoms are closely spaced and may vibrate in position but do not change relative locations.",6,8,S2471209
+443,3d,The changes of state that occur with variations in temperature or pressure can be described and predicted using these models of matter.,6,8,S2471211
+444,3d,"The term \'heat\' as used in everyday language refers both to thermal energy (the motion of atoms or molecules within a substance) and the transfer of that thermal energy from one object to another. In science, heat is used only for this second meaning; it refers to the energy transferred due to the temperature difference between two objects.",6,8,S2471215
+445,3d,"The temperature of a system is proportional to the average internal kinetic energy and potential energy per atom or molecule (whichever is the appropriate building block for the system's material). The details of that relationship depend on the type of atom or molecule and the interactions among the atoms in the material. Temperature is not a direct measure of a system's total thermal energy. The total thermal energy (sometimes called the total internal energy) of a system depends jointly on the temperature, the total number of atoms in the system, and the state of the material.",6,8,S2471216
+447,child,Develop and use a model to describe how the total number of atoms does not change in a chemical reaction and thus mass is conserved.,6,8,S2454476
+449,3d,Laws are regularities or mathematical descriptions of natural phenomena.,6,8,S2471200
+450,3d,"Substances react chemically in characteristic ways. In a chemical process, the atoms that make up the original substances are regrouped into different molecules, and these new substances have different properties from those of the reactants.",6,8,S2471212
+451,3d,"The total number of each type of atom is conserved, and thus the mass does not change.",6,8,S2471213
+453,child,"Undertake a design project to construct, test, and modify a device that either releases or absorbs thermal energy by chemical processes.*",6,8,S2454477
+454,3d,"Undertake a design project, engaging in the design cycle, to construct and/or implement a solution that meets specific design criteria and constraints.",6,8,S2471195
+455,3d,"Some chemical reactions release energy, others store energy.",6,8,S2471214
+456,3d,"A solution needs to be tested, and then modified on the basis of the test results, in order to improve it.",6,8,S2471217
+460,parent,Motion and Stability: Forces and Interactions,6,8,S2467871
+461,child,Apply Newton's Third Law to design a solution to a problem involving the motion of two colliding objects.,6,8,S2454478
+462,3d,"Apply scientific ideas or principles to design an object, tool, process or system.",6,8,S2471249
+463,3d,"For any pair of interacting objects, the force exerted by the first object on the second object is equal in strength to the force that the second object exerts on the first, but in the opposite direction (Newton's third law).",6,8,S2471255
+466,child,Plan an investigation to provide evidence that the change in an object's motion depends on the sum of the forces on the object and the mass of the object.,6,8,S2454479
+469,3d,"The motion of an object is determined by the sum of the forces acting on it; if the total force on the object is not zero, its motion will change. The greater the mass of the object, the greater the force needed to achieve the same change in motion. For any given object, a larger force causes a larger change in motion.",6,8,S2471256
+470,3d,"All positions of objects and the directions of forces and motions must be described in an arbitrarily chosen reference frame and arbitrarily chosen units of size. In order to share information with other people, these choices must also be shared.",6,8,S2471257
+471,3d,Explanations of stability and change in natural or designed systems can be constructed by examining the changes over time and forces at different scales.,6,8,S2471267
+472,child,Ask questions about data to determine the factors that affect the strength of electric and magnetic forces.,6,8,S2454480
+473,3d,"Ask questions that can be investigated within the scope of the classroom, outdoor environment, and museums and other public facilities with available resources and, when appropriate, frame a hypothesis based on observations and scientific principles.",6,8,S2471244
+474,3d,"Electric and magnetic (electromagnetic) forces can be attractive or repulsive, and their sizes depend on the magnitudes of the charges, currents, or magnetic strengths involved and on the distances between the interacting objects.",6,8,S2471258
+476,child,Construct and present arguments using evidence to support the claim that gravitational interactions are attractive and depend on the masses of interacting objects.,6,8,S2454481
+477,3d,Construct and present oral and written arguments supported by empirical evidence and scientific reasoning to support or refute an explanation or a model for a phenomenon or a solution to a problem.,6,8,S2471251
+479,3d,"Gravitational forces are always attractive. There is a gravitational force between any two masses, but it is very small except when one or both of the objects have large mass -e.g., Earth and the sun.",6,8,S2471259
+481,child,Conduct an investigation and evaluate the experimental design to provide evidence that fields exist between objects exerting forces on each other even though the objects are not in contact.,6,8,S2454482
+482,3d,Conduct an investigation and evaluate the experimental design to produce data to serve as the basis for evidence that can meet the goals of the investigation.,6,8,S2471247
+483,3d,"Forces that act at a distance (electric, magnetic, and gravitational) can be explained by fields that extend through space and can be mapped by their effect on a test object (a charged object, or a ball, respectively).",6,8,S2471260
+485,parent,Energy,6,8,S2467872
+486,child,Construct and interpret graphical displays of data to describe the relationships of kinetic energy to the mass of an object and to the speed of an object.,6,8,S2454483
+487,3d,Construct and interpret graphical displays of data to identify linear and nonlinear relationships.,6,8,S2471283
+488,3d,Motion energy is properly called kinetic energy; it is proportional to the mass of the moving object and grows with the square of its speed.,6,8,S2471294
+490,child,"Develop a model to describe that when the arrangement of objects interacting at a distance changes, different amounts of potential energy are stored in the system.",6,8,S2454484
+492,3d,"A system of objects may also contain stored (potential) energy, depending on their relative positions.",6,8,S2471295
+493,3d,"When two objects interact, each one exerts a force on the other that can cause energy to be transferred to or from the object.",6,8,S2471300
+494,3d,"Models can be used to represent systems and their interactions - such as inputs, processes and outputs - and energy and matter flows within systems.",6,8,S2471266
+495,child,"Apply scientific principles to design, construct, and test a device that either minimizes or maximizes thermal energy transfer.",6,8,S2454485
+496,3d,"Apply scientific ideas or principles to design, construct, and test a design of an object, tool, process or system.",6,8,S2471285
+498,3d,Energy is spontaneously transferred out of hotter regions or objects and into colder ones.,6,8,S2471299
+500,3d,"A solution needs to be tested, and then modified on the basis of the test results in order to improve it. There are systematic processes for evaluating solutions with respect to how well they meet criteria and constraints of a problem.",6,8,S2471302
+501,3d,The transfer of energy can be tracked as energy flows through a designed or natural system.,6,8,S2471231
+502,child,"Plan an investigation to determine the relationships among the energy transferred, the type of matter, the mass, and the change in the average kinetic energy of the particles as measured by the temperature of the sample.",6,8,S2454486
+503,3d,"Plan an investigation individually and collaboratively, and in the design: identify independent and dependent variables and controls, what tools are needed to do the gathering, how measurements will be recorded, and how many data are needed to support a claim.",6,8,S2471246
+505,3d,"Temperature is a measure of the average kinetic energy of particles of matter. The relationship between the temperature and the total energy of a system depends on the types, states, and amounts of matter present.",6,8,S2471296
+506,3d,"The amount of energy transfer needed to change the temperature of a matter sample by a given amount depends on the nature of the matter, the size of the sample, and the environment.",6,8,S2471298
+507,3d,Proportional relationships (e.g. speed as the ratio of distance traveled to time taken) among different types of quantities provide information about the magnitude of properties and processes.,6,8,S2471306
+508,child,"Construct, use, and present arguments to support the claim that when the motion energy of an object changes, energy is transferred to or from the object.",6,8,S2454487
+509,3d,"Construct, use, and present oral and written arguments supported by empirical evidence and scientific reasoning to support or refute an explanation or a model for a phenomenon.",6,8,S2471287
+511,3d,"When the motion energy of an object changes, there is inevitably some other change in energy at the same time.",6,8,S2471297
+512,3d,"Energy may take different forms (e.g. energy in fields, thermal energy, energy of motion).",6,8,S2471308
+513,parent,Waves and Their Applications in Technologies for Information Transfer,6,8,S2467874
+514,child,Use mathematical representations to describe a simple model for waves that includes how the amplitude of a wave is related to the energy in a wave.,6,8,S2454489
+515,3d,Use mathematical representations to describe and/or support scientific conclusions and design solutions.,6,8,S2471320
+517,3d,"A simple wave has a repeating pattern with a specific wavelength, frequency, and amplitude.",6,8,S2471327
+518,3d,Graphs and charts can be used to identify patterns in data.,6,8,S2471338
+519,child,"Develop and use a model to describe that waves are reflected, absorbed, or transmitted through various materials.",6,8,S2454490
+521,3d,A sound wave needs a medium through which it is transmitted.,6,8,S2471328
+522,3d,"When light shines on an object, it is reflected, absorbed, or transmitted through the object, depending on the object's material and the frequency (color) of the light.",6,8,S2471329
+523,3d,"The path that light travels can be traced as straight lines, except at surfaces between different transparent materials (e.g., air and water, air and glass) where the light path bends.",6,8,S2471330
+524,3d,"A wave model of light is useful for explaining brightness, color, and the frequency-dependent bending of light at a surface between media.",6,8,S2471331
+525,3d,"However, because light can travel through space, it cannot be a matter wave, like sound or water waves.",6,8,S2471332
+526,3d,"Structures can be designed to serve particular functions by taking into account properties of different materials, and how materials can be shaped and used.",6,8,S2471232
+527,child,Integrate qualitative scientific and technical information to support the claim that digitized signals (sent as wave pulses) are a more reliable way to encode and transmit information.,6,8,S2454491
+528,3d,Integrate qualitative scientific and technical information in written text with that contained in media and visual displays to clarify claims and findings.,6,8,S2471322
+529,3d,Digitized signals (sent as wave pulses) are a more reliable way to encode and transmit information.,6,8,S2471333
+530,3d,Structures can be designed to serve particular functions.,6,8,S2471340
+531,3d,"Technologies extend the measurement, exploration, modeling, and computational capacity of scientific investigations.",6,8,S2471341
+532,3d,Advances in technology influence the progress of science and science has influenced advances in technology.,6,8,S2471342
+533,parent,From Molecules to Organisms: Structures and Processes,6,8,S2467875
+534,child,"Conduct an investigation to provide evidence that living things are made of cells, either one cell or many different numbers and types of cells.",6,8,S2454492
+535,3d,Conduct an investigation to produce data to serve as the basis for evidence that meet the goals of an investigation.,6,8,S2471356
+536,3d,"All living things are made up of cells, which is the smallest unit that can be said to be alive. An organism may consist of one single cell (unicellular) or many different numbers and types of cells (multicellular).",6,8,S2471370
+537,3d,Phenomena that can be observed at one scale may not be observable at another scale.,6,8,S2471388
+539,child,Develop and use a model to describe the function of a cell as a whole and ways parts of cells contribute to the function.,6,8,S2454493
+541,3d,"Within cells, special structures are responsible for particular functions, and the cell membrane forms the boundary that controls what enters and leaves the cell.",6,8,S2471371
+542,3d,"Complex and microscopic structures and systems can be visualized, modeled, and used to describe how their function depends on the relationships among its parts, therefore complex natural structures/systems can be analyzed to determine how they function.",6,8,S2471392
+543,child,Use argument supported by evidence for how the body is a system of interacting subsystems composed of groups of cells.,6,8,S2454494
+544,3d,Use an oral and written argument supported by evidence to support or refute an explanation or a model for a phenomenon.,6,8,S2471360
+545,3d,"In multicellular organisms, the body is a system of multiple interacting subsystems. These subsystems are groups of cells that work together to form tissues and organs that are specialized for particular body functions.",6,8,S2471372
+546,3d,Systems may interact with other systems; they may have sub-systems and be a part of larger complex systems.,6,8,S2471389
+547,3d,"Scientists and engineers are guided by habits of mind such as intellectual honesty, tolerance of ambiguity, skepticism, and openness to new ideas.",6,8,S2471396
+548,child,Use argument based on empirical evidence and scientific reasoning to support an explanation for how characteristic animal behaviors and specialized plant structures affect the probability of successful reproduction of animals and plants respectively.,6,8,S2454503
+549,3d,Use an oral and written argument supported by empirical evidence and scientific reasoning to support or refute an explanation or a model for a phenomenon or a solution to a problem.,6,8,S2471361
+550,3d,Animals engage in characteristic behaviors that increase the odds of reproduction.,6,8,S2471373
+551,3d,"Plants reproduce in a variety of ways, sometimes depending on animal behavior and specialized features for reproduction.",6,8,S2471374
+553,child,Construct a scientific explanation based on evidence for how environmental and genetic factors influence the growth of organisms.,6,8,S2454505
+555,3d,Genetic factors as well as local conditions affect the growth of the adult plant.,6,8,S2471375
+557,child,Construct a scientific explanation based on evidence for the role of photosynthesis in the cycling of matter and flow of energy into and out of organisms.,6,8,S2454496
+559,3d,Science knowledge is based upon logical connections between evidence and explanations.,6,8,S2471364
+560,3d,"Plants, algae (including phytoplankton), and many microorganisms use the energy from light to make sugars (food) from carbon dioxide from the atmosphere and water through the process of photosynthesis, which also releases oxygen. These sugars can be used immediately or stored for growth or later use.",6,8,S2471376
+561,3d,"The chemical reaction by which plants produce complex food molecules (sugars) requires an energy input (i.e., from sunlight) to occur. In this reaction, carbon dioxide and water combine to form carbon-based organic molecules and release oxygen.",6,8,S2471379
+562,3d,"Within a natural system, the transfer of energy drives the motion and/or cycling of matter.",6,8,S2471391
+563,child,Develop a model to describe how food is rearranged through chemical reactions forming new molecules that support growth and/or release energy as this matter moves through an organism.,6,8,S2454497
+565,3d,"Within individual organisms, food moves through a series of chemical reactions in which it is broken down and rearranged to form new molecules, to support growth, or to release energy.",6,8,S2471377
+566,3d,"Cellular respiration in plants and animals involve chemical reactions with oxygen that release stored energy. In these processes, complex molecules containing carbon react with oxygen to produce carbon dioxide and other materials.",6,8,S2471380
+567,3d,Matter is conserved because atoms are conserved in physical and chemical processes.,6,8,S2471230
+568,child,Gather and synthesize information that sensory receptors respond to stimuli by sending messages to the brain for immediate behavior or storage as memories.,6,8,S2454495
+570,3d,"Each sense receptor responds to different inputs (electromagnetic, mechanical, chemical), transmitting them as signals that travel along nerve cells to the brain. The signals are then processed in the brain, resulting in immediate behaviors or memories.",6,8,S2471378
+572,parent,"Ecosystems: Interactions, Energy, and Dynamics",6,8,S2467877
+573,child,Analyze and interpret data to provide evidence for the effects of resource availability on organisms and populations of organisms in an ecosystem.,6,8,S2454498
+575,3d,"Organisms, and populations of organisms, are dependent on their environmental interactions both with other living things and with nonliving factors.",6,8,S2471407
+576,3d,"In any ecosystem, organisms and populations with similar requirements for food, water, oxygen, or other resources may compete with each other for limited resources, access to which consequently constrains their growth and reproduction.",6,8,S2471421
+577,3d,Growth of organisms and population increases are limited by access to resources.,6,8,S2471422
+579,child,Construct an explanation that predicts patterns of interactions among organisms across multiple ecosystems.,6,8,S2454501
+580,3d,Construct an explanation that includes qualitative or quantitative relationships between variables that predict phenomena.,6,8,S2471414
+581,3d,"Similarly, predatory interactions may reduce the number of organisms or eliminate whole populations of organisms. Mutually beneficial interactions, in contrast, may become so interdependent that each organism requires the other for survival. Although the species involved in these competitive, predatory, and mutually beneficial interactions vary across ecosystems, the patterns of interactions of organisms with their environments, both living and nonliving, are shared.",6,8,S2471423
+583,child,Develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem.,6,8,S2454499
+584,3d,Develop a model to describe phenomena.,6,8,S2471403
+585,3d,"Food webs are models that demonstrate how matter and energy is transferred between producers, consumers, and decomposers as the three groups interact within an ecosystem. Transfers of matter into and out of the physical environment occur at every level. Decomposers recycle nutrients from dead plant or animal matter back to the soil in terrestrial environments or to the water in aquatic environments. The atoms that make up the organisms in an ecosystem are cycled repeatedly between the living and nonliving parts of the ecosystem.",6,8,S2471408
+586,3d,The transfer of energy can be tracked as energy flows through a natural system.,6,8,S2471438
+588,child,Construct an argument supported by empirical evidence that changes to physical or biological components of an ecosystem affect populations.,6,8,S2454500
+590,3d,Science disciplines share common rules of obtaining and evaluating empirical evidence.,6,8,S2471420
+591,3d,Ecosystems are dynamic in nature; their characteristics can vary over time. Disruptions to any physical or biological component of an ecosystem can lead to shifts in all its populations.,6,8,S2471425
+593,child,Evaluate competing design solutions for maintaining biodiversity and ecosystem services.,6,8,S2454502
+595,3d,Biodiversity describes the variety of species found in Earth's terrestrial and oceanic ecosystems. The completeness or integrity of an ecosystem's biodiversity is often used as a measure of its health.,6,8,S2471426
+596,3d,"Changes in biodiversity can influence humans' resources, such as food, energy, and medicines, as well as ecosystem services that humans rely on - for example, water purification and recycling.",6,8,S2471428
+597,3d,There are systematic processes for evaluating solutions with respect to how well they meet the criteria and constraints of a problem.,6,8,S2471430
+598,3d,Small changes in one part of a system might cause large changes in another part.,6,8,S2471439
+601,parent,Heredity: Inheritance and Variation of Traits,6,8,S2467879
+602,child,"Develop and use a model to describe why structural changes to genes (mutations) located on chromosomes may affect proteins and may result in harmful, beneficial, or neutral effects to the structure and function of the organism.",6,8,S2454506
+604,3d,"Genes are located in the chromosomes of cells, with each chromosome pair containing two variants of each of many distinct genes. Each distinct gene chiefly controls the production of specific proteins, which in turn affects the traits of the individual. Changes (mutations) to genes can result in changes to proteins, which can affect the structures and functions of the organism and thereby change traits.",6,8,S2471453
+605,3d,"In addition to variations that arise from sexual reproduction, genetic information can be altered because of mutations. Though rare, mutations may result in changes to the structure and function of proteins. Some changes are beneficial, others harmful, and some neutral to the organism.",6,8,S2471456
+606,3d,"Complex and microscopic structures and systems can be visualized, modeled, and used to describe how their function depends on the shapes, composition, and relationships among its parts, therefore complex natural structures/systems can be analyzed to determine how they function.",6,8,S2471460
+607,child,Develop and use a model to describe why asexual reproduction results in offspring with identical genetic information and sexual reproduction results in offspring with genetic variation.,6,8,S2454507
+609,3d,"Organisms reproduce, either sexually or asexually, and transfer their genetic information to their offspring.",6,8,S2471452
+610,3d,Variations of inherited traits between parent and offspring arise from genetic differences that result from the subset of chromosomes (and therefore genes) inherited.,6,8,S2471454
+611,3d,"In sexually reproducing organisms, each parent contributes half of the genes acquired (at random) by the offspring. Individuals have two of each chromosome and hence two alleles of each gene, one acquired from each parent. These versions may be identical or may differ from each other.",6,8,S2471455
+612,3d,Cause and effect relationships may be used to predict phenomena in natural systems.,6,8,S2471386
+613,parent,Biological Evolution: Unity and Diversity,6,8,S2467880
+614,child,"Analyze and interpret data for patterns in the fossil record that document the existence, diversity, extinction, and change of life forms throughout the history of life on Earth under the assumption that natural laws operate today as in the past.",6,8,S2454510
+616,3d,Science knowledge is based upon logical and conceptual connections between evidence and explanations.,6,8,S2471198
+617,3d,"The collection of fossils and their placement in chronological order (e.g., through the location of the sedimentary layers in which they are found or through radioactive dating) is known as the fossil record. It documents the existence, diversity, extinction, and change of many life forms throughout the history of life on Earth.",6,8,S2471483
+620,child,Apply scientific ideas to construct an explanation for the anatomical similarities and differences among modern organisms and between modern and fossil organisms to infer evolutionary relationships.,6,8,S2454511
+621,3d,"Apply scientific ideas to construct an explanation for real-world phenomena, examples, or events.",6,8,S2471475
+622,3d,"Anatomical similarities and differences between various organisms living today and between them and organisms in the fossil record, enable the reconstruction of evolutionary history and the inference of lines of evolutionary descent.",6,8,S2471484
+625,child,Analyze displays of pictorial data to compare patterns of similarities in the embryological development across multiple species to identify relationships not evident in the fully formed anatomy.,6,8,S2454512
+626,3d,Analyze displays of data to identify linear and nonlinear relationships.,6,8,S2471470
+627,3d,Comparison of the embryological development of different species also reveals similarities that show relationships not evident in the fully-formed anatomy.,6,8,S2471485
+629,child,Construct an explanation based on evidence that describes how genetic variations of traits in a population increase some individuals' probability of surviving and reproducing in a specific environment.,6,8,S2454513
+630,3d,Construct an explanation that includes qualitative or quantitative relationships between variables that describe phenomena.,6,8,S2471476
+631,3d,"Natural selection leads to the predominance of certain traits in a population, and the suppression of others.",6,8,S2471486
+633,child,Gather and synthesize information about the technologies that have changed the way humans influence the inheritance of desired traits in organisms.,6,8,S2454508
+634,3d,"Gather, read, and synthesize information from multiple appropriate sources and assess the credibility, accuracy, and possible bias of each publication and methods used, and describe how they are supported or not supported by evidence.",6,8,S2471197
+635,3d,"In artificial selection, humans have the capacity to influence certain characteristics of organisms by selective breeding. One can choose desired parental traits determined by genes, which are then passed on to offspring.",6,8,S2471487
+639,child,Use mathematical representations to support explanations of how natural selection may lead to increases and decreases of specific traits in populations over time.,6,8,S2454514
+640,3d,Use mathematical representations to support scientific conclusions and design solutions.,6,8,S2471473
+641,3d,"Adaptation by natural selection acting over generations is one important process by which species change over time in response to changes in environmental conditions. Traits that support successful survival and reproduction in the new environment become more common; those that do not become less common. Thus, the distribution of traits in a population changes.",6,8,S2471488
+642,3d,"Phenomena may have more than one cause, and some cause and effect relationships in systems can only be described using probability.",6,8,S2471387
+643,parent,Earth's Place in the Universe,6,8,S2467881
+644,child,"Develop and use a model of the Earth-sun-moon system to describe the cyclic patterns of lunar phases, eclipses of the sun and moon, and seasons.",6,8,S2454516
+646,3d,"Patterns of the apparent motion of the sun, the moon, and stars in the sky can be observed, described, predicted, and explained with models.",6,8,S2471515
+647,3d,This model of the solar system can explain eclipses of the sun and the moon. Earth's spin axis is fixed in direction over the short-term but tilted relative to its orbit around the sun. The seasons are a result of that tilt and are caused by the differential intensity of sunlight on different areas of Earth across the year.,6,8,S2471518
+648,3d,Patterns can be used to identify cause and effect relationships.,6,8,S2471410
+650,child,Develop and use a model to describe the role of gravity in the motions within galaxies and the solar system.,6,8,S2454517
+652,3d,"Earth and its solar system are part of the Milky Way galaxy, which is one of many galaxies in the universe.",6,8,S2471516
+654,3d,"The solar system appears to have formed from a disk of dust and gas, drawn together by gravity.",6,8,S2471519
+655,3d,Models can be used to represent systems and their interactions.,6,8,S2471528
+656,3d,Science assumes that objects and events in natural systems occur in consistent patterns that are understandable through measurement and observation.,6,8,S2471498
+657,child,Analyze and interpret data to determine scale properties of objects in the solar system.,6,8,S2454518
+659,3d,"The solar system consists of the sun and a collection of objects, including planets, their moons, and asteroids that are held in orbit around the sun by its gravitational pull on them.",6,8,S2471517
+661,3d,"Engineering advances have led to important discoveries in virtually every field of science, and scientific discoveries have led to the development of entire industries and engineered systems.",6,8,S2471233
+662,child,Construct a scientific explanation based on evidence from rock strata for how the geologic time scale is used to organize Earth's 4.6-billion-year-old history.,6,8,S2454520
+664,3d,"The geologic time scale interpreted from rock strata provides a way to organize Earth's history. Analyses of rock strata and the fossil record provide only relative dates, not an absolute scale.",6,8,S2471520
+666,parent,Earth's Systems,6,8,S2467882
+667,child,Develop a model to describe the cycling of Earth's materials and the flow of energy that drives this process.,6,8,S2454523
+669,3d,All Earth processes are the result of energy flowing and matter cycling within and among the planet's systems. This energy is derived from the sun and Earth's hot interior. The energy that flows and matter that cycles produce chemical and physical changes in Earth's materials and living organisms.,6,8,S2471555
+670,3d,"Explanations of stability and change in natural or designed systems can be constructed by examining the changes over time and processes at different scales, including the atomic scale.",6,8,S2471577
+671,child,Construct an explanation based on evidence for how geoscience processes have changed Earth's surface at varying time and spatial scales.,6,8,S2454521
+673,3d,"The planet's systems interact over scales that range from microscopic to global in size, and they operate over fractions of a second to billions of years. These interactions have shaped Earth's history and will determine its future.",6,8,S2471556
+674,3d,"Water's movements - both on the land and underground - cause weathering and erosion, which change the land's surface features and create underground formations.",6,8,S2471562
+675,3d,"Time, space, and energy phenomena can be observed at various scales using models to study systems that are too large or too small.",6,8,S2471229
+676,child,"Analyze and interpret data on the distribution of fossils and rocks, continental shapes, and seafloor structures to provide evidence of the past plate motions.",6,8,S2454522
+677,3d,Analyze and interpret data to provide evidence for phenomena.,6,8,S2471411
+678,3d,Science findings are frequently revised and/or reinterpreted based on new evidence.,6,8,S2471548
+679,3d,Tectonic processes continually generate new ocean sea floor at ridges and destroy old sea floor at trenches.,6,8,S2471554
+680,3d,"Maps of ancient land and water patterns, based on investigations of rocks and fossils, make clear how Earth's plates have moved great distances, collided, and spread apart.",6,8,S2471557
+681,3d,Patterns in rates of change and other numerical relationships can provide information about natural systems.,6,8,S2471572
+682,child,Develop a model to describe the cycling of water through Earth's systems driven by energy from the sun and the force of gravity.,6,8,S2454524
+683,3d,Develop a model to describe unobservable mechanisms.,6,8,S2471191
+684,3d,"Water continually cycles among land, ocean, and atmosphere via transpiration, evaporation, condensation and crystallization, and precipitation, as well as downhill flows on land.",6,8,S2471558
+685,3d,Global movements of water and its changes in form are propelled by sunlight and gravity.,6,8,S2471560
+686,3d,"Within a natural or designed system, the transfer of energy drives the motion and/or cycling of matter.",6,8,S2471576
+687,child,Collect data to provide evidence for how the motions and complex interactions of air masses results in changes in weather conditions.,6,8,S2454526
+688,3d,Collect data to produce data to serve as the basis for evidence to answer scientific questions or test design solutions under a range of conditions.,6,8,S2471543
+689,3d,"The complex patterns of the changes and the movement of water in the atmosphere, determined by winds, landforms, and ocean temperatures and currents, are major determinants of local weather patterns.",6,8,S2471559
+690,3d,"Because these patterns are so complex, weather can only be predicted probabilistically.",6,8,S2471564
+692,child,Develop and use a model to describe how unequal heating and rotation of the Earth cause patterns of atmospheric and oceanic circulation that determine regional climates.,6,8,S2454527
+693,3d,Develop and use a model to describe phenomena.,6,8,S2471318
+694,3d,Variations in density due to variations in temperature and salinity drive a global pattern of interconnected ocean currents.,6,8,S2471561
+695,3d,"Weather and climate are influenced by interactions involving sunlight, the ocean, the atmosphere, ice, landforms, and living things. These interactions vary with latitude, altitude, and local and regional geography, all of which can affect oceanic and atmospheric flow patterns.",6,8,S2471563
+696,3d,"The ocean exerts a major influence on weather and climate by absorbing energy from the sun, releasing it over time, and globally redistributing it through ocean currents.",6,8,S2471565
+697,3d,"Models can be used to represent systems and their interactions - such as inputs, processes and outputs - and energy, matter, and information flows within systems.",6,8,S2471575
+698,parent,Earth and Human Activity,6,8,S2467884
+699,child,"Construct a scientific explanation based on evidence for how the uneven distributions of Earth's mineral, energy, and groundwater resources are the result of past and current geoscience processes.",6,8,S2454525
+700,3d,Construct a scientific explanation based on valid and reliable evidence obtained from sources (including the students' own experiments) and the assumption that theories and laws that describe the natural world operate today as they did in the past and will continue to do so in the future.,6,8,S2471511
+701,3d,"Humans depend on Earth's land, ocean, atmosphere, and biosphere for many different resources. Minerals, fresh water, and biosphere resources are limited, and many are not renewable or replaceable over human lifetimes. These resources are distributed unevenly around the planet as a result of past geologic processes.",6,8,S2471598
+704,child,Analyze and interpret data on natural hazards to forecast future catastrophic events and inform the development of technologies to mitigate their effects.,6,8,S2454530
+706,3d,"Mapping the history of natural hazards in a region, combined with an understanding of related geologic forces can help forecast the locations and likelihoods of future events.",6,8,S2471599
+707,3d,"Graphs, charts, and images can be used to identify patterns in data.",6,8,S2471495
+709,child,Apply scientific principles to design a method for monitoring and minimizing a human impact on the environment.,6,8,S2454531
+710,3d,"Apply scientific principles to design an object, tool, process or system.",6,8,S2471591
+711,3d,"Human activities have significantly altered the biosphere, sometimes damaging or destroying natural habitats and causing the extinction of other species. But changes to Earth's environments can have different impacts (negative and positive) for different living things.",6,8,S2471600
+712,3d,"Relationships can be classified as causal or correlational, and correlation does not necessarily imply causation.",6,8,S2471609
+713,3d,"The uses of technologies and any limitations on their use are driven by individual or societal needs, desires, and values; by the findings of scientific research; and by differences in such factors as climate, natural resources, and economic conditions. Thus technology use varies from region to region and over time.",6,8,S2471234
+714,child,Construct an argument supported by evidence for how increases in human population and per-capita consumption of natural resources impact Earth's systems.,6,8,S2454532
+715,3d,Construct an oral and written argument supported by empirical evidence and scientific reasoning to support or refute an explanation or a model for a phenomenon or a solution to a problem.,6,8,S2471417
+716,3d,"Typically as human populations and per-capita consumption of natural resources increase, so do the negative impacts on Earth unless the activities and technologies involved are engineered otherwise.",6,8,S2471601
+717,3d,Cause and effect relationships may be used to predict phenomena in natural or designed systems.,6,8,S2471228
+719,3d,Scientific knowledge can describe the consequences of actions but does not necessarily prescribe the decisions that society takes.,6,8,S2471442
+720,child,Ask questions to clarify evidence of the factors that have caused the rise in global temperatures over the past century.,6,8,S2454528
+721,3d,Ask questions to identify and clarify evidence of an argument.,6,8,S2471586
+722,3d,"Human activities, such as the release of greenhouse gases from burning fossil fuels, are major factors in the current rise in Earth's mean surface temperature (global warming). Reducing the level of climate change and reducing human vulnerability to whatever climate changes do occur depend on the understanding of climate science, engineering capabilities, and other kinds of knowledge, such as understanding of human behavior and on applying that knowledge wisely in decisions and activities.",6,8,S2471602
+723,3d,Stability might be disturbed either by sudden events or gradual changes that accumulate over time.,6,8,S2471611
+724,parent,Engineering Design,6,8,S2467886
+725,child,"Define the criteria and constraints of a design problem with sufficient precision to ensure a successful solution, taking into account relevant scientific principles and potential impacts on people and the natural environment that may limit possible solutions.",6,8,S2454533
+726,3d,"Define a design problem that can be solved through the development of an object, tool, process or system and includes multiple criteria and constraints, including scientific knowledge that may limit possible solutions.",6,8,S2471623
+727,3d,"The more precisely a design task's criteria and constraints can be defined, the more likely it is that the designed solution will be successful. Specification of constraints includes consideration of scientific principles and other relevant knowledge that is likely to limit possible solutions.",6,8,S2471301
+728,3d,"All human activity draws on natural resources and has both short and long-term consequences, positive as well as negative, for the health of people and the natural environment.",6,8,S2471612
+729,3d,"The uses of technologies and any limitations on their use are driven by individual or societal needs, desires, and values; by the findings of scientific research; and by differences in such factors as climate, natural resources, and economic conditions.",6,8,S2471268
+730,child,Evaluate competing design solutions using a systematic process to determine how well they meet the criteria and constraints of the problem.,6,8,S2454534
+731,3d,Evaluate competing design solutions based on jointly developed and agreed-upon design criteria.,6,8,S2471418
+733,child,Analyze data from tests to determine similarities and differences among several design solutions to identify the best characteristics of each that can be combined into a new solution to better meet the criteria for success.,6,8,S2454535
+734,3d,Analyze and interpret data to determine similarities and differences in findings.,6,8,S2471193
+735,3d,There are systematic processes for evaluating solutions with respect to how well they meet the criteria and constraints of a problem.,6,8,S2471635
+736,3d,Sometimes parts of different solutions can be combined to create a solution that is better than any of its predecessors.,6,8,S2471636
+737,3d,"Although one design may not perform the best across all tests, identifying the characteristics of the design that performed the best in each test can provide useful information for the redesign process - that is, some of the characteristics may be incorporated into the new design.",6,8,S2471218
+738,child,"Develop a model to generate data for iterative testing and modification of a proposed object, tool, or process such that an optimal design can be achieved.",6,8,S2454536
+739,3d,"Develop a model to generate data to test ideas about designed systems, including those representing inputs and outputs.",6,8,S2471625
+740,3d,Models of all kinds are important for testing solutions.,6,8,S2471637
+741,3d,The iterative process of testing the most promising solutions and modifying what is proposed on the basis of the test results leads to greater refinement and ultimately to an optimal solution.,6,8,S2471219
+742,parent,Matter and Its Interactions,9,12,S2467900
+743,child,Use the periodic table as a model to predict the relative properties of elements based on the patterns of electrons in the outermost energy level of atoms.,9,12,S2454537
+744,3d,Use a model to predict the relationships between systems or between components of a system.,9,12,S2471652
+745,3d,"Each atom has a charged substructure consisting of a nucleus, which is made of protons and neutrons, surrounded by electrons.",9,12,S2471665
+748,child,"Construct and revise an explanation for the outcome of a simple chemical reaction based on the outermost electron states of atoms, trends in the periodic table, and knowledge of the patterns of chemical properties.",9,12,S2454541
+750,3d,The periodic table orders elements horizontally by the number of protons in the atom's nucleus and places those with similar chemical properties in columns. The repeating patterns of this table reflect patterns of outer electron states.,9,12,S2471666
+753,child,Plan and conduct an investigation to gather evidence to compare the structure of substances at the bulk scale to infer the strength of electrical forces between particles.,9,12,S2454538
+757,child,Develop a model to illustrate that the release or absorption of energy from a chemical reaction system depends upon the changes in total bond energy.,9,12,S2454542
+759,3d,A stable molecule has less energy than the same set of atoms separated; one must provide at least this energy in order to take the molecule apart.,9,12,S2471668
+761,child,Apply scientific principles and evidence to provide an explanation about the effects of changing the temperature or concentration of the reacting particles on the rate at which a reaction occurs.,9,12,S2454543
+762,3d,"Apply scientific principles and evidence to provide an explanation of phenomena and solve design problems, taking into account possible unanticipated effects.",9,12,S2471658
+763,3d,"Chemical processes, their rates, and whether or not energy is stored or released can be understood in terms of the collisions of molecules and the rearrangements of atoms into new molecules, with consequent changes in the sum of all bond energies in the set of molecules that are matched by changes in kinetic energy.",9,12,S2471669
+765,child,Refine the design of a chemical system by specifying a change in conditions that would produce increased amounts of products at equilibrium.,9,12,S2454544
+766,3d,"Refine a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2471660
+767,3d,The structure and interactions of matter at the bulk scale are determined by electrical forces within and between atoms.,9,12,S2471667
+768,3d,"In many situations, a dynamic and condition-dependent balance between a reaction and the reverse reaction determines the numbers of all types of molecules present.",9,12,S2471670
+771,child,"Use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction.",9,12,S2454545
+772,3d,Use mathematical representations of phenomena to support claims.,9,12,S2471656
+773,3d,"The fact that atoms are conserved, together with knowledge of the chemical properties of the elements involved, can be used to describe and predict chemical reactions.",9,12,S2471671
+774,3d,The total amount of energy and matter in closed systems is conserved.,9,12,S2471680
+776,child,"Develop models to illustrate the changes in the composition of the nucleus of the atom and the energy released during the processes of fission, fusion, and radioactive decay.",9,12,S2454539
+778,3d,"Nuclear processes, including fusion, fission, and radioactive decays of unstable nuclei, involve release or absorption of energy. The total number of neutrons plus protons does not change in any nuclear process.",9,12,S2471672
+780,parent,Motion and Stability: Forces and Interactions,9,12,S2467901
+781,child,"Analyze data to support the claim that Newton's second law of motion describes the mathematical relationship among the net force on a macroscopic object, its mass, and its acceleration.",9,12,S2454546
+785,3d,Newton's second law accurately predicts changes in the motion of macroscopic objects.,9,12,S2471710
+788,child,Use mathematical representations to support the claim that the total momentum of a system of objects is conserved when there is no net force on the system.,9,12,S2454547
+790,3d,Momentum is defined for a particular frame of reference; it is the mass times the velocity of the object.,9,12,S2471711
+792,3d,"When investigating or describing a system, the boundaries and initial conditions of the system need to be defined.",9,12,S2471726
+793,child,"Apply scientific and engineering ideas to design, evaluate, and refine a device that minimizes the force on a macroscopic object during a collision.",9,12,S2454548
+794,3d,"Apply scientific ideas to solve a design problem, taking into account possible unanticipated effects.",9,12,S2471700
+795,3d,"If a system interacts with objects outside itself, the total momentum of the system can change; however, any such change is balanced by changes in the momentum of objects outside the system.",9,12,S2471712
+800,child,Use mathematical representations of Newton's Law of Gravitation and Coulomb's Law to describe and predict the gravitational and electrostatic forces between objects.,9,12,S2454549
+801,3d,Use mathematical representations of phenomena to describe explanations.,9,12,S2471698
+802,3d,Theories and laws provide explanations in science.,9,12,S2471703
+803,3d,Laws are statements or descriptions of the relationships among observable phenomena.,9,12,S2471704
+804,3d,Newton's law of universal gravitation and Coulomb's law provide the mathematical models to describe and predict the effects of gravitational and electrostatic forces between distant objects.,9,12,S2471713
+807,child,Plan and conduct an investigation to provide evidence that an electric current can produce a magnetic field and that a changing magnetic field can produce an electric current.,9,12,S2454550
+809,3d,"Forces at a distance are explained by fields (gravitational, electric, and magnetic) permeating space that can transfer energy through space. Magnets or electric currents cause magnetic fields; electric charges or changing magnetic fields cause electric fields.",9,12,S2471714
+810,3d,\”electrical energy\” may mean energy stored in a battery or energy transmitted by electric currents.,9,12,S2471716
+812,child,Communicate scientific and technical information about why the molecular-level structure is important in the functioning of designed materials.,9,12,S2454540
+813,3d,"Communicate scientific and technical information (e.g. about the process of development and the design and performance of a proposed process or system) in multiple formats (including orally, graphically, textually, and mathematically).",9,12,S2471702
+814,3d,"Attraction and repulsion between electric charges at the atomic scale explain the structure, properties, and transformations of matter, as well as the contact forces between material objects.",9,12,S2471715
+816,parent,Energy,9,12,S2467902
+817,child,Create a computational model to calculate the change in the energy of one component in a system when the change in energy of the other component(s) and energy flows in and out of the system are known.,9,12,S2454551
+820,3d,Conservation of energy means that the total change of energy in any system is always equal to the total energy transferred into or out of the system.,9,12,S2471751
+822,3d,"Mathematical expressions, which quantify how the stored energy in a system depends on its configuration (e.g. relative positions of charged particles, compression of a spring) and how kinetic energy depends on mass and speed, allow the concept of conservation of energy to be used to predict and describe system behavior.",9,12,S2471753
+823,3d,The availability of energy limits what can occur in any system.,9,12,S2471754
+824,3d,"Models can be used to predict the behavior of a system, but these predictions have limited precision and reliability due to the assumptions and approximations inherent in models.",9,12,S2471766
+826,child,Develop and use models to illustrate that energy at the macroscopic scale can be accounted for as either motions of particles or energy stored in fields.,9,12,S2454552
+828,3d,"Energy is a quantitative property of a system that depends on the motion and interactions of matter and radiation within that system. That there is a single quantity called energy is due to the fact that a system's total energy is conserved, even as, within the system, energy is continually transferred from one object to another and between its various possible forms.",9,12,S2471748
+830,3d,"These relationships are better understood at the microscopic scale, at which all of the different manifestations of energy can be modeled as a combination of energy associated with the motion of particles and energy associated with the configuration (relative position of the particles). In some cases the relative position energy can be thought of as stored in fields (which mediate interactions between particles). This last concept includes radiation, a phenomenon in which energy stored in fields moves across space.",9,12,S2471750
+832,child,"Design, build, and refine a device that works within given constraints to convert one form of energy into another form of energy.",9,12,S2454553
+833,3d,"Design, evaluate, and/or refine a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2471742
+834,3d,"At the macroscopic scale, energy manifests itself in multiple ways, such as in motion, sound, light, and thermal energy.",9,12,S2471749
+838,3d,Modern civilization depends on major technological systems. Engineers continuously modify these technological systems by applying scientific knowledge and engineering design practices to increase benefits while decreasing costs and risks.,9,12,S2471769
+839,child,Plan and conduct an investigation to provide evidence that the transfer of thermal energy when two components of different temperature are combined within a closed system results in a more uniform energy distribution among the components in the system (second law of thermodynamics).,9,12,S2454554
+841,3d,"Energy cannot be created or destroyed, but it can be transported from one place to another and transferred between systems.",9,12,S2471752
+842,3d,"Uncontrolled systems always evolve toward more stable states - that is, toward more uniform energy distribution (e.g., water flows downhill, objects hotter than their surrounding environment cool down).",9,12,S2471755
+843,3d,"Although energy cannot be destroyed, it can be converted to less useful forms - for example, to thermal energy in the surrounding environment.",9,12,S2471757
+844,3d,"When investigating or describing a system, the boundaries and initial conditions of the system need to be defined and their inputs and outputs analyzed and described using models.",9,12,S2471765
+845,child,Develop and use a model of two objects interacting through electric or magnetic fields to illustrate the forces between objects and the changes in energy of the objects due to the interaction.,9,12,S2454555
+847,3d,"When two objects interacting through a field change relative position, the energy stored in the field is changed.",9,12,S2471756
+849,parent,Waves and Their Applications in Technologies for Information Transfer,9,12,S2467903
+850,child,"Use mathematical representations to support a claim regarding relationships among the frequency, wavelength, and speed of waves traveling in various media.",9,12,S2454556
+851,3d,Use mathematical representations of phenomena or design solutions to describe and/or support claims and/or explanations.,9,12,S2471782
+852,3d,"The wavelength and frequency of a wave are related to one another by the speed of travel of the wave, which depends on the type of wave and the medium through which it is passing.",9,12,S2471794
+854,child,Evaluate questions about the advantages of using a digital transmission and storage of information.,9,12,S2454557
+855,3d,"Evaluate questions that challenge the premise(s) of an argument, the interpretation of a data set, or the suitability of a design.",9,12,S2471780
+857,3d,Systems can be designed for greater or lesser stability.,9,12,S2471810
+860,child,"Evaluate the claims, evidence, and reasoning behind the idea that electromagnetic radiation can be described either by a wave model or a particle model, and that for some situations one model is more useful than the other.",9,12,S2454558
+863,3d,"[From the 3-5 grade band endpoints] Waves can add or cancel one another as they cross, depending on their relative phase (i.e., relative position of peaks and troughs of the waves), but they emerge unaffected by each other. (Boundary: The discussion at this grade level is qualitative only; it can be based on the fact that two different sounds can pass a location in different directions without getting mixed up.)",9,12,S2471796
+864,3d,"Electromagnetic radiation (e.g., radio, microwaves, light) can be modeled as a wave of changing electric and magnetic fields or as particles called photons. The wave model is useful for explaining many features of electromagnetic radiation, and the particle model explains other features.",9,12,S2471797
+866,child,Evaluate the validity and reliability of claims in published materials of the effects that different frequencies of electromagnetic radiation have when absorbed by matter.,9,12,S2454559
+867,3d,"Evaluate the validity and reliability of multiple claims that appear in scientific and technical texts or media reports, verifying the data when possible.",9,12,S2471786
+868,3d,"When light or longer wavelength electromagnetic radiation is absorbed in matter, it is generally converted into thermal energy (heat). Shorter wavelength electromagnetic radiation (ultraviolet, X-rays, gamma rays) can ionize atoms and cause damage to living cells.",9,12,S2471798
+869,3d,Cause and effect relationships can be suggested and predicted for complex natural and human designed systems by examining what is known about smaller scale mechanisms within the system.,9,12,S2471764
+870,child,Communicate technical information about how some technological devices use the principles of wave behavior and wave interactions with matter to transmit and capture information and energy.,9,12,S2454560
+871,3d,"Communicate technical information or ideas (e.g. about phenomena and/or the process of development and the design and performance of a proposed process or system) in multiple formats (including orally, graphically, textually, and mathematically).",9,12,S2471787
+872,3d,Solar cells are human-made devices that likewise capture the sun's energy and produce electrical energy.,9,12,S2471793
+873,3d,"Information can be digitized (e.g., a picture stored as the values of an array of pixels); in this form, it can be stored reliably in computer memory and sent over long distances as a series of wave pulses.",9,12,S2471795
+874,3d,Photoelectric materials emit electrons when they absorb light of a high-enough frequency.,9,12,S2471799
+875,3d,"Multiple technologies based on the understanding of waves and their interactions with matter are part of everyday experiences in the modern world (e.g., medical imaging, communications, scanners) and in scientific research. They are essential tools for producing, transmitting, and capturing signals and for storing and interpreting the information contained in them.",9,12,S2471800
+876,3d,Systems can be designed to cause a desired effect.,9,12,S2471725
+877,3d,Science and engineering complement each other in the cycle known as research and development (R&D).,9,12,S2471811
+879,parent,From Molecules to Organisms: Structures and Processes,9,12,S2467904
+880,child,Construct an explanation based on evidence for how the structure of DNA determines the structure of proteins which carry out the essential functions of life through systems of specialized cells.,9,12,S2454562
+882,3d,Systems of specialized cells within organisms help them perform the essential functions of life.,9,12,S2471833
+883,3d,"All cells contain genetic information in the form of DNA molecules. Genes are regions in the DNA that contain the instructions that code for the formation of proteins, which carry out most of the work of cells.",9,12,S2471834
+884,3d,"Investigating or designing new systems or structures requires a detailed examination of the properties of different materials, the structures of different components, and connections of components to reveal its function and/or solve a problem.",9,12,S2471727
+885,child,Develop and use a model to illustrate the hierarchical organization of interacting systems that provide specific functions within multicellular organisms.,9,12,S2454563
+886,3d,Develop and use a model based on evidence to illustrate the relationships between systems or between components of a system.,9,12,S2471736
+887,3d,"Multicellular organisms have a hierarchical structural organization, in which any one system is made up of numerous parts and is itself a component of the next level.",9,12,S2471835
+889,child,Plan and conduct an investigation to provide evidence that feedback mechanisms maintain homeostasis.,9,12,S2454564
+891,3d,"Scientific inquiry is characterized by a common set of values that include: logical thinking, precision, open-mindedness, objectivity, skepticism, replicability of results, and honest and ethical reporting of findings.",9,12,S2471829
+892,3d,"Feedback mechanisms maintain a living system's internal conditions within certain limits and mediate behaviors, allowing it to remain alive and functional even as external conditions change within some range. Feedback mechanisms can encourage (through positive feedback) or discourage (negative feedback) what is going on inside the living system.",9,12,S2471836
+894,child,Use a model to illustrate the role of cellular division (mitosis) and differentiation in producing and maintaining complex organisms.,9,12,S2454577
+896,3d,"In multicellular organisms individual cells grow and then divide via a process called mitosis, thereby allowing the organism to grow. The organism begins as a single cell (fertilized egg) that divides successively to produce many cells, with each parent cell passing identical genetic material (two variants of each chromosome pair) to both daughter cells. Cellular division and differentiation produce and maintain a complex organism, composed of systems of tissues and organs that work together to meet the needs of the whole organism.",9,12,S2471837
+898,child,Use a model to illustrate how photosynthesis transforms light energy into stored chemical energy.,9,12,S2454565
+900,3d,The process of photosynthesis converts light energy to stored chemical energy by converting carbon dioxide plus water into sugars plus released oxygen.,9,12,S2471838
+902,child,"Construct and revise an explanation based on evidence for how carbon, hydrogen, and oxygen from sugar molecules may combine with other elements to form amino acids and/or other large carbon-based molecules.",9,12,S2454566
+904,3d,"The sugar molecules thus formed contain carbon, hydrogen, and oxygen: their hydrocarbon backbones are used to make amino acids and other carbon-based molecules that can be assembled into larger molecules (such as proteins or DNA), used for example to form new cells.",9,12,S2471839
+906,3d,"Changes of energy and matter in a system can be described in terms of energy and matter flows into, out of, and within that system.",9,12,S2471681
+907,child,Use a model to illustrate that cellular respiration is a chemical process whereby the bonds of food molecules and oxygen molecules are broken and the bonds in new compounds are formed resulting in a net transfer of energy.,9,12,S2454567
+909,3d,"As matter and energy flow through different organizational levels of living systems, chemical elements are recombined in different ways to form different products.",9,12,S2471840
+910,3d,"As a result of these chemical reactions, energy is transferred from one system of interacting molecules to another. Cellular respiration is a chemical process in which the bonds of food molecules and oxygen molecules are broken and new compounds are formed that can transport energy to muscles. Cellular respiration also releases the energy needed to maintain body temperature despite ongoing energy transfer to the surrounding environment.",9,12,S2471841
+912,parent,"Ecosystems: Interactions, Energy, and Dynamics",9,12,S2467905
+913,child,Use mathematical and/or computational representations to support explanations of factors that affect carrying capacity of ecosystems at different scales.,9,12,S2454570
+914,3d,Use mathematical and/or computational representations of phenomena or design solutions to support explanations.,9,12,S2471862
+917,child,Use mathematical representations to support and revise explanations based on evidence about factors affecting biodiversity and populations in ecosystems of different scales.,9,12,S2454571
+918,3d,Use mathematical representations of phenomena or design solutions to support and revise explanations.,9,12,S2471863
+920,3d,"Ecosystems have carrying capacities, which are limits to the numbers of organisms and populations they can support. These limits result from such factors as the availability of living and nonliving resources and from such challenges such as predation, competition, and disease. Organisms would have the capacity to produce populations of great size were it not for the fact that environments and resources are finite. This fundamental tension affects the abundance (number of individuals) of species in any given ecosystem.",9,12,S2471880
+922,3d,Using the concept of orders of magnitude allows one to understand how a model at one scale relates to a model at another scale.,9,12,S2471898
+923,child,Construct and revise an explanation based on evidence for the cycling of matter and flow of energy in aerobic and anaerobic conditions.,9,12,S2467924
+924,3d,"Construct and revise an explanation based on valid and reliable evidence obtained from a variety of sources (including students' own investigations, models, theories, simulations, peer review) and the assumption that theories and laws that describe the natural world operate today as they did in the past and will continue to do so in the future.",9,12,S2471659
+925,3d,"Most scientific knowledge is quite durable, but is, in principle, subject to change based on new evidence and/or reinterpretation of existing evidence.",9,12,S2471871
+926,3d,Photosynthesis and cellular respiration (including anaerobic processes) provide most of the energy for life processes.,9,12,S2471881
+928,child,Use a mathematical representation to support claims for the cycling of matter and flow of energy among organisms in an ecosystem.,9,12,S2454568
+929,3d,Use mathematical representations of phenomena or design solutions to support claims.,9,12,S2471864
+930,3d,"Plants or algae form the lowest level of the food web. At each link upward in a food web, only a small fraction of the matter consumed at the lower level is transferred upward, to produce growth and release energy in cellular respiration at the higher level. Given this inefficiency, there are generally fewer organisms at higher levels of a food web. Some matter reacts to release energy for life functions, some matter is stored in newly made structures, and much is discarded. The chemical elements that make up the molecules of organisms pass through food webs and into and out of the atmosphere and soil, and they are combined and recombined in different ways. At each link in an ecosystem, matter and energy are conserved.",9,12,S2471882
+932,child,"Develop a model to illustrate the role of photosynthesis and cellular respiration in the cycling of carbon among the biosphere, atmosphere, hydrosphere, and geosphere.",9,12,S2454569
+933,3d,Use a model based on evidence to illustrate the relationships between systems or between components of a system.,9,12,S2471823
+934,3d,"Photosynthesis and cellular respiration are important components of the carbon cycle, in which carbon is exchanged among the biosphere, atmosphere, oceans, and geosphere through chemical, physical, geological, and biological processes.",9,12,S2471883
+935,3d,The main way that solar energy is captured and stored on Earth is through the complex chemical process known as photosynthesis.,9,12,S2471889
+937,child,"Evaluate the claims, evidence, and reasoning that the complex interactions in ecosystems maintain relatively consistent numbers and types of organisms in stable conditions, but changing conditions may result in a new ecosystem.",9,12,S2454572
+938,3d,"Evaluate the claims, evidence, and reasoning behind currently accepted explanations or solutions to determine the merits of arguments.",9,12,S2471784
+940,3d,"A complex set of interactions within an ecosystem can keep its numbers and types of organisms relatively constant over long periods of time under stable conditions. If a modest biological or physical disturbance to an ecosystem occurs, it may return to its more or less original status (i.e., the ecosystem is resilient), as opposed to becoming a very different ecosystem. Extreme fluctuations in conditions or the size of any population, however, can challenge the functioning of ecosystems in terms of resources and habitat availability.",9,12,S2471884
+943,child,"Design, evaluate, and refine a solution for reducing the impacts of human activities on the environment and biodiversity.",9,12,S2454573
+944,3d,"Design, evaluate, and refine a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2471867
+945,3d,"Moreover, anthropogenic changes (induced by human activity) in the environment - including habitat destruction, pollution, introduction of invasive species, overexploitation, and climate change - can disrupt an ecosystem and threaten the survival of some species.",9,12,S2471885
+946,3d,Biodiversity is increased by the formation of new species (speciation) and decreased by the loss of species (extinction).,9,12,S2471887
+950,child,Evaluate the evidence for the role of group behavior on individual and species' chances to survive and reproduce.,9,12,S2454574
+951,3d,Evaluate the evidence behind currently accepted explanations to determine the merits of arguments.,9,12,S2471870
+952,3d,Scientific argumentation is a mode of logical discourse used to clarify the strength of relationships between ideas and evidence that may result in revision of an explanation.,9,12,S2471872
+953,3d,Group behavior has evolved because membership can increase the chances of survival for individuals and their genetic relatives.,9,12,S2471886
+955,parent,Heredity: Inheritance and Variation of Traits,9,12,S2467906
+956,child,Ask questions to clarify relationships about the role of DNA and chromosomes in coding the instructions for characteristic traits passed from parents to offspring.,9,12,S2454578
+957,3d,Ask questions that arise from examining models or a theory to clarify relationships.,9,12,S2471910
+958,3d,All cells contain genetic information in the form of DNA molecules. Genes are regions in the DNA that contain the instructions that code for the formation of proteins.,9,12,S2471918
+959,3d,"Each chromosome consists of a single very long DNA molecule, and each gene on the chromosome is a particular segment of that DNA. The instructions for forming species' characteristics are carried in DNA. All cells in an organism have the same genetic content, but the genes used (expressed) by the cell may be regulated in different ways. Not all DNA codes for a protein; some segments of DNA are involved in regulatory or structural functions, and some have no as-yet known function.",9,12,S2471919
+961,child,"Make and defend a claim based on evidence that inheritable genetic variations may result from: (1) new genetic combinations through meiosis, (2) viable errors occurring during replication, and/or (3) mutations caused by environmental factors.",9,12,S2454579
+962,3d,"Make and defend a claim based on evidence about the natural world that reflects scientific knowledge, and student-generated evidence.",9,12,S2471914
+963,3d,"In sexual reproduction, chromosomes can sometimes swap sections during the process of meiosis (cell division), thereby creating new genetic combinations and thus more genetic variation. Although DNA replication is tightly regulated and remarkably accurate, errors do occur and result in mutations, which are also a source of genetic variation. Environmental factors can also cause mutations in genes, and viable mutations are inherited.",9,12,S2471920
+966,child,Apply concepts of statistics and probability to explain the variation and distribution of expressed traits in a population.,9,12,S2454580
+968,3d,"Environmental factors also affect expression of traits, and hence affect the probability of occurrences of traits in a population. Thus the variation and distribution of traits observed depends on both genetic and environmental factors.",9,12,S2471921
+970,3d,Technological advances have influenced the progress of science and science has influenced advances in technology.,9,12,S2471927
+971,3d,Science and engineering are influenced by society and society is influenced by science and engineering.,9,12,S2471928
+972,parent,Biological Evolution: Unity and Diversity,9,12,S2467907
+973,child,Communicate scientific information that common ancestry and biological evolution are supported by multiple lines of empirical evidence.,9,12,S2454582
+974,3d,"Communicate scientific information (e.g., about phenomena and/or the process of development and the design and performance of a proposed process or system) in multiple formats (including orally, graphically, textually, and mathematically).",9,12,S2471947
+976,3d,"Genetic information provides evidence of evolution. DNA sequences vary among species, but there are many overlaps; in fact, the ongoing branching that produces multiple lines of descent can be inferred by comparing the DNA sequences of different organisms. Such information is also derivable from the similarities and differences in amino acid sequences and from anatomical and embryological evidence.",9,12,S2471954
+979,child,"Construct an explanation based on evidence that the process of evolution primarily results from four factors: (1) the potential for a species to increase in number, (2) the heritable genetic variation of individuals in a species due to mutation and sexual reproduction, (3) competition for limited resources, and (4) the proliferation of those organisms that are better able to survive and reproduce in the environment.",9,12,S2454583
+982,3d,"Evolution is a consequence of the interaction of four factors: (1) the potential for a species to increase in number, (2) the genetic variation of individuals in a species due to mutation and sexual reproduction, (3) competition for an environment's limited supply of the resources that individuals need in order to survive and reproduce, and (4) the ensuing proliferation of those organisms that are better able to survive and reproduce in that environment.",9,12,S2471957
+984,child,Apply concepts of statistics and probability to support explanations that organisms with an advantageous heritable trait tend to increase in proportion to organisms lacking this trait.,9,12,S2454584
+985,3d,"Apply concepts of statistics and probability (including determining function fits to data, slope, intercept, and correlation coefficient for linear fits) to scientific and engineering questions and problems, using digital tools when feasible.",9,12,S2471912
+986,3d,"Natural selection occurs only if there is both (1) variation in the genetic information between organisms in a population and (2) variation in the expression of that genetic information - that is, trait variation - that leads to differences in performance among individuals.",9,12,S2471955
+987,3d,"The traits that positively affect survival are more likely to be reproduced, and thus are more common in the population.",9,12,S2471956
+989,3d,Adaptation also means that the distribution of traits in a population can change when conditions change.,9,12,S2471959
+990,3d,Different patterns may be observed at each of the scales at which a system is studied and can provide evidence for causality in explanations of phenomena.,9,12,S2471678
+991,child,Construct an explanation based on evidence for how natural selection leads to adaptation of populations.,9,12,S2454585
+993,3d,"Natural selection leads to adaptation, that is, to a population dominated by organisms that are anatomically, behaviorally, and physiologically well suited to survive and reproduce in a specific environment. That is, the differential survival and reproduction of organisms in a population that have an advantageous heritable trait leads to an increase in the proportion of individuals in future generations that have the trait and to a decrease in the proportion of individuals that do not.",9,12,S2471958
+996,child,"Evaluate the evidence supporting claims that changes in environmental conditions may result in: (1) increases in the number of individuals of some species, (2) the emergence of new species over time, and (3) the extinction of other species.",9,12,S2454586
+999,3d,"Species become extinct because they can no longer survive and reproduce in their altered environment. If members cannot adjust to change that is too fast or drastic, the opportunity for the species' evolution is lost.",9,12,S2471961
+1001,child,Create or revise a simulation to test a solution to mitigate adverse impacts of human activity on biodiversity.,9,12,S2454575
+1002,3d,"Create or revise a simulation of a phenomenon, designed device, process, or system.",9,12,S2471941
+1003,3d,"Changes in the physical environment, whether naturally occurring or human induced, have thus contributed to the expansion of some species, the emergence of new distinct species as populations diverge under different conditions, and the decline-and sometimes the extinction-of some species.",9,12,S2471960
+1004,3d,"Humans depend on the living world for the resources and other benefits provided by biodiversity. But human activity is also having adverse impacts on biodiversity through overpopulation, overexploitation, habitat destruction, pollution, introduction of invasive species, and climate change. Thus sustaining biodiversity so that ecosystem functioning and productivity are maintained is essential to supporting and enhancing life on Earth. Sustaining biodiversity also aids humanity by preserving landscapes of recreational or inspirational value.",9,12,S2471888
+1008,parent,Earth's Place in the Universe,9,12,S2467908
+1009,child,Develop a model based on evidence to illustrate the life span of the sun and the role of nuclear fusion in the sun's core to release energy that eventually reaches Earth in the form of radiation.,9,12,S2454587
+1011,3d,The star called the sun is changing and will burn out over a lifespan of approximately 10 billion years.,9,12,S2472000
+1012,3d,Nuclear Fusion processes in the center of the sun release the energy that ultimately reaches Earth as radiation.,9,12,S2472009
+1013,3d,"The significance of a phenomenon is dependent on the scale, proportion, and quantity at which it occurs.",9,12,S2471897
+1014,child,"Construct an explanation of the Big Bang theory based on astronomical evidence of light spectra, motion of distant galaxies, and composition of matter in the universe.",9,12,S2454588
+1018,3d,"The Big Bang theory is supported by observations of distant galaxies receding from our own, of the measured composition of stars and non-stellar gases, and of the maps of spectra of the primordial radiation (cosmic microwave background) that still fills the universe.",9,12,S2472002
+1020,3d,"Atoms of each element emit and absorb characteristic frequencies of light. These characteristics allow identification of the presence of an element, even in microscopic quantities.",9,12,S2472010
+1021,3d,"Energy cannot be created or destroyed - it only moves between one place and another place, between objects and/or fields, or between systems.",9,12,S2471848
+1023,3d,Scientific knowledge is based on the assumption that natural laws operate today as they did in the past and they will continue to do so in the future.,9,12,S2471970
+1024,3d,Science assumes the universe is a vast single system in which basic laws are consistent.,9,12,S2471683
+1025,child,"Communicate scientific ideas about the way stars, over their life cycle, produce elements.",9,12,S2454589
+1026,3d,"Communicate scientific ideas (e.g. about phenomena and/or the process of development and the design and performance of a proposed process or system) in multiple formats (including orally, graphically, textually, and mathematically).",9,12,S2471990
+1027,3d,"The study of stars' light spectra and brightness is used to identify compositional elements of stars, their movements, and their distances from Earth.",9,12,S2472001
+1028,3d,"Other than the hydrogen and helium formed at the time of the Big Bang, nuclear fusion within stars produces all atomic nuclei lighter than and including iron, and the process releases electromagnetic energy. Heavier elements are produced when certain massive stars achieve a supernova stage and explode.",9,12,S2472003
+1029,3d,"In nuclear processes, atoms are not conserved, but the total number of protons plus neutrons is conserved.",9,12,S2471679
+1030,child,Use mathematical or computational representations to predict the motion of orbiting objects in the solar system.,9,12,S2454590
+1031,3d,Use mathematical or computational representations of phenomena to describe explanations.,9,12,S2471982
+1032,3d,"Kepler's laws describe common features of the motions of orbiting objects, including their elliptical paths around the sun. Orbits may change due to the gravitational effects from, or collisions with, other objects in the solar system.",9,12,S2472004
+1033,3d,"Algebraic thinking is used to examine scientific data and predict the effect of a change in one variable on another (e.g., linear growth vs. exponential growth).",9,12,S2471926
+1035,child,Evaluate evidence of the past and current movements of continental and oceanic crust and the theory of plate tectonics to explain the ages of crustal rocks.,9,12,S2454591
+1036,3d,Evaluate the evidence behind currently accepted explanations or solutions to determine the merits of arguments.,9,12,S2471945
+1037,3d,"Continental rocks, which can be older than 4 billion years, are generally much older than the rocks of the ocean floor, which are less than 200 million years old.",9,12,S2472005
+1038,3d,Plate tectonics is the unifying theory that explains the past and current movements of the rocks at Earth's surface and provides a framework for understanding its geologic history.,9,12,S2472007
+1040,3d,Empirical evidence is needed to identify patterns.,9,12,S2472017
+1041,child,"Apply scientific reasoning and evidence from ancient Earth materials, meteorites, and other planetary surfaces to construct an account of Earth's formation and early history.",9,12,S2454592
+1042,3d,Apply scientific reasoning to link evidence to the claims to assess the extent to which the reasoning and data support the explanation or conclusion.,9,12,S2471985
+1043,3d,"A scientific theory is a substantiated explanation of some aspect of the natural world, based on a body of facts that have been repeatedly confirmed through observation and experiment and the science community validates each theory before it is accepted. If new evidence is discovered that the theory does not accommodate, the theory is generally modified in light of this new evidence.",9,12,S2471788
+1044,3d,"Models, mechanisms, and explanations collectively serve as tools in the development of a scientific theory.",9,12,S2471992
+1045,3d,"Although active geologic processes, such as plate tectonics and erosion, have destroyed or altered most of the very early rock record on Earth, other objects in the solar system, such as lunar rocks, asteroids, and meteorites, have changed little over billions of years. Studying these objects can provide information about Earth's formation and early history.",9,12,S2472006
+1046,3d,Spontaneous radioactive decays follow a characteristic exponential decay law. Nuclear lifetimes allow radiometric dating to be used to determine the ages of rocks and other materials.,9,12,S2472008
+1048,parent,Earth's Systems,9,12,S2467909
+1049,child,Develop a model to illustrate how Earth's internal and surface processes operate at different spatial and temporal scales to form continental and ocean-floor features.,9,12,S2454593
+1052,3d,Plate tectonics is the unifying theory that explains the past and current movements of the rocks at Earth's surface and provides a framework for understanding its geologic history. Plate movements are responsible for most continental and ocean-floor features and for the distribution of most rocks and minerals within Earth's crust.,9,12,S2472059
+1054,child,Analyze geoscience data to make the claim that one change to Earth's surface can create feedbacks that cause changes to other Earth systems.,9,12,S2454594
+1055,3d,"Analyze data using tools, technologies, and/or models (e.g., computational, mathematical) in order to make valid and reliable scientific claims or determine an optimal design solution.",9,12,S2471696
+1056,3d,"Earth's systems, being dynamic and interacting, cause feedback effects that can increase or decrease the original changes.",9,12,S2472055
+1059,child,Develop a model based on evidence of Earth's interior to describe the cycling of matter by thermal convection.,9,12,S2454595
+1062,3d,Science disciplines share common rules of evidence used to evaluate explanations about natural systems.,9,12,S2472044
+1063,3d,Science includes the process of coordinating patterns of evidence with current theory.,9,12,S2472045
+1064,3d,"Evidence from deep probes and seismic waves, reconstructions of historical changes in Earth's surface and its magnetic field, and an understanding of physical and chemical processes lead to a model of Earth with a hot but solid inner core, a liquid outer core, a solid mantle and crust. Motions of the mantle and its plates occur primarily through thermal convection, which involves the cycling of matter due to the outward flow of energy from Earth's interior and gravitational movement of denser materials toward the interior.",9,12,S2472056
+1065,3d,"The radioactive decay of unstable isotopes continually generates new energy within Earth's crust and mantle, providing the primary source of the heat that drives mantle convection. Plate tectonics can be viewed as the surface expression of mantle convection.",9,12,S2472058
+1066,3d,Geologists use seismic waves and their reflection at interfaces between layers to probe structures deep in the planet.,9,12,S2472065
+1067,3d,Energy drives the cycling of matter within and between systems.,9,12,S2471901
+1068,3d,"Science and engineering complement each other in the cycle known as research and development (R&D). Many R&D projects may involve scientists, engineers, and others with wide ranges of expertise.",9,12,S2472023
+1069,child,Use a model to describe how variations in the flow of energy into and out of Earth systems result in changes in climate.,9,12,S2454599
+1070,3d,Use a model to provide mechanistic accounts of phenomena.,9,12,S2472036
+1072,3d,"Cyclical changes in the shape of Earth's orbit around the sun, together with changes in the tilt of the planet's axis of rotation, both occurring over hundreds of thousands of years, have altered the intensity and distribution of sunlight falling on the earth. These phenomena cause a cycle of ice ages and other gradual climate changes.",9,12,S2472054
+1073,3d,"The geological record shows that changes to global and regional climate can be caused by interactions among changes in the sun's energy output or Earth's orbit, tectonic events, ocean circulation, volcanic activity, glaciers, vegetation, and human activities. These changes can occur on a variety of time scales from sudden (e.g., volcanic ash clouds) to intermediate (ice ages) to very long-term tectonic cycles.",9,12,S2472057
+1074,3d,"The foundation for Earth's global climate systems is the electromagnetic radiation from the sun, as well as its reflection, absorption, storage, and redistribution among the atmosphere, ocean, and land systems, and this energy's re-radiation into space.",9,12,S2472061
+1077,child,Plan and conduct an investigation of the properties of water and its effects on Earth materials and surface processes.,9,12,S2454596
+1078,3d,"Plan and conduct an investigation individually and collaboratively to produce data to serve as the basis for evidence, and in the design: decide on types, how much, and accuracy of data needed to produce reliable measurements and consider limitations on the precision of the data (e.g., number of trials, cost, risk, time), and refine the design accordingly.",9,12,S2471654
+1079,3d,"The abundance of liquid water on Earth's surface and its unique combination of physical and chemical properties are central to the planet's dynamics. These properties include water's exceptional capacity to absorb, store, and release large amounts of energy, transmit sunlight, expand upon freezing, dissolve and transport materials, and lower the viscosities and melting points of rocks.",9,12,S2472060
+1080,3d,"The functions and properties of natural and designed objects and systems can be inferred from their overall structure, the way their components are shaped and used, and the molecular substructures of its various materials.",9,12,S2472075
+1081,child,"Develop a quantitative model to describe the cycling of carbon among the hydrosphere, atmosphere, geosphere, and biosphere.",9,12,S2454597
+1082,3d,Develop a model based on evidence to illustrate the relationships between systems or between components of a system.,9,12,S2471651
+1084,3d,Changes in the atmosphere due to human activity have increased carbon dioxide concentrations and thus affect climate.,9,12,S2472063
+1085,child,Construct an argument based on evidence about the simultaneous coevolution of Earth systems and life on Earth.,9,12,S2454598
+1086,3d,Construct an oral and written argument or counter-arguments based on data and evidence.,9,12,S2472042
+1087,3d,Gradual atmospheric changes were due to plants and other organisms that captured carbon dioxide and released oxygen.,9,12,S2472062
+1088,3d,The many dynamic and delicate feedbacks between the biosphere and other Earth systems cause a continual co-evolution of Earth's surface and the life that exists on it.,9,12,S2472064
+1089,3d,Much of science deals with constructing explanations of how things change and how they remain stable.,9,12,S2471682
+1090,parent,Earth and Human Activity,9,12,S2467910
+1091,child,"Construct an explanation based on evidence for how the availability of natural resources, occurrence of natural hazards, and changes in climate have influenced human activity.",9,12,S2454601
+1092,3d,"Construct an explanation based on valid and reliable evidence obtained from a variety of sources (including students' own investigations, models, theories, simulations, peer review) and the assumption that theories and laws that describe the natural world operate today as they did in the past and will continue to do so in the future.",9,12,S2471827
+1093,3d,Resource availability has guided the development of human society.,9,12,S2472111
+1094,3d,Natural hazards and other geologic events have shaped the course of human history; [they] have significantly altered the sizes of human populations and have driven human migrations.,9,12,S2472113
+1095,3d,Empirical evidence is required to differentiate between cause and correlation and make claims about specific causes and effects.,9,12,S2471724
+1097,child,"Evaluate competing design solutions for developing, managing, and utilizing energy and mineral resources based on cost-benefit ratios.",9,12,S2454602
+1098,3d,"Evaluate competing design solutions to a real-world problem based on scientific ideas and principles, empirical evidence, and logical arguments regarding relevant factors (e.g. economic, societal, environmental, ethical considerations).",9,12,S2472099
+1099,3d,"All forms of energy production and other resource extraction have associated economic, social, environmental, and geopolitical costs and risks as well as benefits. New technologies and social regulations can change the balance of these factors.",9,12,S2472112
+1101,3d,Analysis of costs and benefits is a critical aspect of decisions about technology.,9,12,S2472131
+1102,3d,"Science and technology may raise ethical issues for which science, by itself, does not provide answers and solutions.",9,12,S2472133
+1103,3d,"Science knowledge indicates what can happen in natural systems - not what should happen. The latter involves ethics, values, and human decisions about the use of knowledge.",9,12,S2472134
+1104,3d,"Many decisions are not made using science alone, but rely on social and cultural contexts to resolve issues.",9,12,S2472135
+1105,child,"Create a computational simulation to illustrate the relationships among management of natural resources, the sustainability of human populations, and biodiversity.",9,12,S2454603
+1106,3d,"Create a computational model or simulation of a phenomenon, designed device, process, or system.",9,12,S2471740
+1107,3d,The sustainability of human societies and the biodiversity that supports them requires responsible management of natural resources.,9,12,S2472114
+1109,3d,Modern civilization depends on major technological systems.,9,12,S2471812
+1110,3d,"New technologies can have deep impacts on society and the environment, including some that were not anticipated.",9,12,S2472130
+1111,3d,"Science is a result of human endeavors, imagination, and creativity.",9,12,S2472132
+1112,child,Evaluate or refine a technological solution that reduces impacts of human activities on natural systems.,9,12,S2454604
+1113,3d,"Design or refine a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2472097
+1114,3d,Scientists and engineers can make major contributions by developing technologies that produce less pollution and waste and that preclude ecosystem degradation.,9,12,S2472115
+1116,3d,Feedback (negative or positive) can stabilize or destabilize a system.,9,12,S2471850
+1117,3d,Engineers continuously modify these technological systems by applying scientific knowledge and engineering design practices to increase benefits while decreasing costs and risks.,9,12,S2471813
+1118,child,Analyze geoscience data and the results from global climate models to make an evidence-based forecast of the current rate of global or regional climate change and associated future impacts to Earth systems.,9,12,S2454600
+1119,3d,Analyze data using computational models in order to make valid and reliable scientific claims.,9,12,S2472091
+1120,3d,Science investigations use diverse methods and do not always use the same set of procedures to obtain data.,9,12,S2472100
+1121,3d,New technologies advance scientific knowledge.,9,12,S2472101
+1122,3d,Science knowledge is based on empirical evidence.,9,12,S2472043
+1123,3d,Science arguments are strengthened by multiple lines of evidence supporting a single explanation.,9,12,S2472046
+1125,3d,Change and rates of change can be quantified and modeled over very short or very long periods of time. Some system changes are irreversible.,9,12,S2472077
+1126,child,Use a computational representation to illustrate the relationships among Earth systems and how those relationships are being modified due to human activity.,9,12,S2454605
+1127,3d,Use a computational representation of phenomena or design solutions to describe and/or support claims and/or explanations.,9,12,S2472094
+1128,3d,"Current models predict that, although future regional climate changes will be complex and varied, average global temperatures will continue to rise. The outcomes predicted by global climate models strongly depend on the amounts of human-generated greenhouse gases added to the atmosphere each year and by the ways in which these gases are absorbed by the ocean and biosphere.",9,12,S2472110
+1129,3d,"Though the magnitudes of human impacts are greater than they have ever been, so too are human abilities to model, predict, and manage current and future impacts.",9,12,S2472116
+1130,3d,Empirical evidence is required to differentiate between cause and correlation and make claims about specific causes and effects.,9,12,S2472125
+1131,parent,Engineering Design,9,12,S2467911
+1132,child,Analyze a major global challenge to specify qualitative and quantitative criteria and constraints for solutions that account for societal needs and wants.,9,12,S2454606
+1133,3d,Analyze complex real-world problems by specifying criteria and constraints for successful solutions.,9,12,S2472143
+1134,3d,"Criteria and constraints also include satisfying any requirements set by society, such as taking issues of risk mitigation into account, and they should be quantified to the extent possible and stated in such a way that one can tell if a given design meets them.",9,12,S2471717
+1135,3d,"Humanity faces major global challenges today, such as the need for supplies of clean water and food or for energy sources that minimize pollution, which can be addressed through engineering. These global challenges also may have manifestations in local communities.",9,12,S2472153
+1137,child,"Design a solution to a complex real-world problem by breaking it down into smaller, more manageable problems that can be solved through engineering.",9,12,S2454607
+1138,3d,"Design a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2472147
+1139,3d,"Criteria may need to be broken down into simpler ones that can be approached systematically, and decisions about the priority of certain criteria over others (trade-offs) may be needed.",9,12,S2471718
+1140,child,"Evaluate a solution to a complex real-world problem based on prioritized criteria and trade-offs that account for a range of constraints, including cost, safety, reliability, and aesthetics, as well as possible social, cultural, and environmental impacts.",9,12,S2454608
+1141,3d,"Evaluate a solution to a complex real-world problem, based on scientific knowledge, student-generated sources of evidence, prioritized criteria, and tradeoff considerations.",9,12,S2472148
+1142,3d,"When evaluating solutions it is important to take into account a range of constraints including cost, safety, reliability and aesthetics and to consider social, cultural and environmental impacts.",9,12,S2471890
+1143,3d,"New technologies can have deep impacts on society and the environment, including some that were not anticipated. Analysis of costs and benefits is a critical aspect of decisions about technology.",9,12,S2472080
+1144,child,Use a computer simulation to model the impact of proposed solutions to a complex real-world problem with numerous criteria and constraints on interactions within and between systems relevant to the problem.,9,12,S2454609
+1145,3d,Use mathematical models and/or computer simulations to predict the effects of a design solution on systems and/or the interactions between systems.,9,12,S2472145
+1146,3d,"Both physical models and computers can be used in various ways to aid in the engineering design process. Computers are useful for a variety of purposes, such as running simulations to test different ways of solving a problem or to see which one is most efficient or economical; and in making a persuasive presentation to a client about how a given design will meet his or her needs.",9,12,S2471964
+1147,3d,"Models (e.g., physical, mathematical, computer models) can be used to simulate systems and interactions - including energy, matter, and information flows - within and between systems at different scales.",9,12,S2471809
